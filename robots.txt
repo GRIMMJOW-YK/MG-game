@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mggame-nu.vercel.app/sitemap.xml
