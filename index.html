@@ -6,6 +6,10 @@
 <meta name="theme-color" content="#120b06" />
 <meta name="google-site-verification" content="_Ky7VpzRnqhv5UC0YjBkHlzLWPTgVbeC1F7Tr5Uln0A" />
 <title>Gandhi Bhai — The Salt March Runner: Ultimate</title>
+
+<!-- Supabase Library -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{
@@ -317,7 +321,7 @@
     <p class="how">Enter your name so your score is recorded</p>
     <input id="nameInput" class="name-input" type="text" maxlength="16" placeholder="Your name" autocomplete="off" spellcheck="false" />
     <button id="nameSubmit">Begin the March</button>
-    <p class="keys">Your name and highest score will be saved to the Hall of Fame</p>
+    <p class="keys" id="nameStatus" style="color:#ffb347">Connecting to world leaderboard...</p>
   </div>
 
   <!-- ============ MAIN MENU ============ -->
@@ -340,7 +344,7 @@
     <div class="btn-row" style="margin-top:.5em">
       <button id="startBtn">Start the March</button>
       <button id="charsBtn" class="btn-sm">Characters</button>
-      <button id="leadersBtn" class="btn-sm">🏆 Leaders</button>
+      <button id="leadersBtn" class="btn-sm">🌍 World Leaders</button>
       <button id="settingsBtn" class="btn-sm">Settings</button>
     </div>
     <p class="keys">SPACE / ↑ / TAP jump — double jump — P pause — F fullscreen — U ultimate</p>
@@ -349,12 +353,12 @@
   <!-- ============ LEADERBOARD ============ -->
   <div class="overlay hidden" id="leaders">
     <div class="flagbar"><i></i><i></i><i></i></div>
-    <h2>🏆 Hall of Fame</h2>
+    <h2>🌍 World Leaders</h2>
     <p class="how" style="margin-bottom:.2em">Top marchers of all time</p>
     <div class="lb-wrap" id="lbList"></div>
     <div class="btn-row">
       <button id="leadersBack" class="btn-sm">Back</button>
-      <button id="clearLb" class="btn-sm">Clear Scores</button>
+      <button id="refreshLb" class="btn-sm">Refresh</button>
     </div>
   </div>
 
@@ -422,7 +426,7 @@
     <p class="stat" id="rankInfo" style="font-size:.85em;color:#ffd166;opacity:.9"></p>
     <div class="btn-row">
       <button id="againBtn">March Again</button>
-      <button id="overLeadersBtn" class="btn-sm">🏆 Leaders</button>
+      <button id="overLeadersBtn" class="btn-sm">🌍 World Leaders</button>
       <button id="overCharsBtn" class="btn-sm">Characters</button>
     </div>
     <p class="keys">Press SPACE or tap to retry</p>
@@ -438,6 +442,59 @@
 <script>
 (() => {
 "use strict";
+
+/* =========================================================
+   SUPABASE CONFIG — PASTE YOUR KEY HERE
+   ========================================================= */
+const SUPABASE_URL = "https://anptxhijfjugfjteimex.supabase.co";
+const SUPABASE_KEY = "PASTE_YOUR_SB_PUBLISHABLE_KEY_HERE"; 
+
+let supabase = null;
+let realtimeChannel = null;
+
+function initSupabase() {
+  try {
+    // Check if the key is still the placeholder
+    if (SUPABASE_KEY === "PASTE_YOUR_SB_PUBLISHABLE_KEY_HERE") {
+      console.warn("Supabase key not set. Using local leaderboard.");
+      return false;
+    }
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    return true;
+  } catch (e) {
+    console.warn("Supabase init failed:", e);
+    return false;
+  }
+}
+
+function submitScoreCloud(name, score){
+  if (!supabase) return Promise.resolve(false);
+  return supabase.from('scores').insert([{ name: name, score: score }])
+    .then(({ error }) => { if (error) { console.warn(error); return false; } return true; })
+    .catch(() => false);
+}
+
+function fetchLeaderboard(){
+  if (!supabase) return Promise.resolve(null);
+  return supabase.from('scores').select('name, score')
+    .order('score', { ascending: false })
+    .limit(30)
+    .then(({ data, error }) => {
+      if (error || !data) return null;
+      return data.map(d => ({ name: d.name, score: d.score }));
+    })
+    .catch(() => null);
+}
+
+function listenLeaderboard(callback){
+  if (!supabase) return;
+  if (realtimeChannel) supabase.removeChannel(realtimeChannel);
+  realtimeChannel = supabase.channel('public:scores')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'scores' }, () => {
+      fetchLeaderboard().then(list => { if (list) callback(list); });
+    })
+    .subscribe();
+}
 
 /* =========================================================
    0. CONSTANTS & UTILITIES
@@ -512,10 +569,7 @@ function chord(freqs, dur, type="triangle", vol=.05){
    2. PLAYER PROFILE & LEADERBOARD
    ========================================================= */
 const PROFILE_KEY = "gandhi_bhai_profile";
-const LB_KEY      = "gandhi_bhai_leaderboard";
-
 let profile = { name: "", best: 0 };
-let leaderboard = [];
 
 try {
   const p = JSON.parse(localStorage.getItem(PROFILE_KEY) || "null");
@@ -524,15 +578,8 @@ try {
     if (typeof p.best === "number" && isFinite(p.best)) profile.best = p.best;
   }
 } catch(e){}
-try {
-  const l = JSON.parse(localStorage.getItem(LB_KEY) || "[]");
-  if (Array.isArray(l)){
-    leaderboard = l.filter(e => e && typeof e.name === "string" && typeof e.score === "number");
-  }
-} catch(e){}
 
 function saveProfile(){ try { localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)); } catch(e){} }
-function saveLeaderboard(){ try { localStorage.setItem(LB_KEY, JSON.stringify(leaderboard)); } catch(e){} }
 
 function updateMenuProfile(){
   const bar = document.getElementById("playerBar");
@@ -546,43 +593,65 @@ function updateMenuProfile(){
   document.getElementById("pBest").textContent = profile.best.toLocaleString();
 }
 
-function submitScore(score){
+function submitScoreUnified(name, score){
+  if (!name || score <= 0) return Promise.resolve(-1);
+  return submitScoreCloud(name, score).then(ok => {
+    if (!ok){
+      // Fallback to local storage if Supabase fails
+      return submitScoreLocal(score);
+    }
+    if (score > profile.best){ profile.best = score; saveProfile(); updateMenuProfile(); }
+    return -2; 
+  });
+}
+
+function submitScoreLocal(score){
   if (!profile.name || score <= 0) return -1;
-  let newBest = false;
-  if (score > profile.best){
-    profile.best = score;
-    newBest = true;
-    saveProfile();
-  }
-  leaderboard.push({ name: profile.name, score, date: Date.now() });
-  leaderboard.sort((a,b) => b.score - a.score);
-  if (leaderboard.length > 30) leaderboard.length = 30;
-  saveLeaderboard();
+  if (score > profile.best){ profile.best = score; saveProfile(); }
+  const localLb = JSON.parse(localStorage.getItem("gandhi_bhai_leaderboard_local") || "[]");
+  localLb.push({ name: profile.name, score, date: Date.now() });
+  localLb.sort((a,b) => b.score - a.score);
+  if (localLb.length > 30) localLb.length = 30;
+  localStorage.setItem("gandhi_bhai_leaderboard_local", JSON.stringify(localLb));
   updateMenuProfile();
-  // Return current rank (1-indexed) or -1
-  const idx = leaderboard.findIndex(e => e.name === profile.name && e.score === score);
+  const idx = localLb.findIndex(e => e.name === profile.name && e.score === score);
   return idx >= 0 ? idx + 1 : -1;
 }
 
-function renderLeaderboard(){
+function renderLeaderboardRows(entries){
   const wrapEl = document.getElementById("lbList");
-  if (leaderboard.length === 0){
+  if (!entries || entries.length === 0){
     wrapEl.innerHTML = `<div class="lb-empty">No scores yet.<br>Be the first marcher!</div>`;
     return;
   }
-  wrapEl.innerHTML = leaderboard.slice(0, 15).map((e, i) => {
+  wrapEl.innerHTML = entries.slice(0, 30).map((e, i) => {
     let cls = "";
     let medal = (i+1).toString();
-    if (i === 0){ cls = "gold"; medal = "🥇"; }
-    else if (i === 1){ cls = "silver"; medal = "🥈"; }
-    else if (i === 2){ cls = "bronze"; medal = "🥉"; }
+    if (i === 0){ cls = "gold"; medal = "🥇 1"; }
+    else if (i === 1){ cls = "silver"; medal = "🥈 2"; }
+    else if (i === 2){ cls = "bronze"; medal = "🥉 3"; }
+    else { medal = (i+1).toString(); }
     const isMe = profile.name && e.name === profile.name;
     return `<div class="lb-row ${cls} ${isMe?'me':''}">
       <div class="lb-rank">${medal}</div>
       <div class="lb-name">${escapeHtml(e.name)}${isMe ? ' <span style="color:#ffb347;font-size:.8em">(you)</span>' : ''}</div>
-      <div class="lb-score">${e.score.toLocaleString()}</div>
+      <div class="lb-score">${Number(e.score).toLocaleString()}</div>
     </div>`;
   }).join("");
+}
+
+function renderLeaderboard(){
+  if (supabase){
+    const wrapEl = document.getElementById("lbList");
+    wrapEl.innerHTML = `<div class="lb-empty">Loading world scores...</div>`;
+    fetchLeaderboard().then(list => {
+      if (list) renderLeaderboardRows(list);
+      else wrapEl.innerHTML = `<div class="lb-empty">⚠️ Could not reach server.<br>Check your connection.</div>`;
+    });
+  } else {
+    const localLb = JSON.parse(localStorage.getItem("gandhi_bhai_leaderboard_local") || "[]");
+    renderLeaderboardRows(localLb);
+  }
 }
 
 /* =========================================================
@@ -762,6 +831,7 @@ const ultFill      = document.getElementById("ultFill");
 const ultBtn       = document.getElementById("ultBtn");
 const comboPop     = document.getElementById("comboPop");
 const nameInput    = document.getElementById("nameInput");
+const nameStatus   = document.getElementById("nameStatus");
 
 /* =========================================================
    9. GAME FLOW
@@ -799,7 +869,6 @@ function resetWorld(){
 
 function startGame(){
   if (!profile.name){
-    // Redirect to name entry if no player
     menuEl.classList.add("hidden");
     nameEntryEl.classList.remove("hidden");
     setTimeout(() => nameInput.focus(), 100);
@@ -828,33 +897,31 @@ function gameOver(reason){
 
   const s = Math.floor(state.score);
 
-  // Submit score to player profile + leaderboard
-  let rank = -1;
-  if (s > 0) rank = submitScore(s);
-
-  state.best = profile.best;
-
-  finalEl.textContent = s.toLocaleString();
-  bestEl.textContent  = profile.best.toLocaleString();
-  overPlayerName.textContent = profile.name || "—";
-  overTitle.textContent = reason === "fall" ? "The March Ends" : "Overcome!";
-  runStats.textContent =
-    `Salt: ${state.totalCoins}  •  Power-ups: ${state.totalPowerups}  •  Best Combo: ×${state.maxCombo}`;
-  if (rank > 0){
-    const medal = rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : "🏆";
-    rankInfo.textContent = `${medal} Rank #${rank} on the leaderboard!`;
-    rankInfo.style.display = "";
-  } else if (s === 0){
-    rankInfo.textContent = "No points this run — march again!";
-    rankInfo.style.display = "";
-  } else {
-    rankInfo.style.display = "none";
-  }
-
-  overEl.classList.remove("hidden");
-  ultWrap.style.display = "none";
-  ultBtn.style.display = "none";
-  puBar.innerHTML = "";
+  submitScoreUnified(profile.name, s).then((rank) => {
+    state.best = profile.best;
+    finalEl.textContent = s.toLocaleString();
+    bestEl.textContent  = profile.best.toLocaleString();
+    overPlayerName.textContent = profile.name || "—";
+    overTitle.textContent = reason === "fall" ? "The March Ends" : "Overcome!";
+    runStats.textContent =
+      `Salt: ${state.totalCoins}  •  Power-ups: ${state.totalPowerups}  •  Best Combo: ×${state.maxCombo}`;
+    
+    if (rank > 0){
+      const medal = rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : "🏆";
+      rankInfo.textContent = `${medal} Local Rank #${rank}`;
+    } else if (rank === -2) {
+      rankInfo.textContent = "🌍 Score submitted to World Leaders!";
+    } else if (s === 0) {
+      rankInfo.textContent = "No points this run — march again!";
+    } else {
+      rankInfo.textContent = "Score recorded!";
+    }
+    
+    overEl.classList.remove("hidden");
+    ultWrap.style.display = "none";
+    ultBtn.style.display = "none";
+    puBar.innerHTML = "";
+  });
 
   beep(300,.16,"sawtooth",.09);
   setTimeout(() => beep(180,.32,"sawtooth",.09), 110);
@@ -2338,7 +2405,6 @@ document.getElementById("overLeadersBtn").addEventListener("click", e => {
 document.getElementById("leadersBack").addEventListener("click", e => {
   e.stopPropagation();
   leadersEl.classList.add("hidden");
-  // Return to whichever overlay we came from based on mode
   if (state.mode === "over"){
     overEl.classList.remove("hidden");
   } else {
@@ -2346,15 +2412,10 @@ document.getElementById("leadersBack").addEventListener("click", e => {
     updateMenuProfile();
   }
 });
-document.getElementById("clearLb").addEventListener("click", e => {
+document.getElementById("refreshLb").addEventListener("click", e => {
   e.stopPropagation();
-  if (leaderboard.length === 0) return;
-  if (confirm("Clear all leaderboard scores?")){
-    leaderboard = [];
-    saveLeaderboard();
-    renderLeaderboard();
-    beep(300,.15,"sawtooth",.06);
-  }
+  renderLeaderboard();
+  beep(440,.08,"sine",.05);
 });
 
 /* --- name entry --- */
@@ -2379,7 +2440,6 @@ function submitName(){
   state.best = profile.best;
   beep(700,.12,"triangle",.06);
   setTimeout(() => beep(1040,.12,"triangle",.06), 100);
-  // Auto-start the march after entering name
   setTimeout(() => { startGame(); }, 250);
 }
 
@@ -2427,7 +2487,6 @@ ultBtn.addEventListener("pointerdown", e => { e.stopPropagation(); });
    23. INPUT
    ========================================================= */
 window.addEventListener("keydown", e => {
-  // Don't hijack keys when typing in name input
   if (document.activeElement === nameInput){
     return;
   }
@@ -2470,7 +2529,20 @@ updateFsButton();
 buildCharGrid();
 updateMenuProfile();
 
-// If no player name yet, show the name entry screen instead of the menu
+// Try to initialise Supabase; if successful, set up a real-time listener
+const ok = initSupabase();
+if (ok){
+  nameStatus.textContent = "🌍 Connected — scores shared worldwide";
+  nameStatus.style.color = "#5fd97a";
+  // Real-time listener: updates the leaderboard instantly when anyone scores
+  listenLeaderboard(list => {
+    renderLeaderboardRows(list);
+  });
+} else {
+  nameStatus.textContent = "📱 Local mode (Supabase key not set)";
+  nameStatus.style.color = "#ffb347";
+}
+
 if (!profile.name){
   menuEl.classList.add("hidden");
   nameEntryEl.classList.remove("hidden");
@@ -2495,4 +2567,4 @@ requestAnimationFrame(loop);
 })();
 </script>
 </body>
-     </html>
+ </html>
