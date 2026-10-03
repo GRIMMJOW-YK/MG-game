@@ -7,6 +7,7 @@
 <meta name="google-site-verification" content="_Ky7VpzRnqhv5UC0YjBkHlzLWPTgVbeC1F7Tr5Uln0A" />
 <title>Gandhi Bhai — The Salt March Runner: Ultimate</title>
 
+<!-- ✅ SUPABASE CDN -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
@@ -233,7 +234,7 @@
 "use strict";
 
 /* =========================================================
-   SUPABASE CONFIG
+   ✅ SUPABASE CONFIG (all three lines, correctly placed)
    ========================================================= */
 const SUPABASE_URL = "https://anptxhijfjugfjteimex.supabase.co";
 const SUPABASE_KEY = "sb_publishable_VJMQOEHCmOHJbCgjZQMHXw_2DUmKRKw";
@@ -243,33 +244,67 @@ let realtimeChannel = null;
 
 function initSupabase() {
   try {
-    if (SUPABASE_KEY === "PASTE_YOUR_SB_PUBLISHABLE_KEY_HERE") return false;
+    if (!window.supabase || !window.supabase.createClient) {
+      console.error("❌ Supabase SDK not loaded. Check the CDN <script> tag in <head>.");
+      return false;
+    }
+    if (SUPABASE_KEY === "PASTE_YOUR_SB_PUBLISHABLE_KEY_HERE") {
+      console.warn("⚠️ Supabase key not set.");
+      return false;
+    }
     supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    console.log("✅ Supabase client ready:", SUPABASE_URL);
     return true;
-  } catch (e) { console.warn("Supabase init failed:", e); return false; }
+  } catch (e) {
+    console.error("❌ Supabase init failed:", e);
+    return false;
+  }
 }
+
 function submitScoreCloud(name, score){
   if (!supabase) return Promise.resolve(false);
-  return supabase.from('scores').insert([{ name: name, score: score }])
-    .then(({ error }) => { if (error) { console.warn(error); return false; } return true; })
-    .catch(() => false);
+  return supabase
+    .from('scores')
+    .insert([{ name: name, score: score }])
+    .then(({ data, error }) => {
+      if (error) {
+        console.error("❌ Supabase insert error:", error.message, error.details, error.hint);
+        return false;
+      }
+      console.log("✅ Score submitted:", name, score);
+      return true;
+    })
+    .catch(err => { console.error("❌ Insert threw:", err); return false; });
 }
+
 function fetchLeaderboard(){
   if (!supabase) return Promise.resolve(null);
-  return supabase.from('scores').select('name, score')
-    .order('score', { ascending: false }).limit(30)
+  return supabase
+    .from('scores')
+    .select('name, score')
+    .order('score', { ascending: false })
+    .limit(30)
     .then(({ data, error }) => {
-      if (error || !data) return null;
-      return data.map(d => ({ name: d.name, score: d.score }));
-    }).catch(() => null);
+      if (error) {
+        console.error("❌ Supabase select error:", error.message, error.details, error.hint);
+        return null;
+      }
+      return (data || []).map(d => ({ name: d.name, score: d.score }));
+    })
+    .catch(err => { console.error("❌ Select threw:", err); return null; });
 }
+
 function listenLeaderboard(callback){
   if (!supabase) return;
-  if (realtimeChannel) supabase.removeChannel(realtimeChannel);
-  realtimeChannel = supabase.channel('public:scores')
-    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'scores' }, () => {
-      fetchLeaderboard().then(list => { if (list) callback(list); });
-    }).subscribe();
+  try {
+    if (realtimeChannel) supabase.removeChannel(realtimeChannel);
+    realtimeChannel = supabase
+      .channel('public:scores')
+      .on('postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'scores' },
+          () => { fetchLeaderboard().then(list => { if (list) callback(list); }); })
+      .subscribe();
+  } catch (e) { console.warn("Realtime subscribe failed:", e); }
 }
 
 /* =========================================================
@@ -412,7 +447,7 @@ function renderLeaderboard(){
     wrapEl.innerHTML = `<div class="lb-empty">Loading world scores...</div>`;
     fetchLeaderboard().then(list => {
       if (list) renderLeaderboardRows(list);
-      else wrapEl.innerHTML = `<div class="lb-empty">⚠️ Could not reach server.<br>Check your connection.</div>`;
+      else wrapEl.innerHTML = `<div class="lb-empty">⚠️ Could not reach server.<br>Check your Supabase RLS policies.<br>Showing local scores instead.</div>`;
     });
   } else {
     renderLeaderboardRows(JSON.parse(localStorage.getItem("gandhi_bhai_leaderboard_local") || "[]"));
@@ -607,7 +642,7 @@ function gameOver(reason){
     const reachedBritish = s >= BRITISH_LEVEL_SCORE;
     runStats.textContent = `Salt: ${state.totalCoins}  •  Power-ups: ${state.totalPowerups}  •  Best Combo: ×${state.maxCombo}` + (reachedBritish ? "  •  🇬🇧 British Era" : "");
     if (rank === -2) rankInfo.textContent = "🌍 Score submitted to World Leaders!";
-    else if (s === 0) rankInfo.textContent = "No points this run — march again!";
+    else if (rank === -1) rankInfo.textContent = "Score saved locally.";
     else rankInfo.textContent = "Score recorded!";
     overEl.classList.remove("hidden");
     ultWrap.style.display = "none"; ultBtn.style.display = "none";
@@ -901,15 +936,11 @@ function update(dt){
     state.nextPowerup = state.speed * rand(3.5,7) * DIFF_PU[d];
   }
 
-  /* =========================================================
-     OBSTACLES — TOUCHING = GAME OVER
-     ========================================================= */
   for (let i=state.obstacles.length-1;i>=0;i--){
     const o = state.obstacles[i];
     o.x -= state.speed*dt;
     if (o.x+o.w < -80){ state.obstacles.splice(i,1); continue; }
     if (aabbHit(player,o)){
-      /* Ultimate aura obliterates obstacles — no death */
       if (state.ultActive){
         spawnParticles(o.x+o.w/2,o.y+o.h/2,"#ff8a65",18);
         state.obstacles.splice(i,1);
@@ -920,7 +951,6 @@ function update(dt){
       }
       if (player.invuln > 0) continue;
 
-      /* Shield absorbs one hit */
       if (player.shieldUp){
         player.shieldUp = false;
         delete state.activePowerups.shield;
@@ -932,7 +962,6 @@ function update(dt){
         updatePuHUD();
         continue;
       }
-      /* Extra life (Salt Sage) absorbs one hit */
       if (state.lives > 1){
         state.lives--;
         player.invuln = 2.2;
@@ -943,7 +972,6 @@ function update(dt){
         continue;
       }
 
-      /* ============ TOUCHED OBSTACLE → GAME OVER ============ */
       spawnParticles(player.x+player.w/2, player.y+player.h/2, "#ff4444", 30);
       state.flashAlpha = 0.7;
       state.flashColor = "#ff2222";
@@ -993,7 +1021,7 @@ function update(dt){
 }
 
 /* =========================================================
-   15. DRAW — BACKGROUND (level-aware)
+   15. DRAW — BACKGROUND
    ========================================================= */
 function drawSky(){
   const g = ctx.createLinearGradient(0,0,0,GROUND_Y+40);
@@ -2054,7 +2082,7 @@ if (ok){
   nameStatus.style.color = "#5fd97a";
   listenLeaderboard(list => { renderLeaderboardRows(list); });
 } else {
-  nameStatus.textContent = "📱 Local mode (Supabase key not set)";
+  nameStatus.textContent = "📱 Local mode (Supabase not reachable)";
   nameStatus.style.color = "#ffb347";
 }
 
