@@ -148,7 +148,7 @@
     <p class="how">
       Jump <b>barricades</b> &nbsp;•&nbsp; Collect <b>salt</b>, <b>charkhas</b> &amp; <b>power-ups</b><br>
       Fill the <b>Ultimate meter</b> to transform!<br>
-      <b style="color:#ff8a65">Unlimited Mode</b> — you never die. Obstacles cost points!<br>
+      Touch any obstacle and the march ends!<br>
       Hit <b style="color:#ffd166">20,000 points</b> to unlock the <b style="color:#ff4444">British Era</b>
     </p>
     <div class="btn-row" style="margin-top:.5em">
@@ -211,7 +211,7 @@
   </div>
 
   <div class="overlay hidden" id="over">
-    <h2 id="overTitle">March Summary</h2>
+    <h2 id="overTitle">The March Ends</h2>
     <p class="stat">Player: <b id="overPlayerName">—</b></p>
     <p class="stat">Score: <b id="finalScore">0</b></p>
     <p class="stat">Your Best: <b id="bestScore">0</b></p>
@@ -284,14 +284,12 @@ let   W = 960;
 let   GROUND_Y = H - 96;
 
 const GRAVITY = 2400, JUMP_V = 830, BASE_SPEED = 330;
-const BRITISH_LEVEL_SCORE = 20000;   // unlock threshold
+const BRITISH_LEVEL_SCORE = 20000;
 
-/* ---- DIFFICULTY MULTIPLIERS (HARDER than before) ---- */
-/*            Easy    Normal  Hard    Insane  */
-const DIFF_SPEED = [1.00, 1.20, 1.45, 1.75];  // run speed
-const DIFF_OBST  = [0.85, 1.15, 1.55, 2.00];  // higher = more obstacles
-const DIFF_COIN  = [1.10, 0.90, 0.75, 0.60];  // higher = fewer coins
-const DIFF_PU    = [1.10, 1.00, 0.85, 0.70];  // higher = fewer power-ups
+const DIFF_SPEED = [1.00, 1.20, 1.45, 1.75];
+const DIFF_OBST  = [0.85, 1.15, 1.55, 2.00];
+const DIFF_COIN  = [1.10, 0.90, 0.75, 0.60];
+const DIFF_PU    = [1.10, 1.00, 0.85, 0.70];
 function getDiff(){ return settings.difficulty|0; }
 
 let scale = 1, offX = 0, offY = 0, dpr = 1;
@@ -467,8 +465,8 @@ const state = {
   ultCharge: 0, ultActive: false, ultTimer: 0,
   activePowerups: {}, slowFactor: 1,
   flashAlpha: 0, flashColor: "#fff", running: true,
-  level: 0,             // 0 = Salt March era, 1 = British Era
-  levelBannerTimer: 0   // countdown for the big unlock banner
+  level: 0,
+  levelBannerTimer: 0
 };
 
 const player = {
@@ -598,13 +596,14 @@ function startGame(){
 function gameOver(reason){
   state.mode = "over";
   state.overTimer = .55;
+  state.shake = .45;
   const s = Math.floor(state.score);
   submitScoreUnified(profile.name, s).then((rank) => {
     state.best = profile.best;
     finalEl.textContent = s.toLocaleString();
     bestEl.textContent  = profile.best.toLocaleString();
     overPlayerName.textContent = profile.name || "—";
-    overTitle.textContent = "March Summary";
+    overTitle.textContent = reason === "fall" ? "The March Ends" : "Overcome!";
     const reachedBritish = s >= BRITISH_LEVEL_SCORE;
     runStats.textContent = `Salt: ${state.totalCoins}  •  Power-ups: ${state.totalPowerups}  •  Best Combo: ×${state.maxCombo}` + (reachedBritish ? "  •  🇬🇧 British Era" : "");
     if (rank === -2) rankInfo.textContent = "🌍 Score submitted to World Leaders!";
@@ -743,12 +742,10 @@ function updatePuHUD(){
 function spawnObstacle(){
   const r = Math.random();
   if (state.level === 0){
-    /* ---- Salt March era: original obstacles ---- */
     if (r < 0.55)      state.obstacles.push({type:"barricade", w:38, h:46, x:W+50, y:GROUND_Y-46});
     else if (r < 0.82) state.obstacles.push({type:"rock",      w:48, h:34, x:W+50, y:GROUND_Y-34});
     else               state.obstacles.push({type:"sign",      w:30, h:64, x:W+50, y:GROUND_Y-64});
   } else {
-    /* ---- British Era: military obstacles ---- */
     if (r < 0.40)      state.obstacles.push({type:"redcoat", w:36, h:74, x:W+50, y:GROUND_Y-74});
     else if (r < 0.65) state.obstacles.push({type:"cannon",  w:64, h:46, x:W+50, y:GROUND_Y-46});
     else if (r < 0.85) state.obstacles.push({type:"ukflag",  w:34, h:82, x:W+50, y:GROUND_Y-82});
@@ -824,7 +821,6 @@ function update(dt){
     }
   }
 
-  /* ---- SPEED & SCORING with difficulty scaling ---- */
   if (state.mode === "play"){
     state.time += dt;
     const ch = getChar();
@@ -839,7 +835,6 @@ function update(dt){
       state.nextMilestone += 250;
     }
 
-    /* ---- British Era unlock at 20,000 ---- */
     if (state.score >= BRITISH_LEVEL_SCORE && state.level === 0){
       state.level = 1;
       state.levelBannerTimer = 3.2;
@@ -848,7 +843,6 @@ function update(dt){
       state.shake = 0.8;
       showCombo("🇬🇧 BRITISH ERA UNLOCKED!");
       chord([392, 523, 659, 784, 1046], .25, "triangle", .09);
-      /* celebratory burst */
       if (settings.particles){
         for (let i=0;i<80;i++){
           const a = Math.random()*TAU, sp = 120+Math.random()*500;
@@ -890,7 +884,6 @@ function update(dt){
   } else player.onGround = false;
   if (player.onGround) player.phase += state.speed*dt*0.046;
 
-  /* ---- Spawning (scaled by difficulty) ---- */
   const d = getDiff();
   state.nextObstacle -= state.speed*dt;
   if (state.nextObstacle <= 0){
@@ -909,13 +902,14 @@ function update(dt){
   }
 
   /* =========================================================
-     OBSTACLES — UNLIMITED MODE
+     OBSTACLES — TOUCHING = GAME OVER
      ========================================================= */
   for (let i=state.obstacles.length-1;i>=0;i--){
     const o = state.obstacles[i];
     o.x -= state.speed*dt;
     if (o.x+o.w < -80){ state.obstacles.splice(i,1); continue; }
     if (aabbHit(player,o)){
+      /* Ultimate aura obliterates obstacles — no death */
       if (state.ultActive){
         spawnParticles(o.x+o.w/2,o.y+o.h/2,"#ff8a65",18);
         state.obstacles.splice(i,1);
@@ -926,6 +920,7 @@ function update(dt){
       }
       if (player.invuln > 0) continue;
 
+      /* Shield absorbs one hit */
       if (player.shieldUp){
         player.shieldUp = false;
         delete state.activePowerups.shield;
@@ -937,6 +932,7 @@ function update(dt){
         updatePuHUD();
         continue;
       }
+      /* Extra life (Salt Sage) absorbs one hit */
       if (state.lives > 1){
         state.lives--;
         player.invuln = 2.2;
@@ -947,19 +943,13 @@ function update(dt){
         continue;
       }
 
-      /* ---- Unlimited Mode penalty ---- */
-      /* British military obstacles hurt more */
-      const penalty = (state.level === 1) ? 150 : 100;
-      player.invuln = 1.5;
-      state.shake = .4;
-      state.flashAlpha = 0.35;
-      state.flashColor = "#ff4444";
-      state.score = Math.max(0, state.score - penalty);
-      spawnParticles(player.x+player.w/2, player.y+player.h/2, "#ff4444", 22);
-      spawnPop(player.x, player.y-20, "OUCH! -" + penalty, "#ff6b6b");
-      beep(180,.18,"sawtooth",.09);
-      showCombo("OUCH! -" + penalty);
-      o.x = player.x - o.w - 10;
+      /* ============ TOUCHED OBSTACLE → GAME OVER ============ */
+      spawnParticles(player.x+player.w/2, player.y+player.h/2, "#ff4444", 30);
+      state.flashAlpha = 0.7;
+      state.flashColor = "#ff2222";
+      showCombo("💥 GAME OVER");
+      gameOver("fall");
+      return;
     }
   }
 
@@ -1008,7 +998,6 @@ function update(dt){
 function drawSky(){
   const g = ctx.createLinearGradient(0,0,0,GROUND_Y+40);
   if (state.level === 1){
-    /* ---- British Era: dark colonial sunset with smoke ---- */
     g.addColorStop(0,   "#0a0618");
     g.addColorStop(0.28,"#2a0f1c");
     g.addColorStop(0.55,"#5a1822");
@@ -1023,11 +1012,9 @@ function drawSky(){
   }
   ctx.fillStyle = g; ctx.fillRect(0,0,W,GROUND_Y+40);
 
-  /* Sun / Moon */
   const sx = W*0.76, sy = GROUND_Y*0.44;
   const sg = ctx.createRadialGradient(sx,sy,6,sx,sy,175);
   if (state.level === 1){
-    /* dim red sun through smoke */
     sg.addColorStop(0,   "rgba(255,180,120,0.95)");
     sg.addColorStop(0.22,"rgba(220,90,60,0.75)");
     sg.addColorStop(0.55,"rgba(140,40,30,0.30)");
@@ -1046,7 +1033,6 @@ function drawSky(){
     : (state.ultActive ? "rgba(255,255,220,.98)" : "rgba(255,252,235,.95)");
   ctx.beginPath(); ctx.arc(sx,sy,state.level===1 ? 42 : (state.ultActive?56:46), 0, TAU); ctx.fill();
 
-  /* Level 1 smoke clouds drifting */
   if (state.level === 1){
     for (let i=0;i<5;i++){
       const cx = ((i*230) - (state.scroll*0.15) % 1150 + 1150*10) % (W+400) - 200;
@@ -1073,7 +1059,6 @@ function drawHillLayer(color,sf,peakH,step,baseY){
 }
 function drawHills(){
   if (state.level === 1){
-    /* British Era: cold grey-brown hills */
     drawHillLayer("rgba(50,35,45,.55)",   .08, 66, 340, GROUND_Y-2);
     drawHillLayer("rgba(38,25,35,.70)",   .15, 46, 240, GROUND_Y+2);
     drawHillLayer("rgba(25,15,22,.85)",   .26, 28, 160, GROUND_Y+6);
@@ -1122,7 +1107,7 @@ function drawGround(){
 }
 
 /* =========================================================
-   16. DRAW — OBSTACLES (with British military)
+   16. DRAW — OBSTACLES
    ========================================================= */
 function drawShadow(cx,w){
   ctx.fillStyle="rgba(60,30,0,.18)";
@@ -1174,80 +1159,57 @@ function drawObstacle(o){
     ctx.strokeStyle="rgba(80,20,10,.5)"; ctx.lineWidth=2;
     rrect(x-8,y,w+16,22,5); ctx.stroke();
   }
-  /* ============ BRITISH MILITARY OBSTACLES ============ */
   else if (type==="redcoat"){
     const cx = x + w/2;
-    /* Legs (white trousers) */
     ctx.fillStyle = "#f0ead6";
     ctx.fillRect(cx-9, y+h-22, 7, 22);
     ctx.fillRect(cx+2, y+h-22, 7, 22);
-    /* Black boots */
     ctx.fillStyle = "#1a1a1a";
     ctx.fillRect(cx-10, y+h-8, 9, 8);
     ctx.fillRect(cx+1,  y+h-8, 9, 8);
-    /* Red coat body */
     ctx.fillStyle = "#c8102e";
     rrect(x+2, y+26, w-4, h-48, 4); ctx.fill();
-    /* Coat tails */
     ctx.fillStyle = "#a00d24";
     ctx.beginPath();
-    ctx.moveTo(x+2, y+h-26);
-    ctx.lineTo(x+7, y+h-14);
-    ctx.lineTo(x+14, y+h-26);
+    ctx.moveTo(x+2, y+h-26); ctx.lineTo(x+7, y+h-14); ctx.lineTo(x+14, y+h-26);
     ctx.closePath(); ctx.fill();
     ctx.beginPath();
-    ctx.moveTo(x+w-2, y+h-26);
-    ctx.lineTo(x+w-7, y+h-14);
-    ctx.lineTo(x+w-14, y+h-26);
+    ctx.moveTo(x+w-2, y+h-26); ctx.lineTo(x+w-7, y+h-14); ctx.lineTo(x+w-14, y+h-26);
     ctx.closePath(); ctx.fill();
-    /* White crossbelts */
     ctx.strokeStyle = "#f0ead6"; ctx.lineWidth = 2.6;
     ctx.beginPath();
     ctx.moveTo(x+3, y+30); ctx.lineTo(x+w-3, y+46);
     ctx.moveTo(x+w-3, y+30); ctx.lineTo(x+3, y+46);
     ctx.stroke();
-    /* Gold buttons */
     ctx.fillStyle = "#ffd166";
     for (let i=0;i<4;i++){
-      ctx.beginPath();
-      ctx.arc(cx, y+32+i*8, 1.6, 0, TAU);
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(cx, y+32+i*8, 1.6, 0, TAU); ctx.fill();
     }
-    /* Head (face) */
     ctx.fillStyle = "#e8c49a";
     ctx.beginPath(); ctx.arc(cx, y+20, 10, 0, TAU); ctx.fill();
-    /* Sideburns / hair */
     ctx.fillStyle = "#5a3a1a";
     ctx.beginPath(); ctx.arc(cx-8, y+20, 3, 0, TAU); ctx.fill();
     ctx.beginPath(); ctx.arc(cx+8, y+20, 3, 0, TAU); ctx.fill();
-    /* Tall black shako hat */
     ctx.fillStyle = "#141414";
     ctx.fillRect(cx-11, y-2, 22, 20);
-    /* Red hat band */
     ctx.fillStyle = "#c8102e";
     ctx.fillRect(cx-11, y+12, 22, 4);
-    /* Gold badge on hat */
     ctx.fillStyle = "#ffd166";
     ctx.beginPath(); ctx.arc(cx, y+7, 3, 0, TAU); ctx.fill();
-    /* White plume */
     ctx.fillStyle = "#ffffff";
     ctx.beginPath(); ctx.arc(cx+6, y-4, 3.5, 0, TAU); ctx.fill();
-    /* Eyes (angry) */
     ctx.fillStyle = "#1a1a1a";
     ctx.fillRect(cx-5, y+19, 3, 2);
     ctx.fillRect(cx+2, y+19, 3, 2);
-    /* Mouth (frown) */
     ctx.strokeStyle = "#5a2a1a"; ctx.lineWidth = 1.4;
     ctx.beginPath();
     ctx.arc(cx, y+27, 3, Math.PI*0.15, Math.PI*0.85);
     ctx.stroke();
   }
   else if (type==="cannon"){
-    /* Wheels */
     ctx.fillStyle="#6a4020";
     ctx.beginPath(); ctx.arc(x+16, y+h-5, 14, 0, TAU); ctx.fill();
     ctx.beginPath(); ctx.arc(x+w-16, y+h-5, 14, 0, TAU); ctx.fill();
-    /* Wheel spokes */
     ctx.strokeStyle="#3a2010"; ctx.lineWidth=2;
     for (const wx of [x+16, x+w-16]){
       for (let i=0;i<4;i++){
@@ -1261,36 +1223,26 @@ function drawObstacle(o){
       ctx.beginPath(); ctx.arc(wx, y+h-5, 4, 0, TAU); ctx.fill();
       ctx.fillStyle="#6a4020";
     }
-    /* Carriage frame */
     ctx.fillStyle="#7a4a20";
     rrect(x+6, y+22, w-12, 10, 3); ctx.fill();
-    /* Cannon barrel */
     ctx.fillStyle="#1a1a1a";
     rrect(x+8, y+8, w-20, 18, 6); ctx.fill();
-    /* Barrel highlight */
     ctx.strokeStyle="rgba(255,255,255,.22)"; ctx.lineWidth=1.5;
     ctx.beginPath(); ctx.moveTo(x+12, y+13); ctx.lineTo(x+w-16, y+13); ctx.stroke();
-    /* Barrel muzzle (facing left = away from player) */
     ctx.fillStyle="#0a0a0a";
     ctx.beginPath(); ctx.ellipse(x+8, y+17, 5, 9, 0, 0, TAU); ctx.fill();
-    /* Gold trim */
     ctx.strokeStyle="#ffd166"; ctx.lineWidth=1.6;
     ctx.beginPath(); ctx.arc(x+w-8, y+17, 3, 0, TAU); ctx.stroke();
   }
   else if (type==="ukflag"){
     const cx = x + w/2;
-    /* Pole */
     ctx.fillStyle="#5a3a1a";
     ctx.fillRect(cx-2, y-6, 4, h+6);
-    /* Base */
     ctx.fillStyle="#3a2010";
     ctx.fillRect(cx-10, y+h-4, 20, 6);
-    /* Flag (Union Jack) */
     const fw = 34, fh = 22;
     const fx = cx+2, fy = y-2;
-    /* Blue base */
     ctx.fillStyle = "#012169"; ctx.fillRect(fx, fy, fw, fh);
-    /* White diagonals */
     ctx.save();
     ctx.beginPath(); ctx.rect(fx, fy, fw, fh); ctx.clip();
     ctx.strokeStyle="#ffffff"; ctx.lineWidth=6;
@@ -1298,33 +1250,29 @@ function drawObstacle(o){
     ctx.moveTo(fx, fy); ctx.lineTo(fx+fw, fy+fh);
     ctx.moveTo(fx+fw, fy); ctx.lineTo(fx, fy+fh);
     ctx.stroke();
-    /* Red diagonals */
     ctx.strokeStyle="#c8102e"; ctx.lineWidth=2.5;
     ctx.beginPath();
     ctx.moveTo(fx, fy); ctx.lineTo(fx+fw, fy+fh);
     ctx.moveTo(fx+fw, fy); ctx.lineTo(fx, fy+fh);
     ctx.stroke();
-    /* White cross */
     ctx.strokeStyle="#ffffff"; ctx.lineWidth=8;
     ctx.beginPath();
     ctx.moveTo(fx, fy+fh/2); ctx.lineTo(fx+fw, fy+fh/2);
     ctx.moveTo(fx+fw/2, fy); ctx.lineTo(fx+fw/2, fy+fh);
     ctx.stroke();
-    /* Red cross */
     ctx.strokeStyle="#c8102e"; ctx.lineWidth=5;
     ctx.beginPath();
     ctx.moveTo(fx, fy+fh/2); ctx.lineTo(fx+fw, fy+fh/2);
     ctx.moveTo(fx+fw/2, fy); ctx.lineTo(fx+fw/2, fy+fh);
     ctx.stroke();
     ctx.restore();
-    /* Flag outline */
     ctx.strokeStyle="rgba(0,0,0,.6)"; ctx.lineWidth=1;
     ctx.strokeRect(fx, fy, fw, fh);
   }
 }
 
 /* =========================================================
-   17. DRAW — COLLECTIBLES & POWER-UPS
+   17. DRAW — COLLECTIBLES
    ========================================================= */
 function drawSalt(x,y,r,rot){
   ctx.save(); ctx.translate(x,y);
@@ -1384,7 +1332,7 @@ function drawPowerupDrop(p){
 }
 
 /* =========================================================
-   18. DRAW — CHARACTERS (identical to before)
+   18. DRAW — CHARACTERS
    ========================================================= */
 function drawVishuGandhi(x,y,w,h,phase,onGround,opts){
   opts = opts || {};
@@ -1675,7 +1623,6 @@ function drawHUD(){
   ctx.save();
   ctx.textBaseline = "top";
 
-  /* Score */
   ctx.font = "900 34px 'Trebuchet MS',system-ui,sans-serif";
   ctx.textAlign = "left"; ctx.lineWidth = 6;
   ctx.strokeStyle = "rgba(70,35,0,.55)";
@@ -1683,7 +1630,6 @@ function drawHUD(){
   const txt = String(Math.floor(state.score)).padStart(5,"0");
   ctx.strokeText(txt, 28, 24); ctx.fillText(txt, 28, 24);
 
-  /* Level badge under score */
   if (state.level === 1){
     ctx.font = "900 13px 'Trebuchet MS',system-ui,sans-serif";
     ctx.fillStyle = "#ff6b6b";
@@ -1694,7 +1640,6 @@ function drawHUD(){
     ctx.fillText(lv, 28, 62);
   }
 
-  /* Combo */
   if (state.combo > 1){
     ctx.font = "900 20px 'Trebuchet MS',system-ui,sans-serif";
     ctx.fillStyle = "#ffd166"; ctx.strokeStyle = "rgba(70,35,0,.6)"; ctx.lineWidth = 4;
@@ -1702,14 +1647,12 @@ function drawHUD(){
     ctx.fillText("×"+state.combo, 28, state.level === 1 ? 82 : 64);
   }
 
-  /* Best */
   ctx.font = "700 17px 'Trebuchet MS',system-ui,sans-serif";
   ctx.textAlign = "right"; ctx.lineWidth = 4;
   ctx.fillStyle = "rgba(255,255,255,.92)";
   const b = "BEST  " + profile.best.toLocaleString();
   ctx.strokeText(b, W-78, 30); ctx.fillText(b, W-78, 30);
 
-  /* Player name */
   if (profile.name){
     ctx.font = "700 14px 'Trebuchet MS',system-ui,sans-serif";
     ctx.fillStyle = "rgba(255,220,150,.85)"; ctx.strokeStyle = "rgba(70,35,0,.5)"; ctx.lineWidth = 3;
@@ -1717,7 +1660,6 @@ function drawHUD(){
     ctx.strokeText(pn, W-78, 54); ctx.fillText(pn, W-78, 54);
   }
 
-  /* Lives */
   if (state.lives > 1){
     ctx.textAlign = "right";
     ctx.font = "700 16px 'Trebuchet MS',system-ui,sans-serif";
@@ -1727,7 +1669,6 @@ function drawHUD(){
     ctx.strokeText(lv, W-78, ly); ctx.fillText(lv, W-78, ly);
   }
 
-  /* Speed bar */
   const pct = Math.min(1, (state.speed - BASE_SPEED) / 500);
   const bw = 190, bh = 9, bx = W-78-bw;
   const by = state.lives > 1 ? (profile.name ? 100 : 78) : (profile.name ? 78 : 60);
@@ -1739,14 +1680,12 @@ function drawHUD(){
   ctx.fillStyle = grd;
   rrect(bx,by,Math.max(6,bw*pct),bh,5); ctx.fill();
 
-  /* FPS */
   if (settings.showFps){
     ctx.textAlign = "left"; ctx.font = "700 14px monospace";
     ctx.fillStyle = "rgba(255,255,255,.6)";
     ctx.fillText(fps+" FPS", 28, H-32);
   }
 
-  /* Level banner while timer active */
   if (state.levelBannerTimer > 0){
     const a = Math.min(1, state.levelBannerTimer / 1.2);
     ctx.globalAlpha = a;
@@ -1760,7 +1699,7 @@ function drawHUD(){
     ctx.font = "900 20px 'Trebuchet MS',system-ui,sans-serif";
     ctx.fillStyle = "#fff";
     ctx.strokeStyle = "rgba(90,10,10,.9)"; ctx.lineWidth = 5;
-    const sub = "+200 BONUS! British military obstacles now march!";
+    const sub = "British military obstacles now march!";
     ctx.strokeText(sub, W/2, H*0.30 + 52);
     ctx.fillText(sub, W/2, H*0.30 + 52);
     ctx.globalAlpha = 1;
@@ -1842,7 +1781,6 @@ function render(){
     ctx.fillRect(0,0,W,H); ctx.globalAlpha = 1;
   }
   if (state.level === 1 && !state.ultActive){
-    /* slight red tint overlay during British Era */
     ctx.globalAlpha = .06; ctx.fillStyle = "#c8102e";
     ctx.fillRect(0,0,W,H); ctx.globalAlpha = 1;
   }
