@@ -234,7 +234,7 @@
 "use strict";
 
 /* =========================================================
-   ✅ SUPABASE CONFIG (all three lines, correctly placed)
+   ✅ SUPABASE CONFIG
    ========================================================= */
 const SUPABASE_URL = "https://anptxhijfjugfjteimex.supabase.co";
 const SUPABASE_KEY = "sb_publishable_VJMQOEHCmOHJbCgjZQMHXw_2DUmKRKw";
@@ -248,10 +248,6 @@ function initSupabase() {
       console.error("❌ Supabase SDK not loaded. Check the CDN <script> tag in <head>.");
       return false;
     }
-    if (SUPABASE_KEY === "PASTE_YOUR_SB_PUBLISHABLE_KEY_HERE") {
-      console.warn("⚠️ Supabase key not set.");
-      return false;
-    }
     supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     console.log("✅ Supabase client ready:", SUPABASE_URL);
     return true;
@@ -261,20 +257,43 @@ function initSupabase() {
   }
 }
 
-function submitScoreCloud(name, score){
-  if (!supabase) return Promise.resolve(false);
-  return supabase
-    .from('scores')
-    .insert([{ name: name, score: score }])
-    .then(({ data, error }) => {
-      if (error) {
-        console.error("❌ Supabase insert error:", error.message, error.details, error.hint);
-        return false;
-      }
-      console.log("✅ Score submitted:", name, score);
-      return true;
-    })
-    .catch(err => { console.error("❌ Insert threw:", err); return false; });
+/* ✅ UPDATED: One name, one score. Only updates if higher. */
+async function submitScoreCloud(name, score){
+  if (!supabase) return false;
+  try {
+    // 1. Check if the player already has a score
+    const { data, error: selectError } = await supabase
+      .from('scores')
+      .select('id, score')
+      .eq('name', name)
+      .maybeSingle();
+
+    if (selectError) { console.error("❌ Select error:", selectError.message); return false; }
+
+    if (!data) {
+      // 2a. New player -> Insert score
+      const { error: insertError } = await supabase
+        .from('scores')
+        .insert([{ name: name, score: score }]);
+      if (insertError) { console.error("❌ Insert error:", insertError.message); return false; }
+      console.log("✅ New score inserted:", name, score);
+    } else if (score > data.score) {
+      // 2b. Existing player, new score is HIGHER -> Update score
+      const { error: updateError } = await supabase
+        .from('scores')
+        .update({ score: score })
+        .eq('id', data.id);
+      if (updateError) { console.error("❌ Update error:", updateError.message); return false; }
+      console.log("✅ Score updated:", name, data.score, "->", score);
+    } else {
+      // 2c. Existing player, new score is LOWER or EQUAL -> Do nothing
+      console.log("ℹ️ Score not updated (not higher):", name, score);
+    }
+    return true;
+  } catch (e) {
+    console.error("❌ Submit threw:", e);
+    return false;
+  }
 }
 
 function fetchLeaderboard(){
@@ -286,7 +305,7 @@ function fetchLeaderboard(){
     .limit(30)
     .then(({ data, error }) => {
       if (error) {
-        console.error("❌ Supabase select error:", error.message, error.details, error.hint);
+        console.error("❌ Supabase select error:", error.message);
         return null;
       }
       return (data || []).map(d => ({ name: d.name, score: d.score }));
@@ -302,6 +321,9 @@ function listenLeaderboard(callback){
       .channel('public:scores')
       .on('postgres_changes',
           { event: 'INSERT', schema: 'public', table: 'scores' },
+          () => { fetchLeaderboard().then(list => { if (list) callback(list); }); })
+      .on('postgres_changes',
+          { event: 'UPDATE', schema: 'public', table: 'scores' },
           () => { fetchLeaderboard().then(list => { if (list) callback(list); }); })
       .subscribe();
   } catch (e) { console.warn("Realtime subscribe failed:", e); }
@@ -409,16 +431,30 @@ function submitScoreUnified(name, score){
     return -2;
   });
 }
+
 function submitScoreLocal(score){
   if (!profile.name || score <= 0) return -1;
   if (score > profile.best){ profile.best = score; saveProfile(); }
-  const localLb = JSON.parse(localStorage.getItem("gandhi_bhai_leaderboard_local") || "[]");
-  localLb.push({ name: profile.name, score, date: Date.now() });
+  
+  let localLb = JSON.parse(localStorage.getItem("gandhi_bhai_leaderboard_local") || "[]");
+  const existingIndex = localLb.findIndex(e => e.name === profile.name);
+  
+  if (existingIndex >= 0) {
+      if (score > localLb[existingIndex].score) {
+          localLb[existingIndex].score = score;
+      } else {
+          return existingIndex + 1;
+      }
+  } else {
+      localLb.push({ name: profile.name, score, date: Date.now() });
+  }
+  
   localLb.sort((a,b) => b.score - a.score);
   if (localLb.length > 30) localLb.length = 30;
   localStorage.setItem("gandhi_bhai_leaderboard_local", JSON.stringify(localLb));
   updateMenuProfile();
-  const idx = localLb.findIndex(e => e.name === profile.name && e.score === score);
+  
+  const idx = localLb.findIndex(e => e.name === profile.name);
   return idx >= 0 ? idx + 1 : -1;
 }
 
@@ -860,7 +896,15 @@ function update(dt){
     state.time += dt;
     const ch = getChar();
     const d = getDiff();
-    state.speed = (BASE_SPEED + Math.min(state.time*10, 480)) * ch.speedMod * state.slowFactor * DIFF_SPEED[d];
+    
+    // ✅ NEW SPEED LOGIC: Normal speed until 30,000 meters, then gradually increase
+    let speedBonus = 0;
+    if (state.score > 30000) {
+        // Gradually increase speed after 30,000 points. Cap the increase at 480.
+        speedBonus = Math.min((state.score - 30000) * 0.01, 480);
+    }
+    
+    state.speed = (BASE_SPEED + speedBonus) * ch.speedMod * state.slowFactor * DIFF_SPEED[d];
     state.score += state.speed * dt * 0.022 * ch.scoreMod
                   * (state.activePowerups.double ? 2 : 1);
 
@@ -2109,4 +2153,4 @@ requestAnimationFrame(loop);
 })();
 </script>
 </body>
- </html>
+     </html>
