@@ -116,7 +116,6 @@
   #ultBtn.active{opacity:1;pointer-events:none;border-color:#ff6b6b;box-shadow:0 0 40px rgba(255,100,60,.7)}
   @keyframes ultGlow{from{box-shadow:0 0 18px rgba(255,200,80,.35)}to{box-shadow:0 0 40px rgba(255,200,80,.75)}}
 
-  /* 💎 Martial Arts stone tray */
   .stone-tray{position:absolute;top:calc(env(safe-area-inset-top,0px) + 12px);left:50%;transform:translateX(-50%);z-index:18;display:flex;gap:4px;padding:6px 10px;border-radius:99px;background:rgba(10,6,3,.62);border:1px solid rgba(255,200,120,.28);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 4px 14px rgba(0,0,0,.4);pointer-events:none;opacity:0;transition:opacity .3s;}
   .stone-tray.show{opacity:1}
   .stone-slot{width:clamp(18px,2.4vmin,26px);height:clamp(18px,2.4vmin,26px);border-radius:6px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:clamp(11px,1.5vmin,16px);opacity:.28;transition:all .3s;line-height:1;filter:grayscale(1);}
@@ -124,7 +123,6 @@
   @keyframes stoneGlow{0%{transform:scale(1)}50%{transform:scale(1.25)}100%{transform:scale(1)}}
   .stone-slot.active{opacity:1;filter:none;background:radial-gradient(circle at 40% 35%, rgba(255,255,255,.6), rgba(255,200,80,.3));border-color:#ffd166;box-shadow:0 0 18px #ffd166, 0 0 32px rgba(255,200,80,.7)}
 
-  /* 🙏 Sai miracle meter */
   .miracle-wrap{position:absolute;top:calc(env(safe-area-inset-top,0px) + 12px);left:50%;transform:translateX(-50%);z-index:18;padding:6px 14px;border-radius:99px;background:rgba(10,6,3,.62);border:1px solid rgba(255,200,120,.28);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 4px 14px rgba(0,0,0,.4);pointer-events:none;opacity:0;transition:opacity .3s;display:flex;align-items:center;gap:8px;font-size:clamp(9px,1.2vmin,13px);font-weight:900;letter-spacing:.06em;color:#ffd9a0;}
   .miracle-wrap.show{opacity:1}
   .miracle-bar{width:clamp(90px,18vmin,180px);height:clamp(6px,1vmin,10px);border-radius:99px;background:rgba(0,0,0,.5);overflow:hidden;border:1px solid rgba(255,200,120,.3);}
@@ -192,9 +190,7 @@
     <div class="ult-bar"><div class="ult-fill" id="ultFill"></div></div>
   </div>
 
-  <!-- Stone tray (Martial Arts mode) -->
   <div class="stone-tray" id="stoneTray"></div>
-  <!-- Miracle meter (Sai mode) -->
   <div class="miracle-wrap" id="miracleWrap">
     <span>🙏 MIRACLE</span>
     <div class="miracle-bar"><div class="miracle-fill" id="miracleFill"></div></div>
@@ -209,7 +205,6 @@
     <div class="joy-hint">Drag to move</div>
   </div>
 
-  <!-- NAME ENTRY -->
   <div class="overlay hidden" id="nameEntry">
     <div class="flagbar"><i></i><i></i><i></i></div>
     <h2>Who's Running?</h2>
@@ -219,7 +214,6 @@
     <p class="keys" id="nameStatus" style="color:#ffb347">Connecting...</p>
   </div>
 
-  <!-- MAIN MENU -->
   <div class="overlay" id="menu">
     <div class="flagbar"><i></i><i></i><i></i></div>
     <h1>GANDHI RUN</h1>
@@ -250,7 +244,6 @@
     <p class="keys">SPACE / ↑ / TAP jump • double/triple jump • P pause • F fullscreen • U ultimate</p>
   </div>
 
-  <!-- MODE SELECT -->
   <div class="overlay hidden" id="modeSelect">
     <h2>Choose Your Game</h2>
     <p class="how" style="margin-bottom:.2em">Each is a full game with its own world, hero, power-ups & sound</p>
@@ -258,7 +251,6 @@
     <button id="modeBack" class="btn-sm">Back</button>
   </div>
 
-  <!-- LEADERS -->
   <div class="overlay hidden" id="leaders">
     <div class="flagbar"><i></i><i></i><i></i></div>
     <h2>🌍 Global Leaderboard</h2>
@@ -270,7 +262,6 @@
     </div>
   </div>
 
-  <!-- CHARS -->
   <div class="overlay hidden" id="chars">
     <h2>Choose Your Hero</h2>
     <p class="how" style="margin-bottom:.2em">Level up to unlock all 13 heroes — each with unique power & world theme.</p>
@@ -279,7 +270,6 @@
     <button id="charsBack" class="btn-sm">Back</button>
   </div>
 
-  <!-- SETTINGS -->
   <div class="overlay hidden" id="settings">
     <h2>Settings</h2>
     <div class="scroll-area">
@@ -311,7 +301,6 @@
     <button id="settingsBack" class="btn-sm">Back</button>
   </div>
 
-  <!-- JOY EDIT -->
   <div class="overlay hidden" id="joyEdit">
     <h2>Joystick Layout</h2>
     <p class="how">Drag the joystick anywhere on screen.</p>
@@ -324,7 +313,6 @@
     <p class="keys">Push UP to jump • DOWN to fast-fall</p>
   </div>
 
-  <!-- PAUSE -->
   <div class="overlay hidden" id="pause">
     <h2>Paused</h2>
     <p class="how">The journey waits for you.</p>
@@ -335,7 +323,6 @@
     </div>
   </div>
 
-  <!-- GAME OVER -->
   <div class="overlay hidden" id="over">
     <h2 id="overTitle">The Journey Ends</h2>
     <p class="stat">Player: <b id="overPlayerName">—</b></p>
@@ -361,7 +348,7 @@
 "use strict";
 
 /* =========================================================
-   SUPABASE (kept as-is, leaderboard preserved)
+   SUPABASE
    ========================================================= */
 const SUPABASE_URL = "https://anptxhijfjugfjteimex.supabase.co";
 const SUPABASE_KEY = "sb_publishable_VJMQOEHCmOHJbCgjZQMHXw_2DUmKRKw";
@@ -419,6 +406,10 @@ const GRAVITY = 2400, JUMP_V = 830, BASE_SPEED = 368;
 const BRITISH_LEVEL_SCORE = 20000;
 const NEON_LEVEL_SCORE = 50000;
 
+/* ⚡ Speed scaling: +14 per 1000 score, hard-capped at +500 */
+const SPEED_PER_1000 = 14;
+const SPEED_BONUS_CAP = 500;
+
 const DIFF_SPEED = [1.18, 1.44, 1.78, 2.15];
 const DIFF_OBST  = [1.02, 1.30, 1.72, 2.18];
 const DIFF_COIN  = [1.00, 0.85, 0.72, 0.58];
@@ -475,7 +466,7 @@ function chord(freqs, dur, type="triangle", vol=.05){
 }
 
 /* =========================================================
-   PROFILE (keys preserved for backward compatibility)
+   PROFILE
    ========================================================= */
 const PROFILE_KEY = "gandhi_bhai_profile";
 let profile = { name:"", best:0 };
@@ -578,7 +569,7 @@ function renderLeaderboard(){
 }
 
 /* =========================================================
-   THEMES  (each game gets its own environment palette)
+   THEMES
    ========================================================= */
 const THEMES = {
   salt: {
@@ -623,7 +614,7 @@ function getTheme(){
 }
 
 /* =========================================================
-   GAME MODES  →  3 distinct games
+   GAME MODES
    ========================================================= */
 const MODES = {
   classic: {
@@ -637,7 +628,7 @@ const MODES = {
     id:"jackie",
     name:"Martial Arts Adventure",
     icon:"🥋",
-    tag:"Original kung-fu hero Kai Dragonfist — collect zodiac stones, summon the magic car.",
+    tag:"Run with Jackie Chan through neon temples — collect zodiac stones, summon the magic car.",
     power:"Kung-Fu Action"
   },
   sai: {
@@ -650,7 +641,7 @@ const MODES = {
 };
 
 /* =========================================================
-   CHARACTERS (all original designs)
+   CHARACTERS
    ========================================================= */
 const CHARACTERS = [
   { id:"vishu", name:"GANDHI JI", tag:"Salt Warrior", desc:"Balanced hero with double jump.",
@@ -708,9 +699,8 @@ const CHARACTERS = [
     color:"#e8a040", accent:"#ffd166",
     speedMod:0.94, jumpMod:1.10, scoreMod:1.05, magnetRange:60,
     startLives:2, divineGrace:true, maxJumps:2, unlockLevel:46 },
-  /* 👇 Original cartoon kung-fu hero (not Jackie Chan) */
-  { id:"jackie", name:"KAI DRAGONFIST", tag:"Dragon Master", desc:"Triple jump. Dragon Dodge. Magic car.",
-    power:"Dragon Dodge + Magic Car", theme:"kowloon",
+  { id:"jackie", name:"JACKIE CHAN", tag:"Drunken Master", desc:"Triple jump. Dodge. Magic car.",
+    power:"Dodge + Magic Car", theme:"kowloon",
     color:"#c8102e", accent:"#ffd166",
     speedMod:1.08, jumpMod:1.14, scoreMod:1.12,
     maxJumps:3, drunkenDodge:true, unlockLevel:50 }
@@ -719,7 +709,6 @@ function getChar(){ return CHARACTERS[settings.character] || CHARACTERS[0]; }
 function isCharUnlocked(i){ return playerLevel() >= (CHARACTERS[i]?.unlockLevel || 1); }
 function firstUnlockedIndex(){ for (let i=0;i<CHARACTERS.length;i++) if (isCharUnlocked(i)) return i; return 0; }
 
-/* Force the mode's hero in mode-specific games */
 function getActiveChar(){
   if (settings.gameMode === "sai") return CHARACTERS.find(c => c.id === "sai");
   if (settings.gameMode === "jackie") return CHARACTERS.find(c => c.id === "jackie");
@@ -727,7 +716,7 @@ function getActiveChar(){
 }
 
 /* =========================================================
-   POWER-UPS  (each mode has its own flavour)
+   POWER-UPS  (⏱ TIME STOP REMOVED)
    ========================================================= */
 const POWERUPS = {
   shield:{name:"SHIELD",color:"#4fc3f7",icon:"🛡",dur:8},
@@ -737,17 +726,14 @@ const POWERUPS = {
   double:{name:"2× SCORE",color:"#ffd54f",icon:"✦",dur:10},
   ghost:{name:"GHOST",color:"#e0e0e0",icon:"👻",dur:5},
   mega:{name:"MEGA MAGNET",color:"#9c27b0",icon:"🌐",dur:6},
-  time:{name:"TIME STOP",color:"#00bcd4",icon:"⏱",dur:4},
   rainbow:{name:"RAINBOW ×5",color:"#ff4081",icon:"🌈",dur:12},
-  /* Special: only spawns in Martial Arts Adventure */
   car:{name:"MAGIC CAR",color:"#ff00aa",icon:"🚗",dur:7,special:"martial"}
 };
 const ALL_PU_KEYS = Object.keys(POWERUPS);
-/* The car is special — hidden from other modes */
 const PU_KEYS = ALL_PU_KEYS.filter(k => k !== "car");
 
 /* =========================================================
-   MAGIC STONES (Martial Arts mode)
+   MAGIC STONES
    ========================================================= */
 const STONES = [
   { id:"rooster", icon:"🐓", name:"Rooster", color:"#ff8a00", desc:"Levitation", dur:7, effect:"levitate" },
@@ -949,7 +935,7 @@ joyBase.addEventListener("pointercancel", onJoyUp, {passive:false});
 joyBase.addEventListener("lostpointercapture", onJoyUp);
 
 /* =========================================================
-   MODE UI  (order: Gandhi Run first, then Martial Arts, then Sai)
+   MODE UI
    ========================================================= */
 function buildModeGrid(){
   modeGrid.innerHTML = "";
@@ -1185,7 +1171,7 @@ function activateUlt(){
 }
 
 /* =========================================================
-   POWER-UP LOGIC  (incl. magical car for martial arts mode)
+   POWER-UP LOGIC
    ========================================================= */
 function applyPowerup(key){
   const pu = POWERUPS[key];
@@ -1205,7 +1191,6 @@ function applyPowerup(key){
   }
   if (key === "shield") player.shieldUp = true;
   if (key === "car"){
-    /* Magical car: temporary invincibility + speed protection */
     player.invuln = Math.max(player.invuln, pu.dur + 0.4);
     state.flashAlpha = 0.45; state.flashColor = pu.color;
     chord([900, 1200, 1500, 1800], .14, "triangle", .07);
@@ -1222,9 +1207,8 @@ function updatePowerups(dt){
       if (key === "shield") player.shieldUp = false;
     } else {
       if (key === "slow") slow = Math.min(slow, 0.55);
-      if (key === "time") slow = Math.min(slow, 0.15);
+      /* ⏱ time-stop removed — no more ultra-slow factor */
       if (key === "car"){
-        /* Car keeps you invulnerable while active */
         player.invuln = Math.max(player.invuln, state.activePowerups[key] + 0.05);
       }
       if (key === "magnet"){
@@ -1261,7 +1245,7 @@ function updatePuHUD(){
 }
 
 /* =========================================================
-   MAGIC STONES (Martial Arts mode)
+   MAGIC STONES (Martial Arts)
    ========================================================= */
 function activateStone(id){
   const stone = STONES.find(s => s.id === id);
@@ -1338,7 +1322,7 @@ function updateStones(dt){
 }
 
 /* =========================================================
-   SAI BABA MIRACLES
+   SAI MIRACLES  (⏱ time-stop removed → uses only slow)
    ========================================================= */
 function gainMiracle(amount){
   if (settings.gameMode !== "sai") return;
@@ -1387,8 +1371,8 @@ function triggerMiracle(){
     state.activePowerups.mega = 4;
     showCombo("🙏 DIVINE PULL");
   } else if (miracle === "slow"){
+    /* was slow + time-stop; time-stop removed */
     state.activePowerups.slow = 8;
-    state.activePowerups.time = 3;
     showCombo("🙏 TIME STANDS STILL");
   } else {
     state.lives += 1;
@@ -1405,7 +1389,7 @@ function triggerMiracle(){
 }
 
 /* =========================================================
-   SPAWNING (mode-aware)
+   SPAWNING
    ========================================================= */
 function spawnObstacle(){
   const mode = settings.gameMode;
@@ -1435,7 +1419,6 @@ function spawnObstacle(){
     return;
   }
 
-  /* Classic — Gandhi Run */
   if (state.level === 0){
     if (r < 0.55) state.obstacles.push({ type:"barricade", w:38, h:46, x:W+50, y:GROUND_Y-46 });
     else if (r < 0.82) state.obstacles.push({ type:"rock", w:48, h:34, x:W+50, y:GROUND_Y-34 });
@@ -1474,7 +1457,6 @@ function spawnCoin(){
 }
 
 function spawnPowerup(){
-  /* Martial Arts mode: magical car can appear as an extra special */
   const pool = settings.gameMode === "jackie" ? [...PU_KEYS, "car", "car"] : PU_KEYS;
   const key = pool[Math.floor(Math.random()*pool.length)];
   state.powerupDrops.push({ x:W+70, y:GROUND_Y-50-Math.random()*120, r:17, key, rot:0, bob:Math.random()*TAU });
@@ -1595,10 +1577,8 @@ function update(dt){
     const ch = getActiveChar();
     const d = getDiff();
 
-    let speedBonus = 0;
-    if (state.score > 20000) speedBonus += Math.min((state.score - 20000) * 0.012, 260);
-    if (state.score > 40000) speedBonus += Math.min((state.score - 40000) * 0.015, 380);
-    /* Magical car also gives a speed boost */
+    /* ⚡ LINEAR SPEED RAMP: +SPEED_PER_1000 per 1000 score, capped */
+    let speedBonus = Math.min(Math.floor(state.score / 1000) * SPEED_PER_1000, SPEED_BONUS_CAP);
     if (state.activePowerups.car) speedBonus += 260;
 
     state.speed = (BASE_SPEED + speedBonus) * ch.speedMod * state.slowFactor * DIFF_SPEED[d];
@@ -1745,7 +1725,7 @@ function update(dt){
         player.invuln = 1.2;
         spawnParticles(player.x+player.w/2, player.y+player.h/2, "#ffd166", 22);
         spawnPop(player.x, player.y-20, "DODGE!", "#ffd166");
-        showCombo("🥋 DRAGON DODGE!");
+        showCombo("🥋 DRUNKEN DODGE!");
         chord([600, 800, 1100], .12, "triangle", .07);
         continue;
       }
@@ -1875,7 +1855,6 @@ function update(dt){
     }
   }
 
-  /* Sai miracle auto-trigger 2s after it becomes ready */
   if (settings.gameMode === "sai" && state.miracleReady){
     if (!state._miracleDelay) state._miracleDelay = 2.0;
     state._miracleDelay -= dt;
@@ -2158,7 +2137,6 @@ function drawObstacle(o){
     ctx.lineTo(cx + w*0.42, cy + 3);
     ctx.closePath(); ctx.fill();
   }
-  /* Sai obstacles */
   else if (type==="demon"){
     ctx.fillStyle = "#2a0a3a";
     ctx.beginPath();
@@ -2215,7 +2193,6 @@ function drawObstacle(o){
     ctx.beginPath(); ctx.ellipse(x+w*0.8, y+h*0.5, 6, 10, 0, 0, TAU); ctx.fill();
     ctx.beginPath(); ctx.ellipse(x+w*0.95, y+h*0.5, 6, 10, 0, 0, TAU); ctx.fill();
   }
-  /* Martial Arts obstacles */
   else if (type==="thug"){
     ctx.fillStyle = "#1a1a2a";
     ctx.fillRect(x+w*0.1, y+h*0.35, w*0.8, h*0.65);
@@ -2465,20 +2442,18 @@ function drawPowerupDrop(p){
 }
 
 /* =========================================================
-   MAGICAL CAR (Martial Arts only)
+   MAGICAL CAR
    ========================================================= */
 function drawMagicalCar(x, y, w, h){
   const t = performance.now()/1000;
   const cx = x + w/2;
   const cy = y + h*0.62;
-  /* Ground glow */
   const gg = ctx.createRadialGradient(cx, cy + h*0.35, 4, cx, cy + h*0.35, w*1.1);
   gg.addColorStop(0,"rgba(255,0,170,0.55)");
   gg.addColorStop(1,"rgba(255,0,170,0)");
   ctx.fillStyle = gg;
   ctx.beginPath(); ctx.ellipse(cx, cy + h*0.35, w*1.1, h*0.28, 0, 0, TAU); ctx.fill();
 
-  /* Motion streaks */
   for (let i=0;i<5;i++){
     const sx = x - 20 - i*22;
     const sy = cy - h*0.15 + (i-2)*6;
@@ -2490,7 +2465,6 @@ function drawMagicalCar(x, y, w, h){
     ctx.stroke();
   }
 
-  /* Body */
   const bodyGrad = ctx.createLinearGradient(x, y, x + w, y + h);
   bodyGrad.addColorStop(0,"#4a0040");
   bodyGrad.addColorStop(0.5,"#a00070");
@@ -2508,7 +2482,6 @@ function drawMagicalCar(x, y, w, h){
   ctx.lineWidth = 2;
   ctx.stroke();
 
-  /* Cockpit */
   const cg = ctx.createLinearGradient(x, cy - h*0.25, x + w, cy - h*0.05);
   cg.addColorStop(0,"rgba(180,240,255,.85)");
   cg.addColorStop(1,"rgba(120,200,255,.55)");
@@ -2519,14 +2492,12 @@ function drawMagicalCar(x, y, w, h){
   ctx.strokeStyle = "#ffd166"; ctx.lineWidth = 1.4;
   ctx.stroke();
 
-  /* Hover emitters */
   const pulse = 1 + Math.sin(t*9)*0.18;
   ctx.fillStyle = "#ffd166";
   for (const wx of [x + w*0.22, x + w*0.80]){
     ctx.beginPath();
     ctx.arc(wx, cy + h*0.24, 6*pulse, 0, TAU); ctx.fill();
   }
-  /* Trailing flames */
   for (let i=0;i<3;i++){
     const fx = x - 6 - i*10;
     const fy = cy + h*0.02 + Math.sin(t*12 + i)*2;
@@ -2535,7 +2506,6 @@ function drawMagicalCar(x, y, w, h){
     ctx.ellipse(fx, fy, 10 - i*2, 6 - i*1, 0, 0, TAU);
     ctx.fill();
   }
-  /* Star sparkles */
   for (let i=0;i<4;i++){
     const a = t*2 + i*1.57;
     const sx = cx + Math.cos(a)*w*0.6;
@@ -2811,40 +2781,259 @@ function drawSai(x,y,w,h,phase,onGround){
     ctx.fill();
   }
 }
-/* 🌟 Original cartoon kung-fu hero (NOT Jackie Chan) */
-function drawJackie(x,y,w,h,phase,onGround){
-  drawVishuGandhi(x, y, w, h, phase, onGround, {
-    skin:"#e0b088", skinHi:"#ffcfa8", skinSh:"#a87850",
-    cloth:"#c8102e", clothSh:"#8a0018",
-    glass:"rgba(20,20,20,0.75)", frame:"#1a1a1a",
-    mustache:"#1a1a1a", ink:"#0a0a0a", staff:"#3a2010"
-  });
+
+/* =========================================================
+   🥋 JACKIE CHAN — original cartoon drawing
+   (Does NOT use the Gandhi body — full custom render)
+   ========================================================= */
+function drawJackieChan(x,y,w,h,phase,onGround){
   const cx = x + w/2;
-  const headR = w*0.26;
-  const headCY = y + h*0.20;
-  const flutter = Math.sin(performance.now()/110)*3.5;
-  /* Dragon-crest headband (original design) */
+  const feetY = y + h;
+  const legLen = h * 0.30;
+  const hipY = feetY - legLen;
+  const torsoH = h * 0.36;
+  const torsoTop = hipY - torsoH;
+  const headR = w * 0.30;
+  const headCY = torsoTop - headR + 1;
+  const swing = onGround ? Math.sin(phase) * (w*0.28) : w*0.14;
+  const armSwing = onGround ? Math.sin(phase + Math.PI) * (w*0.26) : -w*0.12;
+  const bob = onGround ? Math.sin(phase*2) * 1.5 : 0;
+
+  const skin = "#e8b088", skinHi = "#ffd0aa", skinSh = "#a07048";
+  const hairCol = "#0d0a08", hairHi = "#2a2020";
+  const pantsCol = "#1a1a24";
+  const shirtCol = "#f0f0e8", shirtSh = "#c8c8c0";
+  const vestCol = "#3a2a20", vestSh = "#1a1008";
+  const sashCol = "#c8102e", sashHi = "#ff4040";
+
   ctx.save();
-  ctx.fillStyle = "#c8102e";
+  ctx.translate(0, bob);
+
+  /* ---- Legs (black kung fu pants) ---- */
+  ctx.strokeStyle = pantsCol;
+  ctx.lineWidth = w*0.16;
+  ctx.lineCap = "round";
   ctx.beginPath();
-  ctx.moveTo(cx + headR*0.85, headCY - headR*0.4);
-  ctx.quadraticCurveTo(cx + headR*2.0, headCY - headR*0.3 + flutter,
-                       cx + headR*2.6, headCY + headR*0.2 + flutter*1.6);
-  ctx.lineTo(cx + headR*2.5, headCY + headR*0.35 + flutter*1.6);
-  ctx.quadraticCurveTo(cx + headR*1.9, headCY + headR*0.05 + flutter,
-                       cx + headR*0.85, headCY + headR*0.0);
+  if (onGround){
+    ctx.moveTo(cx - w*0.10, hipY + 2);
+    ctx.lineTo(cx - w*0.10 - swing*0.85, feetY - 4);
+  } else {
+    ctx.moveTo(cx - w*0.10, hipY + 2);
+    ctx.lineTo(cx - w*0.26, hipY + legLen*0.5);
+    ctx.lineTo(cx - w*0.34, hipY + legLen*0.7);
+  }
+  ctx.stroke();
+  ctx.beginPath();
+  if (onGround){
+    ctx.moveTo(cx + w*0.10, hipY + 2);
+    ctx.lineTo(cx + w*0.10 + swing*0.85, feetY - 4);
+  } else {
+    ctx.moveTo(cx + w*0.10, hipY + 2);
+    ctx.lineTo(cx + w*0.28, hipY + legLen*0.5);
+    ctx.lineTo(cx + w*0.36, hipY + legLen*0.7);
+  }
+  ctx.stroke();
+
+  /* Shoes */
+  if (onGround){
+    const bx = cx - w*0.10 - swing*0.85;
+    const fx = cx + w*0.10 + swing*0.85;
+    ctx.fillStyle = "#0a0a0a";
+    ctx.beginPath(); ctx.ellipse(bx, feetY + 1, w*0.14, w*0.055, 0, 0, TAU); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(fx, feetY + 1, w*0.14, w*0.055, 0, 0, TAU); ctx.fill();
+  }
+
+  /* ---- Torso ---- */
+  const torsoW = w * 0.66;
+  const tX = cx - torsoW/2, tY = torsoTop + torsoH*0.08, tH = torsoH*0.92;
+
+  /* White shirt */
+  const shirtGrad = ctx.createLinearGradient(tX, tY, tX, tY+tH);
+  shirtGrad.addColorStop(0, "#ffffff"); shirtGrad.addColorStop(1, shirtSh);
+  ctx.fillStyle = shirtGrad;
+  ctx.beginPath();
+  ctx.moveTo(tX + 2, tY + 4);
+  ctx.quadraticCurveTo(cx, tY - 6, tX + torsoW - 2, tY + 4);
+  ctx.lineTo(tX + torsoW, tY + tH);
+  ctx.lineTo(tX, tY + tH);
   ctx.closePath(); ctx.fill();
-  ctx.fillStyle = "rgba(255,60,80,.85)";
-  ctx.fillRect(cx - headR*0.9, headCY - headR*0.35, headR*1.8, headR*0.32);
+
+  /* Dark vest flaps (open front) */
+  ctx.fillStyle = vestCol;
+  ctx.beginPath();
+  ctx.moveTo(tX, tY + 6);
+  ctx.lineTo(tX + torsoW*0.35, tY + 4);
+  ctx.lineTo(tX + torsoW*0.35, tY + tH);
+  ctx.lineTo(tX, tY + tH);
+  ctx.closePath(); ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(tX + torsoW*0.65, tY + 4);
+  ctx.lineTo(tX + torsoW, tY + 6);
+  ctx.lineTo(tX + torsoW, tY + tH);
+  ctx.lineTo(tX + torsoW*0.65, tY + tH);
+  ctx.closePath(); ctx.fill();
+  /* V-neck */
+  ctx.fillStyle = vestSh;
+  ctx.beginPath();
+  ctx.moveTo(tX + torsoW*0.35, tY + 4);
+  ctx.lineTo(cx, tY + tH*0.35);
+  ctx.lineTo(tX + torsoW*0.65, tY + 4);
+  ctx.closePath(); ctx.fill();
+
+  /* Red sash */
+  ctx.fillStyle = sashCol;
+  ctx.fillRect(tX - 2, tY + tH*0.85, torsoW + 4, tH*0.14);
+  ctx.fillStyle = sashHi;
+  ctx.fillRect(tX - 2, tY + tH*0.85, torsoW + 4, tH*0.03);
+  /* Sash knot */
+  ctx.fillStyle = sashCol;
+  ctx.beginPath();
+  ctx.arc(cx + torsoW*0.2, tY + tH*0.9, w*0.09, 0, TAU);
+  ctx.fill();
+  ctx.strokeStyle = sashCol; ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(cx + torsoW*0.2, tY + tH*0.9);
+  ctx.lineTo(cx + torsoW*0.25, tY + tH*1.1);
+  ctx.moveTo(cx + torsoW*0.2, tY + tH*0.9);
+  ctx.lineTo(cx + torsoW*0.12, tY + tH*1.12);
+  ctx.stroke();
+
+  /* Arms */
+  ctx.strokeStyle = skin; ctx.lineWidth = w*0.13; ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(cx - torsoW*0.42, tY + tH*0.22);
+  ctx.lineTo(cx - torsoW*0.68 + armSwing*0.22, tY + tH*0.55 + armSwing*0.4);
+  ctx.stroke();
+  ctx.fillStyle = skinHi;
+  ctx.beginPath();
+  ctx.arc(cx - torsoW*0.68 + armSwing*0.22, tY + tH*0.55 + armSwing*0.4, w*0.08, 0, TAU);
+  ctx.fill();
+  ctx.strokeStyle = skin; ctx.lineWidth = w*0.14;
+  ctx.beginPath();
+  ctx.moveTo(cx + torsoW*0.42, tY + tH*0.20);
+  ctx.lineTo(cx + torsoW*0.65 + armSwing*0.20, tY + tH*0.60 + armSwing*0.35);
+  ctx.stroke();
+  ctx.fillStyle = skinHi;
+  ctx.beginPath();
+  ctx.arc(cx + torsoW*0.65 + armSwing*0.20, tY + tH*0.60 + armSwing*0.35, w*0.085, 0, TAU);
+  ctx.fill();
+
+  /* Neck */
+  ctx.fillStyle = skinSh;
+  ctx.fillRect(cx - w*0.08, torsoTop - 4, w*0.16, 12);
+
+  /* ---- Head ---- */
+  const headGrad = ctx.createRadialGradient(cx - headR*0.35, headCY - headR*0.35, headR*0.15, cx, headCY, headR*1.05);
+  headGrad.addColorStop(0, skinHi); headGrad.addColorStop(0.55, skin); headGrad.addColorStop(1, skinSh);
+  ctx.fillStyle = headGrad;
+  ctx.beginPath(); ctx.ellipse(cx, headCY, headR, headR*1.05, 0, 0, TAU); ctx.fill();
+
+  /* Ears */
+  ctx.fillStyle = skin;
+  ctx.beginPath(); ctx.ellipse(cx - headR*0.95, headCY + headR*0.1, headR*0.2, headR*0.26, 0, 0, TAU); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(cx + headR*0.95, headCY + headR*0.1, headR*0.2, headR*0.26, 0, 0, TAU); ctx.fill();
+
+  /* Black hair — top crown */
+  ctx.fillStyle = hairCol;
+  ctx.beginPath();
+  ctx.ellipse(cx, headCY - headR*0.55, headR*1.02, headR*0.6, 0, Math.PI, 0);
+  ctx.fill();
+  /* Side hair left */
+  ctx.beginPath();
+  ctx.moveTo(cx - headR*1.0, headCY - headR*0.4);
+  ctx.quadraticCurveTo(cx - headR*1.15, headCY - headR*0.05, cx - headR*1.05, headCY + headR*0.3);
+  ctx.lineTo(cx - headR*0.92, headCY + headR*0.28);
+  ctx.quadraticCurveTo(cx - headR*1.0, headCY - headR*0.05, cx - headR*0.9, headCY - headR*0.35);
+  ctx.closePath(); ctx.fill();
+  /* Side hair right */
+  ctx.beginPath();
+  ctx.moveTo(cx + headR*1.0, headCY - headR*0.4);
+  ctx.quadraticCurveTo(cx + headR*1.15, headCY - headR*0.05, cx + headR*1.05, headCY + headR*0.3);
+  ctx.lineTo(cx + headR*0.92, headCY + headR*0.28);
+  ctx.quadraticCurveTo(cx + headR*1.0, headCY - headR*0.05, cx + headR*0.9, headCY - headR*0.35);
+  ctx.closePath(); ctx.fill();
+  /* Hair highlight */
+  ctx.fillStyle = hairHi;
+  ctx.beginPath();
+  ctx.ellipse(cx - headR*0.3, headCY - headR*0.75, headR*0.35, headR*0.12, -0.3, 0, TAU);
+  ctx.fill();
+
+  /* Bangs / fringe */
+  ctx.fillStyle = hairCol;
+  ctx.beginPath();
+  ctx.moveTo(cx - headR*0.85, headCY - headR*0.3);
+  ctx.quadraticCurveTo(cx - headR*0.5, headCY - headR*0.55, cx - headR*0.1, headCY - headR*0.42);
+  ctx.quadraticCurveTo(cx + headR*0.3, headCY - headR*0.55, cx + headR*0.6, headCY - headR*0.35);
+  ctx.quadraticCurveTo(cx + headR*0.5, headCY - headR*0.15, cx + headR*0.3, headCY - headR*0.25);
+  ctx.quadraticCurveTo(cx - headR*0.1, headCY - headR*0.1, cx - headR*0.5, headCY - headR*0.2);
+  ctx.closePath(); ctx.fill();
+
+  /* Eyes */
+  const eyeY = headCY + headR*0.02;
+  const eyeSep = headR*0.42;
+  ctx.fillStyle = "#fff";
+  ctx.beginPath(); ctx.ellipse(cx - eyeSep, eyeY, headR*0.18, headR*0.13, 0, 0, TAU); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(cx + eyeSep, eyeY, headR*0.18, headR*0.13, 0, 0, TAU); ctx.fill();
+  ctx.fillStyle = "#2a1a10";
+  ctx.beginPath(); ctx.arc(cx - eyeSep, eyeY, headR*0.095, 0, TAU); ctx.fill();
+  ctx.beginPath(); ctx.arc(cx + eyeSep, eyeY, headR*0.095, 0, TAU); ctx.fill();
+  ctx.fillStyle = "#fff";
+  ctx.beginPath(); ctx.arc(cx - eyeSep + headR*0.03, eyeY - headR*0.03, headR*0.03, 0, TAU); ctx.fill();
+  ctx.beginPath(); ctx.arc(cx + eyeSep + headR*0.03, eyeY - headR*0.03, headR*0.03, 0, TAU); ctx.fill();
+  /* Eyebrows */
+  ctx.strokeStyle = hairCol; ctx.lineWidth = headR*0.08; ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(cx - eyeSep - headR*0.18, eyeY - headR*0.22);
+  ctx.quadraticCurveTo(cx - eyeSep, eyeY - headR*0.32, cx - eyeSep + headR*0.18, eyeY - headR*0.24);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(cx + eyeSep - headR*0.18, eyeY - headR*0.24);
+  ctx.quadraticCurveTo(cx + eyeSep, eyeY - headR*0.32, cx + eyeSep + headR*0.18, eyeY - headR*0.22);
+  ctx.stroke();
+
+  /* Nose */
+  ctx.strokeStyle = skinSh; ctx.lineWidth = headR*0.05;
+  ctx.beginPath();
+  ctx.moveTo(cx, eyeY + headR*0.12);
+  ctx.lineTo(cx - headR*0.08, eyeY + headR*0.32);
+  ctx.lineTo(cx + headR*0.08, eyeY + headR*0.32);
+  ctx.stroke();
+
+  /* Smile */
+  ctx.strokeStyle = "#5a2a1a"; ctx.lineWidth = headR*0.06;
+  ctx.beginPath();
+  ctx.moveTo(cx - headR*0.22, headCY + headR*0.52);
+  ctx.quadraticCurveTo(cx, headCY + headR*0.62, cx + headR*0.22, headCY + headR*0.52);
+  ctx.stroke();
+
+  /* Signature mole */
+  ctx.fillStyle = skinSh;
+  ctx.beginPath();
+  ctx.arc(cx + headR*0.35, headCY + headR*0.42, headR*0.04, 0, TAU);
+  ctx.fill();
+
+  /* Red headband with gold crest */
+  ctx.fillStyle = sashCol;
+  ctx.fillRect(cx - headR*1.02, headCY - headR*0.55, headR*2.04, headR*0.28);
+  ctx.fillStyle = sashHi;
+  ctx.fillRect(cx - headR*1.02, headCY - headR*0.55, headR*2.04, headR*0.08);
   ctx.fillStyle = "#ffd166";
   ctx.beginPath();
-  ctx.arc(cx, headCY - headR*0.20, headR*0.14, 0, TAU);
+  ctx.arc(cx, headCY - headR*0.41, headR*0.09, 0, TAU);
   ctx.fill();
-  /* Small dragon glyph */
-  ctx.fillStyle = "#2a0a0a";
+
+  /* Fluttering headband tails */
+  const flutter = Math.sin(performance.now()/110) * 3.5;
+  ctx.fillStyle = sashCol;
   ctx.beginPath();
-  ctx.arc(cx, headCY - headR*0.20, headR*0.05, 0, TAU);
-  ctx.fill();
+  ctx.moveTo(cx + headR*0.95, headCY - headR*0.5);
+  ctx.quadraticCurveTo(cx + headR*1.9, headCY - headR*0.45 + flutter,
+                       cx + headR*2.5, headCY - headR*0.05 + flutter*1.6);
+  ctx.lineTo(cx + headR*2.4, headCY + headR*0.1 + flutter*1.6);
+  ctx.quadraticCurveTo(cx + headR*1.8, headCY - headR*0.15 + flutter,
+                       cx + headR*0.95, headCY - headR*0.2);
+  ctx.closePath(); ctx.fill();
+
   ctx.restore();
 }
 
@@ -2992,11 +3181,10 @@ function render(){
     case "bhagat": drawBhagat(player.x, py, player.w, player.h, player.phase, player.onGround); break;
     case "nehru": drawNehru(player.x, py, player.w, player.h, player.phase, player.onGround); break;
     case "sai": drawSai(player.x, py, player.w, player.h, player.phase, player.onGround); break;
-    case "jackie": drawJackie(player.x, py, player.w, player.h, player.phase, player.onGround); break;
+    case "jackie": drawJackieChan(player.x, py, player.w, player.h, player.phase, player.onGround); break;
     default: drawVishu(player.x, py, player.w, player.h, player.phase, player.onGround);
   }
 
-  /* 🚗 Magical car wraps the hero while active (Martial Arts only) */
   if (state.activePowerups.car > 0){
     drawMagicalCar(player.x - 16, player.y - 8, player.w + 32, player.h + 10);
   }
@@ -3089,6 +3277,102 @@ function loop(t){
    MINI CHARACTER RENDERER (char grid)
    ========================================================= */
 function drawMiniCharToCtx(g, char, x, y, w, h, phase, onGround){
+  /* Special: Jackie Chan mini */
+  if (char.id === "jackie"){
+    const cx = x + w/2;
+    const feetY = y + h;
+    const legLen = h*0.30, hipY = feetY - legLen;
+    const torsoH = h*0.36, torsoTop = hipY - torsoH;
+    const headR = w*0.30, headCY = torsoTop - headR + 1;
+    const swing = onGround ? Math.sin(phase)*(w*0.28) : w*0.14;
+    const armSwing = onGround ? Math.sin(phase+Math.PI)*(w*0.26) : -w*0.12;
+    const skin = "#e8b088", skinHi = "#ffd0aa", skinSh = "#a07048";
+    const hairCol = "#0d0a08";
+    const pantsCol = "#1a1a24";
+    const vestCol = "#3a2a20", vestSh = "#1a1008";
+    const sashCol = "#c8102e";
+
+    g.strokeStyle = pantsCol; g.lineWidth = w*0.16; g.lineCap = "round";
+    g.beginPath();
+    g.moveTo(cx - w*0.10, hipY+2); g.lineTo(cx - w*0.10 - swing*0.85, feetY-4);
+    g.moveTo(cx + w*0.10, hipY+2); g.lineTo(cx + w*0.10 + swing*0.85, feetY-4);
+    g.stroke();
+
+    const torsoW = w * 0.66;
+    const tX = cx - torsoW/2, tY = torsoTop + torsoH*0.08, tH = torsoH*0.92;
+    /* shirt */
+    g.fillStyle = "#f0f0e8";
+    g.beginPath();
+    g.moveTo(tX + 2, tY + 4);
+    g.quadraticCurveTo(cx, tY - 6, tX + torsoW - 2, tY + 4);
+    g.lineTo(tX + torsoW, tY + tH);
+    g.lineTo(tX, tY + tH);
+    g.closePath(); g.fill();
+    /* vest flaps */
+    g.fillStyle = vestCol;
+    g.beginPath();
+    g.moveTo(tX, tY + 6); g.lineTo(tX + torsoW*0.35, tY + 4);
+    g.lineTo(tX + torsoW*0.35, tY + tH); g.lineTo(tX, tY + tH);
+    g.closePath(); g.fill();
+    g.beginPath();
+    g.moveTo(tX + torsoW*0.65, tY + 4); g.lineTo(tX + torsoW, tY + 6);
+    g.lineTo(tX + torsoW, tY + tH); g.lineTo(tX + torsoW*0.65, tY + tH);
+    g.closePath(); g.fill();
+    g.fillStyle = vestSh;
+    g.beginPath();
+    g.moveTo(tX + torsoW*0.35, tY + 4); g.lineTo(cx, tY + tH*0.35);
+    g.lineTo(tX + torsoW*0.65, tY + 4); g.closePath(); g.fill();
+    /* sash */
+    g.fillStyle = sashCol;
+    g.fillRect(tX - 2, tY + tH*0.85, torsoW + 4, tH*0.14);
+    /* arms */
+    g.strokeStyle = skin; g.lineWidth = w*0.13;
+    g.beginPath();
+    g.moveTo(cx - torsoW*0.42, tY + tH*0.22);
+    g.lineTo(cx - torsoW*0.68 + armSwing*0.22, tY + tH*0.55 + armSwing*0.4);
+    g.moveTo(cx + torsoW*0.42, tY + tH*0.20);
+    g.lineTo(cx + torsoW*0.65 + armSwing*0.20, tY + tH*0.60 + armSwing*0.35);
+    g.stroke();
+    /* neck */
+    g.fillStyle = skinSh;
+    g.fillRect(cx - w*0.08, torsoTop - 4, w*0.16, 12);
+    /* head */
+    g.fillStyle = skin;
+    g.beginPath(); g.ellipse(cx, headCY, headR, headR*1.05, 0, 0, TAU); g.fill();
+    /* ears */
+    g.beginPath(); g.ellipse(cx - headR*0.95, headCY + headR*0.1, headR*0.2, headR*0.26, 0, 0, TAU); g.fill();
+    g.beginPath(); g.ellipse(cx + headR*0.95, headCY + headR*0.1, headR*0.2, headR*0.26, 0, 0, TAU); g.fill();
+    /* hair top */
+    g.fillStyle = hairCol;
+    g.beginPath(); g.ellipse(cx, headCY - headR*0.55, headR*1.02, headR*0.6, 0, Math.PI, 0); g.fill();
+    /* bangs */
+    g.beginPath();
+    g.moveTo(cx - headR*0.85, headCY - headR*0.3);
+    g.quadraticCurveTo(cx - headR*0.5, headCY - headR*0.55, cx - headR*0.1, headCY - headR*0.42);
+    g.quadraticCurveTo(cx + headR*0.3, headCY - headR*0.55, cx + headR*0.6, headCY - headR*0.35);
+    g.quadraticCurveTo(cx + headR*0.5, headCY - headR*0.15, cx + headR*0.3, headCY - headR*0.25);
+    g.quadraticCurveTo(cx - headR*0.1, headCY - headR*0.1, cx - headR*0.5, headCY - headR*0.2);
+    g.closePath(); g.fill();
+    /* eyes */
+    const eyeY = headCY + headR*0.02, eyeSep = headR*0.42;
+    g.fillStyle = "#fff";
+    g.beginPath(); g.ellipse(cx - eyeSep, eyeY, headR*0.18, headR*0.13, 0, 0, TAU); g.fill();
+    g.beginPath(); g.ellipse(cx + eyeSep, eyeY, headR*0.18, headR*0.13, 0, 0, TAU); g.fill();
+    g.fillStyle = "#2a1a10";
+    g.beginPath(); g.arc(cx - eyeSep, eyeY, headR*0.095, 0, TAU); g.fill();
+    g.beginPath(); g.arc(cx + eyeSep, eyeY, headR*0.095, 0, TAU); g.fill();
+    /* mole */
+    g.fillStyle = skinSh;
+    g.beginPath(); g.arc(cx + headR*0.35, headCY + headR*0.42, headR*0.04, 0, TAU); g.fill();
+    /* headband */
+    g.fillStyle = sashCol;
+    g.fillRect(cx - headR*1.02, headCY - headR*0.55, headR*2.04, headR*0.28);
+    g.fillStyle = "#ffd166";
+    g.beginPath(); g.arc(cx, headCY - headR*0.41, headR*0.09, 0, TAU); g.fill();
+    return;
+  }
+
+  /* Everyone else uses the common template */
   const cx = x + w/2;
   const feetY = y + h;
   const legLen = h*0.30, hipY = feetY - legLen;
@@ -3108,7 +3392,6 @@ function drawMiniCharToCtx(g, char, x, y, w, h, phase, onGround){
   else if (char.id === "bhagat"){ skin="#c97a58"; skinHi="#e89668"; skinSh="#9a5a38"; cloth="#ffffff"; clothSh="#e8e0d0"; glass="rgba(255,200,80,0.55)"; frame="#a04010"; must="#2a1a10"; ink="#0a0a0a"; }
   else if (char.id === "nehru"){ skin="#d4a878"; skinHi="#e8c090"; skinSh="#a87850"; cloth="#f0e6d0"; clothSh="#c8b890"; glass="rgba(200,200,220,0.55)"; frame="#4a4a4a"; must="#3a2a1c"; ink="#221a14"; }
   else if (char.id === "sai"){ skin="#d4a070"; skinHi="#f0be8a"; skinSh="#a07040"; cloth="#e87830"; clothSh="#c05018"; glass="rgba(255,200,120,0.55)"; frame="#8a4a10"; must="#2a1a10"; ink="#2a1a0a"; }
-  else if (char.id === "jackie"){ skin="#e0b088"; skinHi="#ffcfa8"; skinSh="#a87850"; cloth="#c8102e"; clothSh="#8a0018"; glass="rgba(20,20,20,0.75)"; frame="#1a1a1a"; must="#1a1a1a"; ink="#0a0a0a"; }
   else { skin="#b97b52"; skinHi="#d99a6e"; skinSh="#8f5a39"; cloth="#fcfaf4"; clothSh="#e3ddd0"; glass="rgba(140,180,230,0.55)"; frame="#4a4a4a"; must="#3a2a1c"; ink="#221a14"; }
 
   if (char.id === "sai"){
@@ -3182,12 +3465,6 @@ function drawMiniCharToCtx(g, char, x, y, w, h, phase, onGround){
   g.quadraticCurveTo(cx, headCY + headR*0.60, cx - headR*0.10, headCY + headR*0.52);
   g.quadraticCurveTo(cx - headR*0.30, headCY + headR*0.58, cx - headR*0.45, headCY + headR*0.42);
   g.closePath(); g.fill();
-  if (char.id === "jackie"){
-    g.fillStyle = "#c8102e";
-    g.fillRect(cx - headR*0.9, headCY - headR*0.35, headR*1.8, headR*0.32);
-    g.fillStyle = "#ffd166";
-    g.beginPath(); g.arc(cx, headCY - headR*0.20, headR*0.14, 0, TAU); g.fill();
-  }
   if (char.id === "sai"){
     g.fillStyle = "rgba(220,220,220,.85)";
     g.beginPath(); g.ellipse(cx, headCY - headR*0.55, headR*0.16, headR*0.35, 0, 0, TAU); g.fill();
