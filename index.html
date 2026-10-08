@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,9 +6,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
 <meta name="theme-color" content="#120b06" />
 <meta name="google-site-verification" content="_Ky7VpzRnqhv5UC0YjBkHlzLWPTgVbeC1F7Tr5Uln0A" />
-<title>Gandhi Bhai — The Salt March Runner: Ultimate</title>
+<title>Gandhi Run — The Salt March Runner: Ultimate</title>
 
-<!-- ✅ SUPABASE CDN -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
@@ -37,12 +37,24 @@
   .btn-row{display:flex;gap:.6em;flex-wrap:wrap;justify-content:center}
   .stat{font-size:1.05em;color:#ffe9c7}
   .stat b{color:#ffc247;font-size:1.2em}
+
+  /* ===== PLAYER BAR / LEVEL ===== */
   .player-bar{display:flex;align-items:center;gap:.55em;padding:.38em .9em;border-radius:99px;background:rgba(255,255,255,.07);border:1px solid rgba(255,200,120,.28);font-size:.78em;letter-spacing:.03em;box-shadow:0 2px 10px rgba(0,0,0,.3);margin:.15em 0;}
   .player-bar .avatar{width:1.7em;height:1.7em;border-radius:50%;background:linear-gradient(180deg,#ffd47a,#ff9e1b);display:flex;align-items:center;justify-content:center;font-weight:900;color:#3a1c00;font-size:1em;box-shadow:0 2px 6px rgba(0,0,0,.35);flex-shrink:0;}
   .player-bar .pname{font-weight:900;color:#ffe9c7;max-width:9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .player-bar .pbest{color:#ffb347;font-weight:700}
   .player-bar .pbest b{color:#ffd166}
   .player-bar .change-btn{font-size:.72em;padding:.35em .8em;margin:0;box-shadow:0 2px 0 #a95500;border-radius:99px;letter-spacing:.05em;}
+
+  .xp-wrap{display:flex;flex-direction:column;align-items:center;gap:.2em;margin:.25em 0 .1em;}
+  .lvl-line{display:flex;align-items:center;gap:.5em;font-size:.78em;}
+  .lvl-badge{display:inline-flex;align-items:center;gap:.25em;padding:.22em .75em;border-radius:99px;background:linear-gradient(180deg,#ffd47a,#ff9e1b 60%,#f08200);color:#3a1c00;font-weight:900;letter-spacing:.08em;box-shadow:0 2px 6px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.6);}
+  .lvl-badge .lv-star{font-size:.9em}
+  .xp-text{color:#cbb79c;font-weight:700;letter-spacing:.05em;font-variant-numeric:tabular-nums;}
+  .xp-text b{color:#ffd166}
+  .xp-bar{width:min(18em,72vw);height:.5em;border-radius:99px;background:rgba(0,0,0,.4);overflow:hidden;border:1px solid rgba(255,200,120,.25);box-shadow:inset 0 1px 3px rgba(0,0,0,.4);}
+  .xp-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#ffd166,#06d6a0);transition:width .5s ease;box-shadow:0 0 10px rgba(255,200,80,.4);}
+
   .lb-wrap{width:min(24em,86vw);max-height:52vh;overflow-y:auto;display:flex;flex-direction:column;gap:.3em;padding:.3em;margin:.4em 0;}
   .lb-row{display:grid;grid-template-columns:2.2em 1fr auto;gap:.6em;align-items:center;padding:.55em .85em;border-radius:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,200,120,.12);font-size:.85em;animation:fade .25s ease;}
   .lb-row.gold{background:rgba(255,200,80,.16);border-color:rgba(255,200,80,.55);box-shadow:0 0 18px rgba(255,190,60,.2)}
@@ -63,23 +75,32 @@
   #fsBtn .ico-exit{display:none}
   #fsBtn.on .ico-enter{display:none}
   #fsBtn.on .ico-exit{display:block}
-  .char-grid{display:flex;gap:.8em;flex-wrap:wrap;justify-content:center;margin:.5em 0}
-  .char-card{width:9.5em;padding:.7em .5em .6em;border-radius:14px;background:rgba(255,255,255,.06);border:2px solid rgba(255,200,120,.2);cursor:pointer;transition:transform .12s,border-color .15s,background .15s;display:flex;flex-direction:column;align-items:center;gap:.35em;position:relative;overflow:hidden;}
+
+  /* ===== CHARACTER GRID ===== */
+  .char-grid{display:flex;gap:.7em;flex-wrap:wrap;justify-content:center;margin:.5em 0;max-width:min(58em,92vw);}
+  .char-card{width:9.6em;padding:.7em .5em .6em;border-radius:14px;background:rgba(255,255,255,.06);border:2px solid rgba(255,200,120,.2);cursor:pointer;transition:transform .12s,border-color .15s,background .15s;display:flex;flex-direction:column;align-items:center;gap:.3em;position:relative;overflow:hidden;}
   .char-card:hover{transform:translateY(-3px);background:rgba(255,255,255,.1)}
   .char-card.sel{border-color:#ffc247;background:rgba(255,194,71,.12);box-shadow:0 0 24px rgba(255,180,60,.35)}
-  .char-card canvas{width:5.2em;height:5.2em;display:block}
-  .char-name{font-size:.8em;font-weight:900;letter-spacing:.06em;color:#ffe9c7;line-height:1.2}
-  .char-tag{font-size:.62em;color:#ffb347;letter-spacing:.06em;opacity:.9}
-  .char-card.locked{opacity:.45;cursor:not-allowed;filter:grayscale(.6)}
-  .char-card.locked::after{content:"LOCKED";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:.62em;font-weight:900;letter-spacing:.12em;color:#ffb347;background:rgba(0,0,0,.7);padding:.3em .7em;border-radius:6px;}
-  .sel-hint{font-size:.72em;color:#cbb79c;opacity:.75;margin-top:.2em}
-  .set-row{display:flex;align-items:center;justify-content:space-between;width:min(22em,80vw);padding:.45em .8em;margin:.15em 0;background:rgba(255,255,255,.05);border-radius:10px;border:1px solid rgba(255,200,120,.12);}
-  .set-row label{font-size:.85em;color:#ffe9c7;font-weight:700;letter-spacing:.04em}
-  .toggle{width:3.2em;height:1.5em;border-radius:99px;background:rgba(255,255,255,.15);position:relative;cursor:pointer;transition:background .2s;border:none;padding:0;margin:0;}
+  .char-card canvas{width:4.8em;height:4.8em;display:block}
+  .char-name{font-size:.76em;font-weight:900;letter-spacing:.04em;color:#ffe9c7;line-height:1.15;text-align:center}
+  .char-tag{font-size:.58em;color:#cbb79c;letter-spacing:.05em;opacity:.9;text-align:center;line-height:1.15}
+  .char-power{font-size:.56em;color:#ffd166;font-weight:900;letter-spacing:.05em;text-transform:uppercase;padding:.18em .55em;border-radius:6px;background:rgba(255,200,80,.15);border:1px solid rgba(255,200,80,.35);margin-top:.1em;text-align:center;line-height:1.2;}
+  .char-card.locked{cursor:not-allowed;}
+  .char-card.locked canvas{filter:grayscale(1) brightness(.55);}
+  .char-card.locked .char-name,.char-card.locked .char-tag,.char-card.locked .char-power{opacity:.5}
+  .char-lock{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;background:rgba(8,4,2,.75);font-weight:900;font-size:.7em;color:#ffd166;letter-spacing:.1em;text-align:center;padding:.4em;text-transform:uppercase;}
+  .char-lock .lk-ico{font-size:1.9em;margin-bottom:.15em;line-height:1}
+  .char-lock .lk-lvl{color:#fff;font-size:.95em}
+  .char-lock .lk-prog{font-size:.7em;color:#cbb79c;font-weight:700;margin-top:.2em;letter-spacing:.05em}
+  .sel-hint{font-size:.72em;color:#cbb79c;opacity:.8;margin-top:.2em;max-width:min(30em,86vw);line-height:1.4}
+
+  .set-row{display:flex;align-items:center;justify-content:space-between;width:min(22em,86vw);padding:.45em .8em;margin:.15em 0;background:rgba(255,255,255,.05);border-radius:10px;border:1px solid rgba(255,200,120,.12);gap:.6em;}
+  .set-row label{font-size:.85em;color:#ffe9c7;font-weight:700;letter-spacing:.04em;white-space:nowrap}
+  .toggle{width:3.2em;height:1.5em;border-radius:99px;background:rgba(255,255,255,.15);position:relative;cursor:pointer;transition:background .2s;border:none;padding:0;margin:0;flex-shrink:0;}
   .toggle::after{content:"";position:absolute;top:.2em;left:.2em;width:1.1em;height:1.1em;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.4);}
   .toggle.on{background:#ff9e1b}
   .toggle.on::after{transform:translateX(1.7em)}
-  .diff-row{display:flex;gap:.4em}
+  .diff-row{display:flex;gap:.4em;flex-wrap:wrap;justify-content:flex-end}
   .diff-btn{font:inherit;font-size:.72em;font-weight:900;letter-spacing:.06em;text-transform:uppercase;padding:.4em .9em;border-radius:8px;border:1px solid rgba(255,200,120,.25);background:rgba(255,255,255,.05);color:#cbb79c;cursor:pointer;margin:0;box-shadow:none;transition:all .15s;}
   .diff-btn:hover{background:rgba(255,255,255,.1)}
   .diff-btn.sel{background:linear-gradient(180deg,#ffd47a,#ff9e1b);color:#3a1c00;border-color:transparent}
@@ -104,10 +125,49 @@
   #rotate .phone{width:56px;height:96px;border:3px solid #ffb347;border-radius:10px;animation:tilt 1.6s ease-in-out infinite}
   @keyframes tilt{0%,40%{transform:rotate(0)}60%,100%{transform:rotate(-90deg)}}
   @media (max-aspect-ratio:1/1) and (max-width:820px){#rotate{display:flex}}
-  .scroll-area{max-height:80vh;overflow-y:auto;padding:.5em 0;width:100%;display:flex;flex-direction:column;align-items:center;gap:.3em}
-  .combo-pop{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:clamp(18px,4vmin,42px);font-weight:900;color:#ffd166;text-shadow:0 0 20px rgba(255,200,80,.8),0 4px 12px rgba(0,0,0,.6);pointer-events:none;z-index:25;opacity:0;letter-spacing:.06em;}
+  .scroll-area{max-height:64vh;overflow-y:auto;padding:.5em 0;width:100%;display:flex;flex-direction:column;align-items:center;gap:.3em}
+  .combo-pop{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:clamp(18px,4vmin,42px);font-weight:900;color:#ffd166;text-shadow:0 0 20px rgba(255,200,80,.8),0 4px 12px rgba(0,0,0,.6);pointer-events:none;z-index:25;opacity:0;letter-spacing:.06em;text-align:center;}
   .combo-pop.show{animation:comboAnim .7s ease forwards}
   @keyframes comboAnim{0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}30%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}60%{transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-60%) scale(1)}}
+
+  /* ===== LEVEL UP BANNER ===== */
+  .level-up{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);font-size:clamp(22px,5vmin,52px);font-weight:900;color:#ffd166;text-shadow:0 0 26px rgba(255,200,80,.9),0 4px 12px rgba(0,0,0,.7);pointer-events:none;z-index:27;opacity:0;letter-spacing:.08em;text-align:center;line-height:1.15;}
+  .level-up .lv-sub{font-size:.45em;color:#fff;letter-spacing:.15em;margin-top:.3em;text-shadow:0 2px 8px rgba(0,0,0,.9);}
+  .level-up.show{animation:lvlAnim 2.4s ease forwards}
+  @keyframes lvlAnim{0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}12%{opacity:1;transform:translate(-50%,-50%) scale(1.18)}22%{transform:translate(-50%,-50%) scale(1)}82%{opacity:1}100%{opacity:0;transform:translate(-50%,-72%) scale(1)}}
+
+  /* ===== RANGE SLIDERS ===== */
+  input[type=range]{-webkit-appearance:none;appearance:none;width:9em;max-width:40vw;height:1.5em;background:transparent;cursor:pointer;margin:0;}
+  input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:99px;background:rgba(255,255,255,.18);}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:linear-gradient(180deg,#ffd47a,#ff9e1b);margin-top:-6px;box-shadow:0 2px 6px rgba(0,0,0,.45);border:none;}
+  input[type=range]::-moz-range-track{height:6px;border-radius:99px;background:rgba(255,255,255,.18);}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border:none;border-radius:50%;background:linear-gradient(180deg,#ffd47a,#ff9e1b);box-shadow:0 2px 6px rgba(0,0,0,.45);}
+
+  /* ===== JOYSTICK ===== */
+  #joyZone{position:absolute;inset:0;z-index:34;pointer-events:none;display:none;}
+  #joyBase{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    border-radius:50%;
+    background:radial-gradient(circle at 50% 42%, rgba(255,255,255,.14), rgba(0,0,0,.30));
+    border:2px solid rgba(255,200,120,.50);
+    box-shadow:0 8px 26px rgba(0,0,0,.5), inset 0 0 28px rgba(255,180,80,.14);
+    pointer-events:auto;touch-action:none;
+    backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+    transition:border-color .2s, box-shadow .2s;
+  }
+  #joyKnob{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    border-radius:50%;
+    background:radial-gradient(circle at 36% 30%, #fff0c8, #ff9e1b 68%, #d97a00);
+    border:2px solid rgba(255,255,255,.4);
+    box-shadow:0 5px 16px rgba(0,0,0,.55), inset 0 -3px 8px rgba(140,60,0,.45);
+    pointer-events:none;
+    will-change:transform;
+  }
+  #joyZone .edit #joyBase{border-style:dashed;border-color:#ffd166;box-shadow:0 0 34px rgba(255,200,80,.55), inset 0 0 28px rgba(255,180,80,.18);}
+  #joyZone.edit #joyKnob{opacity:.85}
+  .joy-hint{position:absolute;left:50%;top:calc(50% + 3.2em);transform:translateX(-50%);font-size:.68em;letter-spacing:.14em;color:#ffd166;font-weight:900;text-transform:uppercase;white-space:nowrap;pointer-events:none;text-shadow:0 2px 8px rgba(0,0,0,.8);opacity:0;transition:opacity .2s;}
+  #joyZone.edit .joy-hint{opacity:1}
 </style>
 </head>
 <body>
@@ -126,6 +186,13 @@
     <div class="ult-bar"><div class="ult-fill" id="ultFill"></div></div>
   </div>
   <div class="combo-pop" id="comboPop"></div>
+  <div class="level-up" id="levelUp"></div>
+
+  <!-- ===== JOYSTICK ===== -->
+  <div id="joyZone">
+    <div id="joyBase"><div id="joyKnob"></div></div>
+    <div class="joy-hint">Drag to move</div>
+  </div>
 
   <div class="overlay hidden" id="nameEntry">
     <div class="flagbar"><i></i><i></i><i></i></div>
@@ -146,10 +213,17 @@
       <span class="pbest">Best <b id="pBest">0</b></span>
       <button id="changeNameBtn" class="change-btn">Change</button>
     </div>
+    <div class="xp-wrap hidden" id="xpWrap">
+      <div class="lvl-line">
+        <span class="lvl-badge"><span class="lv-star">★</span>LV <span id="lvlNum">1</span></span>
+        <span class="xp-text" id="xpText">0 / 100 XP</span>
+      </div>
+      <div class="xp-bar"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
+    </div>
     <p class="how">
       Jump <b>barricades</b> &nbsp;•&nbsp; Collect <b>salt</b>, <b>charkhas</b> &amp; <b>power-ups</b><br>
       Fill the <b>Ultimate meter</b> to transform!<br>
-      Touch any obstacle and the march ends!<br>
+      Earn <b>XP</b> every run to level up &amp; unlock new leaders!<br>
       Hit <b style="color:#ffd166">20,000 points</b> to unlock the <b style="color:#ff4444">British Era</b>
     </p>
     <div class="btn-row" style="margin-top:.5em">
@@ -174,7 +248,7 @@
 
   <div class="overlay hidden" id="chars">
     <h2>Choose Your Leader</h2>
-    <p class="how" style="margin-bottom:.2em">Each leader has unique abilities</p>
+    <p class="how" style="margin-bottom:.2em">Level up to unlock. Each leader has a unique power.</p>
     <div class="char-grid" id="charGrid"></div>
     <p class="sel-hint" id="charHint">Tap a card to select</p>
     <button id="charsBack" class="btn-sm">Back</button>
@@ -196,8 +270,30 @@
           <button class="diff-btn" data-diff="3">Insane</button>
         </div>
       </div>
+      <div class="set-row">
+        <label>Controls</label>
+        <div class="diff-row" id="ctrlRow">
+          <button class="diff-btn sel" data-ctrl="tap">Tap</button>
+          <button class="diff-btn" data-ctrl="stick">Joystick</button>
+        </div>
+      </div>
+      <div class="set-row"><label>Stick Size</label><input type="range" id="joySizeRange" min="8" max="26" step="1" value="15"></div>
+      <div class="set-row"><label>Stick Opacity</label><input type="range" id="joyOpRange" min="20" max="100" step="5" value="60"></div>
+      <button id="editJoyBtn" class="btn-sm">✥ Edit Joystick Position</button>
     </div>
     <button id="settingsBack" class="btn-sm">Back</button>
+  </div>
+
+  <div class="overlay hidden" id="joyEdit">
+    <h2>Joystick Layout</h2>
+    <p class="how">Drag the joystick anywhere on screen.<br>Fine-tune with the sliders below.</p>
+    <div class="set-row" style="margin-top:.6em"><label>Size</label><input type="range" id="editSize" min="8" max="26" step="1" value="15"></div>
+    <div class="set-row"><label>Opacity</label><input type="range" id="editOp" min="20" max="100" step="5" value="60"></div>
+    <div class="btn-row" style="margin-top:.5em">
+      <button id="joyReset" class="btn-sm">Reset</button>
+      <button id="joyDone">Done</button>
+    </div>
+    <p class="keys">Push the stick UP to jump • DOWN to fast-fall</p>
   </div>
 
   <div class="overlay hidden" id="pause">
@@ -216,6 +312,7 @@
     <p class="stat">Player: <b id="overPlayerName">—</b></p>
     <p class="stat">Score: <b id="finalScore">0</b></p>
     <p class="stat">Your Best: <b id="bestScore">0</b></p>
+    <p class="stat" id="xpGainLine" style="font-size:.95em;color:#06d6a0"></p>
     <p class="stat" id="runStats" style="font-size:.85em;opacity:.8"></p>
     <p class="stat" id="rankInfo" style="font-size:.85em;color:#ffd166;opacity:.9"></p>
     <div class="btn-row">
@@ -245,7 +342,7 @@ let realtimeChannel = null;
 function initSupabase() {
   try {
     if (!window.supabase || !window.supabase.createClient) {
-      console.error("❌ Supabase SDK not loaded. Check the CDN <script> tag in <head>.");
+      console.error("❌ Supabase SDK not loaded.");
       return false;
     }
     supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -257,57 +354,28 @@ function initSupabase() {
   }
 }
 
-/* ✅ UPDATED: One name, one score. Only updates if higher. */
 async function submitScoreCloud(name, score){
   if (!supabase) return false;
   try {
-    // 1. Check if the player already has a score
     const { data, error: selectError } = await supabase
-      .from('scores')
-      .select('id, score')
-      .eq('name', name)
-      .maybeSingle();
-
+      .from('scores').select('id, score').eq('name', name).maybeSingle();
     if (selectError) { console.error("❌ Select error:", selectError.message); return false; }
-
     if (!data) {
-      // 2a. New player -> Insert score
-      const { error: insertError } = await supabase
-        .from('scores')
-        .insert([{ name: name, score: score }]);
+      const { error: insertError } = await supabase.from('scores').insert([{ name: name, score: score }]);
       if (insertError) { console.error("❌ Insert error:", insertError.message); return false; }
-      console.log("✅ New score inserted:", name, score);
     } else if (score > data.score) {
-      // 2b. Existing player, new score is HIGHER -> Update score
-      const { error: updateError } = await supabase
-        .from('scores')
-        .update({ score: score })
-        .eq('id', data.id);
+      const { error: updateError } = await supabase.from('scores').update({ score: score }).eq('id', data.id);
       if (updateError) { console.error("❌ Update error:", updateError.message); return false; }
-      console.log("✅ Score updated:", name, data.score, "->", score);
-    } else {
-      // 2c. Existing player, new score is LOWER or EQUAL -> Do nothing
-      console.log("ℹ️ Score not updated (not higher):", name, score);
     }
     return true;
-  } catch (e) {
-    console.error("❌ Submit threw:", e);
-    return false;
-  }
+  } catch (e) { console.error("❌ Submit threw:", e); return false; }
 }
 
 function fetchLeaderboard(){
   if (!supabase) return Promise.resolve(null);
-  return supabase
-    .from('scores')
-    .select('name, score')
-    .order('score', { ascending: false })
-    .limit(30)
+  return supabase.from('scores').select('name, score').order('score', { ascending: false }).limit(30)
     .then(({ data, error }) => {
-      if (error) {
-        console.error("❌ Supabase select error:", error.message);
-        return null;
-      }
+      if (error) { console.error("❌ Supabase select error:", error.message); return null; }
       return (data || []).map(d => ({ name: d.name, score: d.score }));
     })
     .catch(err => { console.error("❌ Select threw:", err); return null; });
@@ -317,13 +385,10 @@ function listenLeaderboard(callback){
   if (!supabase) return;
   try {
     if (realtimeChannel) supabase.removeChannel(realtimeChannel);
-    realtimeChannel = supabase
-      .channel('public:scores')
-      .on('postgres_changes',
-          { event: 'INSERT', schema: 'public', table: 'scores' },
+    realtimeChannel = supabase.channel('public:scores')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'scores' },
           () => { fetchLeaderboard().then(list => { if (list) callback(list); }); })
-      .on('postgres_changes',
-          { event: 'UPDATE', schema: 'public', table: 'scores' },
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'scores' },
           () => { fetchLeaderboard().then(list => { if (list) callback(list); }); })
       .subscribe();
   } catch (e) { console.warn("Realtime subscribe failed:", e); }
@@ -340,10 +405,10 @@ const H = 540;
 let   W = 960;
 let   GROUND_Y = H - 96;
 
-const GRAVITY = 2400, JUMP_V = 830, BASE_SPEED = 330;
+const GRAVITY = 2400, JUMP_V = 830, BASE_SPEED = 348;
 const BRITISH_LEVEL_SCORE = 20000;
 
-const DIFF_SPEED = [1.00, 1.20, 1.45, 1.75];
+const DIFF_SPEED = [1.06, 1.30, 1.60, 1.95];
 const DIFF_OBST  = [0.85, 1.15, 1.55, 2.00];
 const DIFF_COIN  = [1.10, 0.90, 0.75, 0.60];
 const DIFF_PU    = [1.10, 1.00, 0.85, 0.70];
@@ -375,7 +440,14 @@ function escapeHtml(s){
    1. AUDIO ENGINE
    ========================================================= */
 let actx = null;
-const settings = { sound: true, shake: true, particles: true, showFps: false, difficulty: 1, character: 0 };
+const settings = {
+  sound: true, shake: true, particles: true, showFps: false,
+  difficulty: 1, character: 0,
+  control: "tap",
+  joyX: 0.80, joyY: 0.74,
+  joySize: 0.15,
+  joyOpacity: 0.60
+};
 try {
   const s = JSON.parse(localStorage.getItem("gandhi_bhai_settings") || "{}");
   Object.assign(settings, s);
@@ -401,7 +473,7 @@ function chord(freqs, dur, type="triangle", vol=.05){
 }
 
 /* =========================================================
-   2. PLAYER PROFILE & LEADERBOARD
+   2. PLAYER PROFILE, PROGRESS & LEVELS
    ========================================================= */
 const PROFILE_KEY = "gandhi_bhai_profile";
 let profile = { name: "", best: 0 };
@@ -414,13 +486,52 @@ try {
 } catch(e){}
 function saveProfile(){ try { localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)); } catch(e){} }
 
+/* ---- Player progress (XP & level) ---- */
+const PROGRESS_KEY = "gandhi_bhai_progress";
+let progress = { xp: 0 };
+try {
+  const p = JSON.parse(localStorage.getItem(PROGRESS_KEY) || "null");
+  if (p && typeof p.xp === "number" && isFinite(p.xp) && p.xp >= 0) progress.xp = p.xp;
+} catch(e){}
+/* Migration: seed XP from best score if user is brand-new to the XP system */
+if (progress.xp === 0 && profile.best > 0){
+  progress.xp = Math.floor(profile.best);
+  try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress)); } catch(e){}
+}
+function saveProgress(){ try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress)); } catch(e){} }
+
+/* Level curve:  xpForLevel(L) = (L-1)^2 * 100
+   L1=0  L2=100  L3=400  L4=900  L5=1.6k  L6=2.5k
+   L10=8.1k  L15=19.6k  L21=40k */
+function xpForLevel(level){ return Math.pow(Math.max(0, level-1), 2) * 100; }
+function levelFromXP(xp){ return Math.floor(Math.sqrt(Math.max(0, xp) / 100)) + 1; }
+function playerLevel(){ return levelFromXP(progress.xp); }
+function xpForNextLevel(){ return xpForLevel(playerLevel() + 1); }
+function progressInLevel(){
+  const lv = playerLevel();
+  const cur = xpForLevel(lv);
+  const next = xpForLevel(lv + 1);
+  if (next <= cur) return 0;
+  return clamp((progress.xp - cur) / (next - cur), 0, 1);
+}
+
 function updateMenuProfile(){
   const bar = document.getElementById("playerBar");
-  if (!profile.name){ bar.classList.add("hidden"); return; }
+  const xpWrap = document.getElementById("xpWrap");
+  if (!profile.name){ bar.classList.add("hidden"); xpWrap.classList.add("hidden"); return; }
   bar.classList.remove("hidden");
+  xpWrap.classList.remove("hidden");
   document.getElementById("pAvatar").textContent = profile.name.charAt(0).toUpperCase();
   document.getElementById("pName").textContent = profile.name;
   document.getElementById("pBest").textContent = profile.best.toLocaleString();
+
+  const lv = playerLevel();
+  const nextXp = xpForNextLevel();
+  const curXp = xpForLevel(lv);
+  document.getElementById("lvlNum").textContent = lv;
+  document.getElementById("xpText").innerHTML =
+    `${Math.floor(progress.xp).toLocaleString()} / <b>${nextXp.toLocaleString()}</b> XP`;
+  document.getElementById("xpFill").style.width = (progressInLevel() * 100).toFixed(1) + "%";
 }
 
 function submitScoreUnified(name, score){
@@ -435,25 +546,18 @@ function submitScoreUnified(name, score){
 function submitScoreLocal(score){
   if (!profile.name || score <= 0) return -1;
   if (score > profile.best){ profile.best = score; saveProfile(); }
-  
   let localLb = JSON.parse(localStorage.getItem("gandhi_bhai_leaderboard_local") || "[]");
   const existingIndex = localLb.findIndex(e => e.name === profile.name);
-  
   if (existingIndex >= 0) {
-      if (score > localLb[existingIndex].score) {
-          localLb[existingIndex].score = score;
-      } else {
-          return existingIndex + 1;
-      }
+    if (score > localLb[existingIndex].score) localLb[existingIndex].score = score;
+    else return existingIndex + 1;
   } else {
-      localLb.push({ name: profile.name, score, date: Date.now() });
+    localLb.push({ name: profile.name, score, date: Date.now() });
   }
-  
   localLb.sort((a,b) => b.score - a.score);
   if (localLb.length > 30) localLb.length = 30;
   localStorage.setItem("gandhi_bhai_leaderboard_local", JSON.stringify(localLb));
   updateMenuProfile();
-  
   const idx = localLb.findIndex(e => e.name === profile.name);
   return idx >= 0 ? idx + 1 : -1;
 }
@@ -483,7 +587,7 @@ function renderLeaderboard(){
     wrapEl.innerHTML = `<div class="lb-empty">Loading world scores...</div>`;
     fetchLeaderboard().then(list => {
       if (list) renderLeaderboardRows(list);
-      else wrapEl.innerHTML = `<div class="lb-empty">⚠️ Could not reach server.<br>Check your Supabase RLS policies.<br>Showing local scores instead.</div>`;
+      else wrapEl.innerHTML = `<div class="lb-empty">⚠️ Could not reach server.<br>Showing local scores instead.</div>`;
     });
   } else {
     renderLeaderboardRows(JSON.parse(localStorage.getItem("gandhi_bhai_leaderboard_local") || "[]"));
@@ -491,23 +595,64 @@ function renderLeaderboard(){
 }
 
 /* =========================================================
-   3. CHARACTERS
+   3. CHARACTERS  — each unlocked by LEVEL & has a UNIQUE POWER
    ========================================================= */
 const CHARACTERS = [
-  { id:"vishu", name:"GANDHI BHAI", tag:"The Salt Warrior", desc:"Balanced hero. +1 bonus jump at 500pts.",
-    color:"#fdfdfd", accent:"#ffb347", speedMod:1.0, jumpMod:1.0, scoreMod:1.0,
-    startShield:false, magnetRange:0, unlockScore:0 },
-  { id:"ultra", name:"ULTIMATE FORM", tag:"Nuclear Awakening", desc:"Stronger shield, faster ult charge, aura burns obstacles.",
-    color:"#ff6b3d", accent:"#ffe066", speedMod:1.05, jumpMod:1.08, scoreMod:1.15,
-    startShield:true, magnetRange:40, unlockScore:0, ultimate:true },
-  { id:"spinner", name:"CHARKHA SPINNER", tag:"Thread of Fate", desc:"Magnet always active. Coin values +50%.",
-    color:"#4fb3f0", accent:"#7fd0ff", speedMod:0.95, jumpMod:0.95, scoreMod:1.5,
-    startShield:false, magnetRange:120, unlockScore:500 },
-  { id:"sage", name:"SALT SAGE", tag:"Dandi Veteran", desc:"Extra life. Slower start, smoother run.",
-    color:"#c9a96e", accent:"#f0c98a", speedMod:0.88, jumpMod:1.12, scoreMod:0.9,
-    startShield:true, magnetRange:0, unlockScore:1500 }
+  { id:"vishu", name:"GANDHI BHAI", tag:"The Salt Warrior",
+    desc:"Balanced hero. The original marcher with a reliable double jump.",
+    power:"Double Jump",
+    color:"#fdfdfd", accent:"#ffb347",
+    speedMod:1.0, jumpMod:1.0, scoreMod:1.0,
+    startShield:false, magnetRange:0,
+    maxJumps:2, unlockLevel:1 },
+
+  { id:"spinner", name:"CHARKHA SPINNER", tag:"Thread of Fate",
+    desc:"Permanent 150px coin magnet. All coins are worth ×1.5.",
+    power:"Magnetic Thread",
+    color:"#4fb3f0", accent:"#7fd0ff",
+    speedMod:0.92, jumpMod:0.95, scoreMod:1.0,
+    startShield:false, magnetRange:150,
+    coinMult:1.5, maxJumps:2, unlockLevel:3 },
+
+  { id:"sage", name:"SALT SAGE", tag:"Dandi Veteran",
+    desc:"Begins each march with 2 lives and a stronger jump.",
+    power:"Second Wind",
+    color:"#c9a96e", accent:"#f0c98a",
+    speedMod:0.88, jumpMod:1.14, scoreMod:0.9,
+    startShield:false, magnetRange:0,
+    startLives:2, maxJumps:2, unlockLevel:6 },
+
+  { id:"ultra", name:"ULTIMATE FORM", tag:"Nuclear Awakening",
+    desc:"Starts shielded. Ultimate charges 1.5× faster and aura burns obstacles.",
+    power:"Rage Mode",
+    color:"#ff6b3d", accent:"#ffe066",
+    speedMod:1.05, jumpMod:1.08, scoreMod:1.15,
+    startShield:true, magnetRange:40,
+    ultChargeMult:1.5, maxJumps:2, unlockLevel:10, ultimate:true },
+
+  { id:"dandi", name:"DANDI RUNNER", tag:"Salt Dash",
+    desc:"Triple jump! Auto speed-dash for 2s every 1500 points.",
+    power:"Triple Jump + Dash",
+    color:"#06d6a0", accent:"#a7f3d0",
+    speedMod:1.02, jumpMod:1.0, scoreMod:1.05,
+    startShield:false, magnetRange:0,
+    maxJumps:3, saltDash:true, unlockLevel:15 },
+
+  { id:"phoenix", name:"FREEDOM PHOENIX", tag:"Reborn in Fire",
+    desc:"Revives once per run — clears every obstacle on the screen.",
+    power:"Rebirth",
+    color:"#ff3366", accent:"#ffb3c6",
+    speedMod:1.0, jumpMod:1.05, scoreMod:1.1,
+    startShield:false, magnetRange:0,
+    maxJumps:2, phoenix:true, unlockLevel:21 }
 ];
+
 function getChar(){ return CHARACTERS[settings.character] || CHARACTERS[0]; }
+function isCharUnlocked(i){ return playerLevel() >= (CHARACTERS[i]?.unlockLevel || 1); }
+function firstUnlockedIndex(){
+  for (let i=0;i<CHARACTERS.length;i++) if (isCharUnlocked(i)) return i;
+  return 0;
+}
 
 /* =========================================================
    4. POWER-UPS
@@ -536,8 +681,8 @@ const state = {
   ultCharge: 0, ultActive: false, ultTimer: 0,
   activePowerups: {}, slowFactor: 1,
   flashAlpha: 0, flashColor: "#fff", running: true,
-  level: 0,
-  levelBannerTimer: 0
+  level: 0, levelBannerTimer: 0,
+  nextSaltDash: 1500, phoenixUsed: false
 };
 
 const player = {
@@ -565,6 +710,7 @@ function resize(){
   offY = (cvs.height - H*scale)/2;
   GROUND_Y = H - 96;
   if (player.onGround) player.y = GROUND_Y - player.h;
+  layoutJoystick();
 }
 window.addEventListener("resize", resize);
 window.addEventListener("orientationchange", () => setTimeout(resize,150));
@@ -611,11 +757,110 @@ const menuEl=document.getElementById("menu"), charsEl=document.getElementById("c
       leadersEl=document.getElementById("leaders"), finalEl=document.getElementById("finalScore"),
       bestEl=document.getElementById("bestScore"), overTitle=document.getElementById("overTitle"),
       runStats=document.getElementById("runStats"), rankInfo=document.getElementById("rankInfo"),
+      xpGainLine=document.getElementById("xpGainLine"),
       overPlayerName=document.getElementById("overPlayerName"), charGrid=document.getElementById("charGrid"),
       charHint=document.getElementById("charHint"), puBar=document.getElementById("puBar"),
       ultWrap=document.getElementById("ultWrap"), ultFill=document.getElementById("ultFill"),
       ultBtn=document.getElementById("ultBtn"), comboPop=document.getElementById("comboPop"),
-      nameInput=document.getElementById("nameInput"), nameStatus=document.getElementById("nameStatus");
+      levelUpEl=document.getElementById("levelUp"),
+      nameInput=document.getElementById("nameInput"), nameStatus=document.getElementById("nameStatus"),
+      joyZone=document.getElementById("joyZone"), joyBase=document.getElementById("joyBase"),
+      joyKnob=document.getElementById("joyKnob"), joyEditEl=document.getElementById("joyEdit");
+
+/* =========================================================
+   8b. JOYSTICK ENGINE
+   ========================================================= */
+const joy = {
+  active:false, pid:null, dx:0, dy:0,
+  armed:true, fastFall:false,
+  editMode:false, dragging:false,
+  grabDX:0, grabDY:0, maxR:60
+};
+
+function layoutJoystick(){
+  if (!joyBase) return;
+  const rw = wrap.clientWidth  || window.innerWidth;
+  const rh = wrap.clientHeight || window.innerHeight;
+  const R = settings.joySize * Math.min(rw, rh);
+  const D = R * 2;
+  joyBase.style.width  = D + "px";
+  joyBase.style.height = D + "px";
+  joyBase.style.left   = (settings.joyX * 100) + "%";
+  joyBase.style.top    = (settings.joyY * 100) + "%";
+  joyBase.style.opacity = settings.joyOpacity;
+  const kd = R * 1.02;
+  joyKnob.style.width  = kd + "px";
+  joyKnob.style.height = kd + "px";
+  joy.maxR = R * 0.60;
+  applyKnob();
+}
+function applyKnob(){
+  joyKnob.style.transform = `translate(calc(-50% + ${joy.dx}px), calc(-50% + ${joy.dy}px))`;
+}
+function resetJoyInput(){
+  joy.dx = 0; joy.dy = 0; joy.armed = true; joy.fastFall = false;
+  applyKnob();
+}
+function updateJoyVisibility(){
+  const show = (settings.control === "stick") && (state.mode === "play" || joy.editMode);
+  joyZone.style.display = show ? "block" : "none";
+}
+function updateJoyFromEvent(e){
+  const rect = joyBase.getBoundingClientRect();
+  if (rect.width < 4) return;
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top  + rect.height / 2;
+  let dx = e.clientX - cx;
+  let dy = e.clientY - cy;
+  const d = Math.hypot(dx, dy);
+  const maxR = joy.maxR;
+  if (d > maxR && d > 0){ dx = dx / d * maxR; dy = dy / d * maxR; }
+  joy.dx = dx; joy.dy = dy;
+  applyKnob();
+  const norm = maxR > 0 ? dy / maxR : 0;
+  if (norm < -0.48 && joy.armed){ joy.armed = false; jump(); }
+  if (norm > -0.15) joy.armed = true;
+  joy.fastFall = norm > 0.55;
+}
+function onJoyDown(e){
+  if (joy.editMode){
+    e.preventDefault(); e.stopPropagation();
+    joy.active = true; joy.pid = e.pointerId; joy.dragging = true;
+    try { joyBase.setPointerCapture(e.pointerId); } catch(_){}
+    const r = wrap.getBoundingClientRect();
+    joy.grabDX = settings.joyX - (e.clientX - r.left) / r.width;
+    joy.grabDY = settings.joyY - (e.clientY - r.top ) / r.height;
+    return;
+  }
+  e.preventDefault(); e.stopPropagation();
+  joy.active = true; joy.pid = e.pointerId; joy.dragging = false; joy.armed = true;
+  try { joyBase.setPointerCapture(e.pointerId); } catch(_){}
+  updateJoyFromEvent(e);
+}
+function onJoyMove(e){
+  if (!joy.active || e.pointerId !== joy.pid) return;
+  e.preventDefault();
+  if (joy.dragging){
+    const r = wrap.getBoundingClientRect();
+    settings.joyX = clamp((e.clientX - r.left) / r.width  + joy.grabDX, 0.08, 0.92);
+    settings.joyY = clamp((e.clientY - r.top ) / r.height + joy.grabDY, 0.10, 0.92);
+    layoutJoystick();
+    return;
+  }
+  updateJoyFromEvent(e);
+}
+function onJoyUp(e){
+  if (e && joy.pid !== null && e.pointerId !== joy.pid) return;
+  joy.active = false; joy.pid = null; joy.dragging = false;
+  resetJoyInput();
+  if (joy.editMode) saveSettings();
+}
+joyBase.addEventListener("pointerdown", onJoyDown, { passive:false });
+joyBase.addEventListener("pointermove", onJoyMove, { passive:false });
+joyBase.addEventListener("pointerup",   onJoyUp,   { passive:false });
+joyBase.addEventListener("pointercancel", onJoyUp, { passive:false });
+joyBase.addEventListener("lostpointercapture", onJoyUp);
+joyBase.addEventListener("contextmenu", e => e.preventDefault());
 
 /* =========================================================
    9. GAME FLOW
@@ -627,7 +872,7 @@ function resetWorld(){
   state.speed = BASE_SPEED * ch.speedMod * DIFF_SPEED[d];
   state.obstacles.length = 0; state.coins.length = 0;
   state.particles.length = 0; state.pops.length = 0; state.powerupDrops.length = 0;
-  state.nextObstacle = 720 / DIFF_OBST[d];
+  state.nextObstacle = 680 / DIFF_OBST[d];
   state.nextCoin = 420 * DIFF_COIN[d];
   state.nextPowerup = (700 + Math.random()*500) * DIFF_PU[d];
   state.shake = 0; state.overTimer = 0; state.nextMilestone = 250;
@@ -635,14 +880,17 @@ function resetWorld(){
   state.totalCoins = 0; state.totalPowerups = 0;
   state.ultCharge = 0; state.ultActive = false; state.ultTimer = 0;
   state.activePowerups = {}; state.slowFactor = 1; state.flashAlpha = 0;
-  state.lives = ch.id === "sage" ? 2 : 1;
-  state.level = 0;
-  state.levelBannerTimer = 0;
+  /* Character-specific lives */
+  state.lives = ch.startLives || 1;
+  state.level = 0; state.levelBannerTimer = 0;
+  state.nextSaltDash = 1500;
+  state.phoenixUsed = false;
   player.y = GROUND_Y - player.h;
   player.vy = 0; player.jumps = 0;
   player.onGround = true; player.phase = 0;
   player.invuln = 0;
-  player.shieldUp = ch.startShield;
+  player.shieldUp = !!ch.startShield;
+  resetJoyInput();
 }
 
 function startGame(){
@@ -652,6 +900,11 @@ function startGame(){
     setTimeout(() => nameInput.focus(), 100);
     return;
   }
+  /* Safety: character must be unlocked */
+  if (!isCharUnlocked(settings.character)){
+    settings.character = firstUnlockedIndex();
+    saveSettings();
+  }
   if (!isFullscreen()) enterFullscreen();
   setTimeout(resize, 80);
   resetWorld();
@@ -659,16 +912,46 @@ function startGame(){
   menuEl.classList.add("hidden"); charsEl.classList.add("hidden");
   settingsEl.classList.add("hidden"); pauseEl.classList.add("hidden");
   overEl.classList.add("hidden"); leadersEl.classList.add("hidden");
-  nameEntryEl.classList.add("hidden");
+  nameEntryEl.classList.add("hidden"); joyEditEl.classList.add("hidden");
+  joy.editMode = false; joyZone.classList.remove("edit");
   ultWrap.style.display = "flex"; ultBtn.style.display = "flex";
+  updateJoyVisibility();
   beep(520,.09,"square",.05);
+}
+
+function showLevelUpBanner(newLevel, unlockedNames){
+  let subText = "";
+  if (unlockedNames.length > 0){
+    subText = "UNLOCKED: " + unlockedNames.join(" • ");
+  } else {
+    subText = "Keep marching!";
+  }
+  levelUpEl.innerHTML = `⬆ LEVEL ${newLevel}!<div class="lv-sub">${subText}</div>`;
+  levelUpEl.classList.remove("show");
+  void levelUpEl.offsetWidth;
+  levelUpEl.classList.add("show");
 }
 
 function gameOver(reason){
   state.mode = "over";
   state.overTimer = .55;
   state.shake = .45;
+  resetJoyInput();
+  updateJoyVisibility();
   const s = Math.floor(state.score);
+
+  /* ---- Award XP ---- */
+  const xpGain = Math.max(0, s);
+  const oldLevel = playerLevel();
+  const oldUnlocked = CHARACTERS.map((_,i) => isCharUnlocked(i));
+  progress.xp += xpGain;
+  saveProgress();
+  const newLevel = playerLevel();
+  const leveledUp = newLevel > oldLevel;
+  const newlyUnlocked = CHARACTERS
+    .filter((c,i) => !oldUnlocked[i] && isCharUnlocked(i))
+    .map(c => c.name);
+
   submitScoreUnified(profile.name, s).then((rank) => {
     state.best = profile.best;
     finalEl.textContent = s.toLocaleString();
@@ -680,17 +963,28 @@ function gameOver(reason){
     if (rank === -2) rankInfo.textContent = "🌍 Score submitted to World Leaders!";
     else if (rank === -1) rankInfo.textContent = "Score saved locally.";
     else rankInfo.textContent = "Score recorded!";
+
+    xpGainLine.innerHTML = `+${xpGain.toLocaleString()} XP  •  Level <b>${newLevel}</b>` +
+      (leveledUp ? ` <span style="color:#ffd166">⬆</span>` : "");
+
     overEl.classList.remove("hidden");
     ultWrap.style.display = "none"; ultBtn.style.display = "none";
     puBar.innerHTML = "";
+
+    if (leveledUp) {
+      setTimeout(() => {
+        showLevelUpBanner(newLevel, newlyUnlocked);
+        chord([523,659,784,1046,1318], .22, "triangle", .08);
+      }, 320);
+    }
   });
   beep(300,.16,"sawtooth",.09);
   setTimeout(() => beep(180,.32,"sawtooth",.09), 110);
 }
 
 function togglePause(){
-  if (state.mode === "play"){ state.mode = "pause"; pauseEl.classList.remove("hidden"); beep(420,.07,"sine",.04); }
-  else if (state.mode === "pause"){ state.mode = "play"; pauseEl.classList.add("hidden"); beep(560,.07,"sine",.04); }
+  if (state.mode === "play"){ state.mode = "pause"; pauseEl.classList.remove("hidden"); resetJoyInput(); updateJoyVisibility(); beep(420,.07,"sine",.04); }
+  else if (state.mode === "pause"){ state.mode = "play"; pauseEl.classList.add("hidden"); updateJoyVisibility(); beep(560,.07,"sine",.04); }
 }
 
 function jump(){
@@ -699,11 +993,13 @@ function jump(){
   if (state.mode === "over"){ if (state.overTimer > 0) return; startGame(); return; }
   if (state.mode !== "play") return;
   const ch = getChar();
-  if (player.jumps < 2){
-    player.vy = player.jumps === 0 ? -JUMP_V * ch.jumpMod : -JUMP_V * ch.jumpMod * 0.86;
+  const maxJ = ch.maxJumps || 2;
+  if (player.jumps < maxJ){
+    const falloff = Math.pow(0.86, player.jumps);
+    player.vy = -JUMP_V * ch.jumpMod * falloff;
     player.jumps++;
     player.onGround = false;
-    beep(player.jumps === 1 ? 480 : 620, .09, "triangle", .05);
+    beep(player.jumps === 1 ? 480 : (player.jumps === 2 ? 620 : 740), .09, "triangle", .05);
     if (settings.particles){
       for (let i=0;i<6;i++){
         state.particles.push({ x: player.x + player.w/2 + rand(-12,12), y: GROUND_Y-4,
@@ -719,7 +1015,9 @@ function jump(){
    ========================================================= */
 function chargeUlt(amount){
   if (state.ultActive) return;
-  state.ultCharge = Math.min(100, state.ultCharge + amount);
+  const ch = getChar();
+  const mult = ch.ultChargeMult || 1;
+  state.ultCharge = Math.min(100, state.ultCharge + amount * mult);
   if (state.ultCharge >= 100){
     ultWrap.classList.add("ready"); ultBtn.classList.add("ready");
     ultBtn.textContent = "READY";
@@ -782,7 +1080,7 @@ function updatePowerups(dt){
     } else {
       if (key === "slow") slow = 0.55;
       if (key === "magnet"){
-        const range = getChar().magnetRange + 100;
+        const range = (getChar().magnetRange || 0) + 100;
         for (const c of state.coins){
           const dx = player.x+player.w/2 - c.x;
           const dy = player.y+player.h/2 - c.y;
@@ -853,7 +1151,7 @@ function showCombo(text){
    13. COLLISION
    ========================================================= */
 function aabbHit(p,o){
-  const pad = 7;
+  const pad = 6;
   return p.x+pad < o.x+o.w && p.x+p.w-pad > o.x &&
          p.y+pad < o.y+o.h && p.y+p.h-pad > o.y;
 }
@@ -877,6 +1175,7 @@ function update(dt){
   if (state.levelBannerTimer > 0) state.levelBannerTimer -= dt;
 
   updatePowerups(dt);
+  updateJoyVisibility();
 
   if (state.comboTimer > 0){
     state.comboTimer -= dt;
@@ -896,17 +1195,29 @@ function update(dt){
     state.time += dt;
     const ch = getChar();
     const d = getDiff();
-    
-    // ✅ NEW SPEED LOGIC: Normal speed until 30,000 meters, then gradually increase
+
     let speedBonus = 0;
-    if (state.score > 30000) {
-        // Gradually increase speed after 30,000 points. Cap the increase at 480.
-        speedBonus = Math.min((state.score - 30000) * 0.01, 480);
-    }
-    
+    if (state.score > 30000) speedBonus = Math.min((state.score - 30000) * 0.013, 520);
+
     state.speed = (BASE_SPEED + speedBonus) * ch.speedMod * state.slowFactor * DIFF_SPEED[d];
     state.score += state.speed * dt * 0.022 * ch.scoreMod
                   * (state.activePowerups.double ? 2 : 1);
+
+    /* Character: Salt Dash — every 1500 pts auto-boost */
+    if (ch.saltDash && state.score >= state.nextSaltDash){
+      state.nextSaltDash += 1500;
+      state.activePowerups.boost = 2.0;
+      showCombo("⚡ SALT DASH!");
+      chord([700, 900, 1200], .1, "triangle", .06);
+      if (settings.particles){
+        for (let i=0;i<22;i++){
+          const a = Math.random()*TAU, sp = 100+Math.random()*240;
+          state.particles.push({ x: player.x+player.w/2, y: player.y+player.h/2,
+            vx: Math.cos(a)*sp, vy: Math.sin(a)*sp-40,
+            life:1, color: "#06d6a0", r: 2+Math.random()*4 });
+        }
+      }
+    }
 
     if (state.score >= state.nextMilestone){
       chord([660,880,1100],.12,"triangle",.045);
@@ -925,12 +1236,10 @@ function update(dt){
       if (settings.particles){
         for (let i=0;i<80;i++){
           const a = Math.random()*TAU, sp = 120+Math.random()*500;
-          state.particles.push({
-            x: W*0.5, y: H*0.5,
+          state.particles.push({ x: W*0.5, y: H*0.5,
             vx: Math.cos(a)*sp, vy: Math.sin(a)*sp,
             life:1, color: ["#c8102e","#012169","#ffffff","#ffd166"][i%4],
-            r: 3+Math.random()*6
-          });
+            r: 3+Math.random()*6 });
         }
       }
     }
@@ -954,7 +1263,11 @@ function update(dt){
   if (state.mode !== "play"){ player.phase += dt*7; return; }
 
   if (player.invuln > 0) player.invuln -= dt;
-  player.vy += GRAVITY*dt;
+
+  const fastFall = (settings.control === "stick" && joy.fastFall && !player.onGround);
+  player.vy += GRAVITY * (fastFall ? 2.0 : 1) * dt;
+  if (fastFall && player.vy > 1900) player.vy = 1900;
+
   player.y  += player.vy*dt;
   const groundTop = GROUND_Y - player.h;
   if (player.y >= groundTop){
@@ -964,10 +1277,25 @@ function update(dt){
   if (player.onGround) player.phase += state.speed*dt*0.046;
 
   const d = getDiff();
+  const ch = getChar();
+
+  /* Character: Charkha Spinner — always-on magnet */
+  if (ch.magnetRange > 0 && !state.activePowerups.magnet){
+    for (const c of state.coins){
+      const dx = player.x+player.w/2 - c.x;
+      const dy = player.y+player.h/2 - c.y;
+      const dist = Math.hypot(dx,dy);
+      if (dist < ch.magnetRange && dist > 1){
+        c.x += (dx/dist) * 360 * dt;
+        c.y += (dy/dist) * 360 * dt;
+      }
+    }
+  }
+
   state.nextObstacle -= state.speed*dt;
   if (state.nextObstacle <= 0){
     spawnObstacle();
-    state.nextObstacle = state.speed * rand(0.75, 1.5) / DIFF_OBST[d];
+    state.nextObstacle = state.speed * rand(0.68, 1.36) / DIFF_OBST[d];
   }
   state.nextCoin -= state.speed*dt;
   if (state.nextCoin <= 0){
@@ -980,6 +1308,8 @@ function update(dt){
     state.nextPowerup = state.speed * rand(3.5,7) * DIFF_PU[d];
   }
 
+  /* --- Obstacles --- */
+  let phoenixSaved = false;
   for (let i=state.obstacles.length-1;i>=0;i--){
     const o = state.obstacles[i];
     o.x -= state.speed*dt;
@@ -1015,6 +1345,12 @@ function update(dt){
         beep(260,.25,"sawtooth",.09);
         continue;
       }
+      /* Character: Freedom Phoenix — revive once */
+      if (ch.phoenix && !state.phoenixUsed){
+        state.phoenixUsed = true;
+        phoenixSaved = true;
+        break;
+      }
 
       spawnParticles(player.x+player.w/2, player.y+player.h/2, "#ff4444", 30);
       state.flashAlpha = 0.7;
@@ -1025,16 +1361,32 @@ function update(dt){
     }
   }
 
+  if (phoenixSaved){
+    for (const o of state.obstacles){
+      spawnParticles(o.x + o.w/2, o.y + o.h/2, "#ff3366", 10);
+    }
+    state.obstacles.length = 0;
+    player.invuln = 2.6;
+    state.shake = 0.85;
+    state.flashAlpha = 0.9;
+    state.flashColor = "#ff3366";
+    chargeUlt(35);
+    showCombo("🔥 REBIRTH!");
+    chord([523, 659, 784, 1046, 1318], .22, "triangle", .09);
+    setTimeout(() => showCombo("PHOENIX RISES"), 500);
+  }
+
+  /* --- Coins --- */
   for (let i=state.coins.length-1;i>=0;i--){
     const c = state.coins[i];
     c.x -= state.speed*dt; c.rot += dt*3.2;
     if (c.x+c.r < -80){ state.coins.splice(i,1); continue; }
     if (circleHit(c)){
-      const ch = getChar();
       const isC = c.type === "charkha";
       const base = isC ? 50 : 10;
       const comboBonus = 1 + state.combo*0.1;
-      const gained = Math.round(base * ch.scoreMod * comboBonus *
+      const coinMult = ch.coinMult || 1;
+      const gained = Math.round(base * ch.scoreMod * coinMult * comboBonus *
         (state.activePowerups.double?2:1) * (settings.difficulty+1));
       state.score += gained;
       state.totalCoins++;
@@ -1667,6 +2019,22 @@ function drawSage(x,y,w,h,phase,onGround){
     mustache:"#8a7048", ink:"#3a2a18"
   });
 }
+function drawDandi(x,y,w,h,phase,onGround){
+  drawVishuGandhi(x, y, w, h, phase, onGround, {
+    skin:"#06d6a0", skinHi:"#a7f3d0", skinSh:"#028a63",
+    cloth:"#ffffff", clothSh:"#d0e8dc",
+    glass:"rgba(6,214,160,0.55)", frame:"#027a5a",
+    mustache:"#0a5a40", ink:"#042a1e"
+  });
+}
+function drawPhoenix(x,y,w,h,phase,onGround){
+  drawVishuGandhi(x, y, w, h, phase, onGround, {
+    skin:"#ff6680", skinHi:"#ff99aa", skinSh:"#c02040",
+    cloth:"#ffe066", clothSh:"#e0a020",
+    glass:"rgba(255,100,80,0.6)", frame:"#a01020",
+    mustache:"#7a0010", ink:"#4a0008"
+  });
+}
 
 /* =========================================================
    19. DRAW — PARTICLES, POPS, HUD
@@ -1741,7 +2109,7 @@ function drawHUD(){
     ctx.strokeText(lv, W-78, ly); ctx.fillText(lv, W-78, ly);
   }
 
-  const pct = Math.min(1, (state.speed - BASE_SPEED) / 500);
+  const pct = Math.min(1, (state.speed - BASE_SPEED) / 520);
   const bw = 190, bh = 9, bx = W-78-bw;
   const by = state.lives > 1 ? (profile.name ? 100 : 78) : (profile.name ? 78 : 60);
   ctx.fillStyle = "rgba(0,0,0,.22)";
@@ -1816,6 +2184,8 @@ function render(){
   if (ch.id === "ultra") drawUltimate(player.x, py, player.w, player.h, player.phase, player.onGround, state.ultActive);
   else if (ch.id === "spinner") drawSpinner(player.x, py, player.w, player.h, player.phase, player.onGround);
   else if (ch.id === "sage") drawSage(player.x, py, player.w, player.h, player.phase, player.onGround);
+  else if (ch.id === "dandi") drawDandi(player.x, py, player.w, player.h, player.phase, player.onGround);
+  else if (ch.id === "phoenix") drawPhoenix(player.x, py, player.w, player.h, player.phase, player.onGround);
   else drawVishu(player.x, py, player.w, player.h, player.phase, player.onGround);
 
   if (player.shieldUp || state.ultActive){
@@ -1889,6 +2259,8 @@ function drawMiniCharToCtx(g, char, x, y, w, h, phase, onGround){
   if (char.id === "ultra"){ skin="#e8956a"; skinHi="#ffb98a"; skinSh="#b85a30"; cloth="#ffb066"; clothSh="#e08540"; glass="rgba(255,220,120,0.6)"; frame="#ffe066"; must="#ffe066"; ink="#fff2c0"; }
   else if (char.id === "spinner"){ skin="#7ab8e0"; skinHi="#a0d0f0"; skinSh="#4a88b0"; cloth="#e8f4ff"; clothSh="#b8d8f0"; glass="rgba(120,200,255,0.6)"; frame="#1a5a8a"; must="#5a9ac0"; ink="#0a3a5a"; }
   else if (char.id === "sage"){ skin="#c9a96e"; skinHi="#e8c890"; skinSh="#9a7a48"; cloth="#f5e6c8"; clothSh="#d8c49a"; glass="rgba(220,200,140,0.55)"; frame="#6a5030"; must="#8a7048"; ink="#3a2a18"; }
+  else if (char.id === "dandi"){ skin="#06d6a0"; skinHi="#a7f3d0"; skinSh="#028a63"; cloth="#ffffff"; clothSh="#d0e8dc"; glass="rgba(6,214,160,0.55)"; frame="#027a5a"; must="#0a5a40"; ink="#042a1e"; }
+  else if (char.id === "phoenix"){ skin="#ff6680"; skinHi="#ff99aa"; skinSh="#c02040"; cloth="#ffe066"; clothSh="#e0a020"; glass="rgba(255,100,80,0.6)"; frame="#a01020"; must="#7a0010"; ink="#4a0008"; }
   else { skin="#b97b52"; skinHi="#d99a6e"; skinSh="#8f5a39"; cloth="#fcfaf4"; clothSh="#e3ddd0"; glass="rgba(140,180,230,0.55)"; frame="#4a4a4a"; must="#3a2a1c"; ink="#221a14"; }
   const torsoW = w*0.62;
   const tX = cx - torsoW/2, tY = torsoTop + torsoH*0.06, tH = torsoH*0.94;
@@ -1966,14 +2338,27 @@ function drawMiniCharToCtx(g, char, x, y, w, h, phase, onGround){
 
 function buildCharGrid(){
   charGrid.innerHTML = "";
+  const lv = playerLevel();
   CHARACTERS.forEach((c, i) => {
-    const locked = profile.best < c.unlockScore;
+    const unlocked = isCharUnlocked(i);
     const card = document.createElement("div");
-    card.className = "char-card" + (i === settings.character ? " sel" : "") + (locked ? " locked" : "");
+    card.className = "char-card" + (i === settings.character ? " sel" : "") + (unlocked ? "" : " locked");
+
+    let lockHtml = "";
+    if (!unlocked){
+      lockHtml = `<div class="char-lock">
+        <span class="lk-ico">🔒</span>
+        <span class="lk-lvl">Level ${c.unlockLevel}</span>
+        <span class="lk-prog">You: Lv ${lv}</span>
+      </div>`;
+    }
+
     card.innerHTML = `
       <canvas width="120" height="120"></canvas>
       <div class="char-name">${c.name}</div>
       <div class="char-tag">${c.tag}</div>
+      <div class="char-power">${c.power}</div>
+      ${lockHtml}
     `;
     const cc = card.querySelector("canvas");
     const cctx = cc.getContext("2d");
@@ -1983,7 +2368,8 @@ function buildCharGrid(){
     cctx.translate(4, 4);
     drawMiniCharToCtx(cctx, c, 4, 4, 42, 68, performance.now()/400, true);
     cctx.restore();
-    if (!locked){
+
+    if (unlocked){
       card.addEventListener("click", () => {
         settings.character = i;
         saveSettings();
@@ -1991,10 +2377,16 @@ function buildCharGrid(){
         charHint.textContent = c.name + " — " + c.desc;
         beep(660,.08,"triangle",.05);
       });
+    } else {
+      card.addEventListener("click", () => {
+        charHint.textContent = `🔒 ${c.name} unlocks at Level ${c.unlockLevel}. (You're Level ${lv})`;
+        beep(200,.1,"square",.05);
+      });
     }
     charGrid.appendChild(card);
   });
-  charHint.textContent = getChar().name + " — " + getChar().desc;
+  const sel = getChar();
+  charHint.textContent = `${sel.name} — ${sel.power} • ${sel.desc}`;
 }
 
 /* --- buttons --- */
@@ -2008,13 +2400,14 @@ document.getElementById("quitBtn").addEventListener("click", e => {
   menuEl.classList.remove("hidden");
   ultWrap.style.display = "none";
   ultBtn.style.display = "none";
+  updateJoyVisibility();
   updateMenuProfile();
 });
 document.getElementById("charsBtn").addEventListener("click", e => { e.stopPropagation(); menuEl.classList.add("hidden"); charsEl.classList.remove("hidden"); buildCharGrid(); });
 document.getElementById("charsBack").addEventListener("click", e => { e.stopPropagation(); charsEl.classList.add("hidden"); menuEl.classList.remove("hidden"); updateMenuProfile(); });
-document.getElementById("settingsBtn").addEventListener("click", e => { e.stopPropagation(); menuEl.classList.add("hidden"); settingsEl.classList.remove("hidden"); });
+document.getElementById("settingsBtn").addEventListener("click", e => { e.stopPropagation(); menuEl.classList.add("hidden"); settingsEl.classList.remove("hidden"); syncJoystickUI(); });
 document.getElementById("settingsBack").addEventListener("click", e => { e.stopPropagation(); settingsEl.classList.add("hidden"); menuEl.classList.remove("hidden"); });
-document.getElementById("pauseSettingsBtn").addEventListener("click", e => { e.stopPropagation(); pauseEl.classList.add("hidden"); settingsEl.classList.remove("hidden"); state.mode = "pause-settings"; });
+document.getElementById("pauseSettingsBtn").addEventListener("click", e => { e.stopPropagation(); pauseEl.classList.add("hidden"); settingsEl.classList.remove("hidden"); state.mode = "pause-settings"; syncJoystickUI(); });
 document.getElementById("overCharsBtn").addEventListener("click", e => { e.stopPropagation(); overEl.classList.add("hidden"); charsEl.classList.remove("hidden"); buildCharGrid(); });
 
 /* --- leaderboard --- */
@@ -2074,15 +2467,97 @@ bindToggle("tglShake","shake");
 bindToggle("tglParticles","particles");
 bindToggle("tglFps","showFps");
 
-document.querySelectorAll(".diff-btn").forEach(btn => {
+document.querySelectorAll(".diff-btn[data-diff]").forEach(btn => {
   btn.classList.toggle("sel", parseInt(btn.dataset.diff,10) === settings.difficulty);
   btn.addEventListener("click", () => {
     settings.difficulty = parseInt(btn.dataset.diff,10);
     saveSettings();
-    document.querySelectorAll(".diff-btn").forEach(b =>
+    document.querySelectorAll(".diff-btn[data-diff]").forEach(b =>
       b.classList.toggle("sel", parseInt(b.dataset.diff,10) === settings.difficulty));
     beep(600,.06,"triangle",.04);
   });
+});
+
+/* =========================================================
+   22b. CONTROL SCHEME / JOYSTICK SETTINGS UI
+   ========================================================= */
+const ctrlRow = document.getElementById("ctrlRow");
+const joySizeRange = document.getElementById("joySizeRange");
+const joyOpRange   = document.getElementById("joyOpRange");
+const editSize     = document.getElementById("editSize");
+const editOp       = document.getElementById("editOp");
+
+function syncJoystickUI(){
+  joySizeRange.value = Math.round(settings.joySize * 100);
+  joyOpRange.value   = Math.round(settings.joyOpacity * 100);
+  editSize.value     = Math.round(settings.joySize * 100);
+  editOp.value       = Math.round(settings.joyOpacity * 100);
+  ctrlRow.querySelectorAll(".diff-btn").forEach(b =>
+    b.classList.toggle("sel", b.dataset.ctrl === settings.control));
+  layoutJoystick();
+  updateJoyVisibility();
+}
+
+ctrlRow.querySelectorAll(".diff-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    settings.control = btn.dataset.ctrl;
+    saveSettings();
+    syncJoystickUI();
+    beep(660,.06,"triangle",.045);
+  });
+});
+
+joySizeRange.addEventListener("input", () => {
+  settings.joySize = parseInt(joySizeRange.value,10) / 100;
+  editSize.value = joySizeRange.value;
+  layoutJoystick(); saveSettings();
+});
+joyOpRange.addEventListener("input", () => {
+  settings.joyOpacity = parseInt(joyOpRange.value,10) / 100;
+  editOp.value = joyOpRange.value;
+  layoutJoystick(); saveSettings();
+});
+editSize.addEventListener("input", () => {
+  settings.joySize = parseInt(editSize.value,10) / 100;
+  joySizeRange.value = editSize.value;
+  layoutJoystick(); saveSettings();
+});
+editOp.addEventListener("input", () => {
+  settings.joyOpacity = parseInt(editOp.value,10) / 100;
+  joyOpRange.value = editOp.value;
+  layoutJoystick(); saveSettings();
+});
+
+document.getElementById("editJoyBtn").addEventListener("click", e => {
+  e.stopPropagation();
+  settings.control = "stick";
+  saveSettings();
+  syncJoystickUI();
+  settingsEl.classList.add("hidden");
+  joyEditEl.classList.remove("hidden");
+  joy.editMode = true;
+  joyZone.classList.add("edit");
+  updateJoyVisibility();
+  layoutJoystick();
+  beep(700,.09,"triangle",.05);
+});
+function closeJoyEditor(){
+  joy.editMode = false;
+  joyZone.classList.remove("edit");
+  joyEditEl.classList.add("hidden");
+  settingsEl.classList.remove("hidden");
+  resetJoyInput();
+  saveSettings();
+  syncJoystickUI();
+  beep(520,.08,"triangle",.045);
+}
+document.getElementById("joyDone").addEventListener("click", e => { e.stopPropagation(); closeJoyEditor(); });
+document.getElementById("joyReset").addEventListener("click", e => {
+  e.stopPropagation();
+  settings.joyX = 0.80; settings.joyY = 0.74;
+  settings.joySize = 0.15; settings.joyOpacity = 0.60;
+  layoutJoystick(); syncJoystickUI(); saveSettings();
+  beep(440,.08,"sine",.05);
 });
 
 ultBtn.addEventListener("click", e => { e.stopPropagation(); activateUlt(); });
@@ -2105,7 +2580,11 @@ window.addEventListener("keyup", e => {
   if (["Space","ArrowUp","KeyW","KeyP","Escape","KeyF","KeyU"].includes(e.code)) e.preventDefault();
 }, { passive: false });
 
-cvs.addEventListener("pointerdown", e => { e.preventDefault(); jump(); }, { passive: false });
+cvs.addEventListener("pointerdown", e => {
+  e.preventDefault();
+  if (settings.control === "stick") return;
+  jump();
+}, { passive: false });
 cvs.addEventListener("touchstart", e => { e.preventDefault(); }, { passive: false });
 document.addEventListener("contextmenu", e => e.preventDefault());
 
@@ -2116,9 +2595,16 @@ resize();
 player.y = GROUND_Y - player.h;
 state.best = profile.best;
 bestEl.textContent = profile.best.toLocaleString();
+/* Ensure selected character is unlocked */
+if (!isCharUnlocked(settings.character)){
+  settings.character = firstUnlockedIndex();
+  saveSettings();
+}
 updateFsButton();
 buildCharGrid();
 updateMenuProfile();
+syncJoystickUI();
+updateJoyVisibility();
 
 const ok = initSupabase();
 if (ok){
@@ -2153,4 +2639,4 @@ requestAnimationFrame(loop);
 })();
 </script>
 </body>
-     </html>
+ </html>
