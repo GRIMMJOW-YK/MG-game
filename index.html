@@ -1,12 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
 <meta name="theme-color" content="#120b06" />
-<meta name="google-site-verification" content="_Ky7VpzRnqhv5UC0YjBkHlzLWPTgVbeC1F7Tr5Uln0A" />
-<title>Gandhi Run — The Salt March Runner: Ultimate</title>
+<title>Gandhi Bhai — The Salt March Runner: Ultimate</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -38,7 +36,6 @@
   .stat{font-size:1.05em;color:#ffe9c7}
   .stat b{color:#ffc247;font-size:1.2em}
 
-  /* ===== PLAYER BAR / LEVEL ===== */
   .player-bar{display:flex;align-items:center;gap:.55em;padding:.38em .9em;border-radius:99px;background:rgba(255,255,255,.07);border:1px solid rgba(255,200,120,.28);font-size:.78em;letter-spacing:.03em;box-shadow:0 2px 10px rgba(0,0,0,.3);margin:.15em 0;}
   .player-bar .avatar{width:1.7em;height:1.7em;border-radius:50%;background:linear-gradient(180deg,#ffd47a,#ff9e1b);display:flex;align-items:center;justify-content:center;font-weight:900;color:#3a1c00;font-size:1em;box-shadow:0 2px 6px rgba(0,0,0,.35);flex-shrink:0;}
   .player-bar .pname{font-weight:900;color:#ffe9c7;max-width:9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -76,15 +73,14 @@
   #fsBtn.on .ico-enter{display:none}
   #fsBtn.on .ico-exit{display:block}
 
-  /* ===== CHARACTER GRID ===== */
   .char-grid{display:flex;gap:.7em;flex-wrap:wrap;justify-content:center;margin:.5em 0;max-width:min(58em,92vw);}
   .char-card{width:9.6em;padding:.7em .5em .6em;border-radius:14px;background:rgba(255,255,255,.06);border:2px solid rgba(255,200,120,.2);cursor:pointer;transition:transform .12s,border-color .15s,background .15s;display:flex;flex-direction:column;align-items:center;gap:.3em;position:relative;overflow:hidden;}
   .char-card:hover{transform:translateY(-3px);background:rgba(255,255,255,.1)}
   .char-card.sel{border-color:#ffc247;background:rgba(255,194,71,.12);box-shadow:0 0 24px rgba(255,180,60,.35)}
   .char-card canvas{width:4.8em;height:4.8em;display:block}
-  .char-name{font-size:.76em;font-weight:900;letter-spacing:.04em;color:#ffe9c7;line-height:1.15;text-align:center}
-  .char-tag{font-size:.58em;color:#cbb79c;letter-spacing:.05em;opacity:.9;text-align:center;line-height:1.15}
-  .char-power{font-size:.56em;color:#ffd166;font-weight:900;letter-spacing:.05em;text-transform:uppercase;padding:.18em .55em;border-radius:6px;background:rgba(255,200,80,.15);border:1px solid rgba(255,200,80,.35);margin-top:.1em;text-align:center;line-height:1.2;}
+  .char-name{font-size:.72em;font-weight:900;letter-spacing:.04em;color:#ffe9c7;line-height:1.15;text-align:center}
+  .char-tag{font-size:.56em;color:#cbb79c;letter-spacing:.05em;opacity:.9;text-align:center;line-height:1.15}
+  .char-power{font-size:.54em;color:#ffd166;font-weight:900;letter-spacing:.05em;text-transform:uppercase;padding:.18em .5em;border-radius:6px;background:rgba(255,200,80,.15);border:1px solid rgba(255,200,80,.35);margin-top:.1em;text-align:center;line-height:1.2;}
   .char-card.locked{cursor:not-allowed;}
   .char-card.locked canvas{filter:grayscale(1) brightness(.55);}
   .char-card.locked .char-name,.char-card.locked .char-tag,.char-card.locked .char-power{opacity:.5}
@@ -105,7 +101,7 @@
   .diff-btn:hover{background:rgba(255,255,255,.1)}
   .diff-btn.sel{background:linear-gradient(180deg,#ffd47a,#ff9e1b);color:#3a1c00;border-color:transparent}
   .diff-btn:active{transform:none;box-shadow:none}
-  .pu-bar{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);left:50%;transform:translateX(-50%);z-index:15;display:flex;gap:8px;pointer-events:none;}
+  .pu-bar{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);left:50%;transform:translateX(-50%);z-index:15;display:flex;gap:8px;pointer-events:none;flex-wrap:wrap;justify-content:center;max-width:70vw;}
   .pu-chip{display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:99px;font-size:clamp(9px,1.25vmin,14px);font-weight:900;letter-spacing:.04em;background:rgba(10,6,3,.72);border:1.5px solid rgba(255,255,255,.18);color:#fff;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 3px 12px rgba(0,0,0,.4);animation:chipIn .25s ease;}
   @keyframes chipIn{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
   .pu-chip .dot{width:7px;height:7px;border-radius:50%}
@@ -130,41 +126,24 @@
   .combo-pop.show{animation:comboAnim .7s ease forwards}
   @keyframes comboAnim{0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}30%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}60%{transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-60%) scale(1)}}
 
-  /* ===== LEVEL UP BANNER ===== */
   .level-up{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);font-size:clamp(22px,5vmin,52px);font-weight:900;color:#ffd166;text-shadow:0 0 26px rgba(255,200,80,.9),0 4px 12px rgba(0,0,0,.7);pointer-events:none;z-index:27;opacity:0;letter-spacing:.08em;text-align:center;line-height:1.15;}
   .level-up .lv-sub{font-size:.45em;color:#fff;letter-spacing:.15em;margin-top:.3em;text-shadow:0 2px 8px rgba(0,0,0,.9);}
   .level-up.show{animation:lvlAnim 2.4s ease forwards}
   @keyframes lvlAnim{0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}12%{opacity:1;transform:translate(-50%,-50%) scale(1.18)}22%{transform:translate(-50%,-50%) scale(1)}82%{opacity:1}100%{opacity:0;transform:translate(-50%,-72%) scale(1)}}
 
-  /* ===== RANGE SLIDERS ===== */
+  .weather-badge{position:absolute;top:calc(env(safe-area-inset-top,0px) + 60px);right:calc(env(safe-area-inset-right,0px) + 12px);z-index:16;padding:4px 10px;border-radius:99px;background:rgba(10,6,3,.6);border:1px solid rgba(255,200,120,.25);color:#ffd9a0;font-size:clamp(9px,1.2vmin,13px);font-weight:900;letter-spacing:.1em;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity .3s;pointer-events:none;}
+  .weather-badge.show{opacity:1;}
+
   input[type=range]{-webkit-appearance:none;appearance:none;width:9em;max-width:40vw;height:1.5em;background:transparent;cursor:pointer;margin:0;}
   input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:99px;background:rgba(255,255,255,.18);}
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:linear-gradient(180deg,#ffd47a,#ff9e1b);margin-top:-6px;box-shadow:0 2px 6px rgba(0,0,0,.45);border:none;}
   input[type=range]::-moz-range-track{height:6px;border-radius:99px;background:rgba(255,255,255,.18);}
   input[type=range]::-moz-range-thumb{width:18px;height:18px;border:none;border-radius:50%;background:linear-gradient(180deg,#ffd47a,#ff9e1b);box-shadow:0 2px 6px rgba(0,0,0,.45);}
 
-  /* ===== JOYSTICK ===== */
   #joyZone{position:absolute;inset:0;z-index:34;pointer-events:none;display:none;}
-  #joyBase{
-    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-    border-radius:50%;
-    background:radial-gradient(circle at 50% 42%, rgba(255,255,255,.14), rgba(0,0,0,.30));
-    border:2px solid rgba(255,200,120,.50);
-    box-shadow:0 8px 26px rgba(0,0,0,.5), inset 0 0 28px rgba(255,180,80,.14);
-    pointer-events:auto;touch-action:none;
-    backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
-    transition:border-color .2s, box-shadow .2s;
-  }
-  #joyKnob{
-    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-    border-radius:50%;
-    background:radial-gradient(circle at 36% 30%, #fff0c8, #ff9e1b 68%, #d97a00);
-    border:2px solid rgba(255,255,255,.4);
-    box-shadow:0 5px 16px rgba(0,0,0,.55), inset 0 -3px 8px rgba(140,60,0,.45);
-    pointer-events:none;
-    will-change:transform;
-  }
-  #joyZone .edit #joyBase{border-style:dashed;border-color:#ffd166;box-shadow:0 0 34px rgba(255,200,80,.55), inset 0 0 28px rgba(255,180,80,.18);}
+  #joyBase{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle at 50% 42%, rgba(255,255,255,.14), rgba(0,0,0,.30));border:2px solid rgba(255,200,120,.50);box-shadow:0 8px 26px rgba(0,0,0,.5), inset 0 0 28px rgba(255,180,80,.14);pointer-events:auto;touch-action:none;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:border-color .2s, box-shadow .2s;}
+  #joyKnob{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle at 36% 30%, #fff0c8, #ff9e1b 68%, #d97a00);border:2px solid rgba(255,255,255,.4);box-shadow:0 5px 16px rgba(0,0,0,.55), inset 0 -3px 8px rgba(140,60,0,.45);pointer-events:none;will-change:transform;}
+  #joyZone.edit #joyBase{border-style:dashed;border-color:#ffd166;box-shadow:0 0 34px rgba(255,200,80,.55), inset 0 0 28px rgba(255,180,80,.18);}
   #joyZone.edit #joyKnob{opacity:.85}
   .joy-hint{position:absolute;left:50%;top:calc(50% + 3.2em);transform:translateX(-50%);font-size:.68em;letter-spacing:.14em;color:#ffd166;font-weight:900;text-transform:uppercase;white-space:nowrap;pointer-events:none;text-shadow:0 2px 8px rgba(0,0,0,.8);opacity:0;transition:opacity .2s;}
   #joyZone.edit .joy-hint{opacity:1}
@@ -187,8 +166,8 @@
   </div>
   <div class="combo-pop" id="comboPop"></div>
   <div class="level-up" id="levelUp"></div>
+  <div class="weather-badge" id="weatherBadge"></div>
 
-  <!-- ===== JOYSTICK ===== -->
   <div id="joyZone">
     <div id="joyBase"><div id="joyKnob"></div></div>
     <div class="joy-hint">Drag to move</div>
@@ -223,8 +202,8 @@
     <p class="how">
       Jump <b>barricades</b> &nbsp;•&nbsp; Collect <b>salt</b>, <b>charkhas</b> &amp; <b>power-ups</b><br>
       Fill the <b>Ultimate meter</b> to transform!<br>
-      Earn <b>XP</b> every run to level up &amp; unlock new leaders!<br>
-      Hit <b style="color:#ffd166">20,000 points</b> to unlock the <b style="color:#ff4444">British Era</b>
+      Survive <b>weather</b> &amp; <b>birds</b> &nbsp;•&nbsp; Reach <b style="color:#ffd166">50k</b> for <b style="color:#ff5fd6">Neon Mode</b><br>
+      Reach <b style="color:#ffd166">20,000</b> for <b style="color:#ff4444">British Era</b>
     </p>
     <div class="btn-row" style="margin-top:.5em">
       <button id="startBtn">Start the March</button>
@@ -248,7 +227,7 @@
 
   <div class="overlay hidden" id="chars">
     <h2>Choose Your Leader</h2>
-    <p class="how" style="margin-bottom:.2em">Level up to unlock. Each leader has a unique power.</p>
+    <p class="how" style="margin-bottom:.2em">Level up to unlock 11 unique heroes &amp; powers.</p>
     <div class="char-grid" id="charGrid"></div>
     <p class="sel-hint" id="charHint">Tap a card to select</p>
     <button id="charsBack" class="btn-sm">Back</button>
@@ -260,6 +239,7 @@
       <div class="set-row"><label>Sound Effects</label><button class="toggle on" id="tglSound"></button></div>
       <div class="set-row"><label>Screen Shake</label><button class="toggle on" id="tglShake"></button></div>
       <div class="set-row"><label>Particle Effects</label><button class="toggle on" id="tglParticles"></button></div>
+      <div class="set-row"><label>Weather FX</label><button class="toggle on" id="tglWeather"></button></div>
       <div class="set-row"><label>Show FPS</label><button class="toggle" id="tglFps"></button></div>
       <div class="set-row">
         <label>Difficulty</label>
@@ -341,46 +321,34 @@ let realtimeChannel = null;
 
 function initSupabase() {
   try {
-    if (!window.supabase || !window.supabase.createClient) {
-      console.error("❌ Supabase SDK not loaded.");
-      return false;
-    }
+    if (!window.supabase || !window.supabase.createClient) return false;
     supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    console.log("✅ Supabase client ready:", SUPABASE_URL);
     return true;
-  } catch (e) {
-    console.error("❌ Supabase init failed:", e);
-    return false;
-  }
+  } catch (e) { console.error("❌ Supabase init failed:", e); return false; }
 }
-
 async function submitScoreCloud(name, score){
   if (!supabase) return false;
   try {
-    const { data, error: selectError } = await supabase
-      .from('scores').select('id, score').eq('name', name).maybeSingle();
-    if (selectError) { console.error("❌ Select error:", selectError.message); return false; }
+    const { data, error: selectError } = await supabase.from('scores').select('id, score').eq('name', name).maybeSingle();
+    if (selectError) return false;
     if (!data) {
       const { error: insertError } = await supabase.from('scores').insert([{ name: name, score: score }]);
-      if (insertError) { console.error("❌ Insert error:", insertError.message); return false; }
+      if (insertError) return false;
     } else if (score > data.score) {
       const { error: updateError } = await supabase.from('scores').update({ score: score }).eq('id', data.id);
-      if (updateError) { console.error("❌ Update error:", updateError.message); return false; }
+      if (updateError) return false;
     }
     return true;
-  } catch (e) { console.error("❌ Submit threw:", e); return false; }
+  } catch (e) { return false; }
 }
-
 function fetchLeaderboard(){
   if (!supabase) return Promise.resolve(null);
   return supabase.from('scores').select('name, score').order('score', { ascending: false }).limit(30)
     .then(({ data, error }) => {
-      if (error) { console.error("❌ Supabase select error:", error.message); return null; }
+      if (error) return null;
       return (data || []).map(d => ({ name: d.name, score: d.score }));
-    })
-    .catch(err => { console.error("❌ Select threw:", err); return null; });
+    }).catch(() => null);
 }
-
 function listenLeaderboard(callback){
   if (!supabase) return;
   try {
@@ -391,11 +359,11 @@ function listenLeaderboard(callback){
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'scores' },
           () => { fetchLeaderboard().then(list => { if (list) callback(list); }); })
       .subscribe();
-  } catch (e) { console.warn("Realtime subscribe failed:", e); }
+  } catch (e) {}
 }
 
 /* =========================================================
-   0. CONSTANTS & UTILITIES
+   0. CONSTANTS  — ⚡ EASY MODE IS NOW MUCH TOUGHER
    ========================================================= */
 const cvs = document.getElementById("game");
 const ctx = cvs.getContext("2d", { alpha:false });
@@ -405,13 +373,16 @@ const H = 540;
 let   W = 960;
 let   GROUND_Y = H - 96;
 
-const GRAVITY = 2400, JUMP_V = 830, BASE_SPEED = 348;
+/* Higher base speed + steeper difficulty curve */
+const GRAVITY = 2400, JUMP_V = 830, BASE_SPEED = 368;
 const BRITISH_LEVEL_SCORE = 20000;
+const NEON_LEVEL_SCORE    = 50000;
 
-const DIFF_SPEED = [1.06, 1.30, 1.60, 1.95];
-const DIFF_OBST  = [0.85, 1.15, 1.55, 2.00];
-const DIFF_COIN  = [1.10, 0.90, 0.75, 0.60];
-const DIFF_PU    = [1.10, 1.00, 0.85, 0.70];
+/* Easy jumped from [1.06 / 0.85] to [1.18 / 1.02] — noticeably harder */
+const DIFF_SPEED = [1.18, 1.44, 1.78, 2.15];
+const DIFF_OBST  = [1.02, 1.30, 1.72, 2.18];
+const DIFF_COIN  = [1.00, 0.85, 0.72, 0.58];
+const DIFF_PU    = [0.96, 0.90, 0.78, 0.66];
 function getDiff(){ return settings.difficulty|0; }
 
 let scale = 1, offX = 0, offY = 0, dpr = 1;
@@ -441,7 +412,7 @@ function escapeHtml(s){
    ========================================================= */
 let actx = null;
 const settings = {
-  sound: true, shake: true, particles: true, showFps: false,
+  sound: true, shake: true, particles: true, weatherFx: true, showFps: false,
   difficulty: 1, character: 0,
   control: "tap",
   joyX: 0.80, joyY: 0.74,
@@ -473,7 +444,7 @@ function chord(freqs, dur, type="triangle", vol=.05){
 }
 
 /* =========================================================
-   2. PLAYER PROFILE, PROGRESS & LEVELS
+   2. PLAYER PROFILE & PROGRESS
    ========================================================= */
 const PROFILE_KEY = "gandhi_bhai_profile";
 let profile = { name: "", best: 0 };
@@ -486,23 +457,18 @@ try {
 } catch(e){}
 function saveProfile(){ try { localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)); } catch(e){} }
 
-/* ---- Player progress (XP & level) ---- */
 const PROGRESS_KEY = "gandhi_bhai_progress";
 let progress = { xp: 0 };
 try {
   const p = JSON.parse(localStorage.getItem(PROGRESS_KEY) || "null");
   if (p && typeof p.xp === "number" && isFinite(p.xp) && p.xp >= 0) progress.xp = p.xp;
 } catch(e){}
-/* Migration: seed XP from best score if user is brand-new to the XP system */
 if (progress.xp === 0 && profile.best > 0){
   progress.xp = Math.floor(profile.best);
   try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress)); } catch(e){}
 }
 function saveProgress(){ try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress)); } catch(e){} }
 
-/* Level curve:  xpForLevel(L) = (L-1)^2 * 100
-   L1=0  L2=100  L3=400  L4=900  L5=1.6k  L6=2.5k
-   L10=8.1k  L15=19.6k  L21=40k */
 function xpForLevel(level){ return Math.pow(Math.max(0, level-1), 2) * 100; }
 function levelFromXP(xp){ return Math.floor(Math.sqrt(Math.max(0, xp) / 100)) + 1; }
 function playerLevel(){ return levelFromXP(progress.xp); }
@@ -519,18 +485,14 @@ function updateMenuProfile(){
   const bar = document.getElementById("playerBar");
   const xpWrap = document.getElementById("xpWrap");
   if (!profile.name){ bar.classList.add("hidden"); xpWrap.classList.add("hidden"); return; }
-  bar.classList.remove("hidden");
-  xpWrap.classList.remove("hidden");
+  bar.classList.remove("hidden"); xpWrap.classList.remove("hidden");
   document.getElementById("pAvatar").textContent = profile.name.charAt(0).toUpperCase();
   document.getElementById("pName").textContent = profile.name;
   document.getElementById("pBest").textContent = profile.best.toLocaleString();
-
   const lv = playerLevel();
-  const nextXp = xpForNextLevel();
-  const curXp = xpForLevel(lv);
   document.getElementById("lvlNum").textContent = lv;
   document.getElementById("xpText").innerHTML =
-    `${Math.floor(progress.xp).toLocaleString()} / <b>${nextXp.toLocaleString()}</b> XP`;
+    `${Math.floor(progress.xp).toLocaleString()} / <b>${xpForNextLevel().toLocaleString()}</b> XP`;
   document.getElementById("xpFill").style.width = (progressInLevel() * 100).toFixed(1) + "%";
 }
 
@@ -542,7 +504,6 @@ function submitScoreUnified(name, score){
     return -2;
   });
 }
-
 function submitScoreLocal(score){
   if (!profile.name || score <= 0) return -1;
   if (score > profile.best){ profile.best = score; saveProfile(); }
@@ -561,12 +522,10 @@ function submitScoreLocal(score){
   const idx = localLb.findIndex(e => e.name === profile.name);
   return idx >= 0 ? idx + 1 : -1;
 }
-
 function renderLeaderboardRows(entries){
   const wrapEl = document.getElementById("lbList");
   if (!entries || entries.length === 0){
-    wrapEl.innerHTML = `<div class="lb-empty">No scores yet.<br>Be the first marcher!</div>`;
-    return;
+    wrapEl.innerHTML = `<div class="lb-empty">No scores yet.<br>Be the first marcher!</div>`; return;
   }
   wrapEl.innerHTML = entries.slice(0, 30).map((e, i) => {
     let cls = "", medal = (i+1).toString();
@@ -595,7 +554,7 @@ function renderLeaderboard(){
 }
 
 /* =========================================================
-   3. CHARACTERS  — each unlocked by LEVEL & has a UNIQUE POWER
+   3. CHARACTERS  — 11 heroes, each level-gated & uniquely powered
    ========================================================= */
 const CHARACTERS = [
   { id:"vishu", name:"GANDHI BHAI", tag:"The Salt Warrior",
@@ -630,13 +589,29 @@ const CHARACTERS = [
     startShield:true, magnetRange:40,
     ultChargeMult:1.5, maxJumps:2, unlockLevel:10, ultimate:true },
 
+  { id:"bose", name:"NETAJI BOSE", tag:"The Firebrand",
+    desc:"Freedom Dash destroys one obstacle every 6 seconds on contact.",
+    power:"Freedom Dash",
+    color:"#1a4a2a", accent:"#e8c090",
+    speedMod:1.03, jumpMod:1.02, scoreMod:1.1,
+    startShield:false, magnetRange:0,
+    maxJumps:2, dashAttack:true, unlockLevel:13 },
+
   { id:"dandi", name:"DANDI RUNNER", tag:"Salt Dash",
     desc:"Triple jump! Auto speed-dash for 2s every 1500 points.",
     power:"Triple Jump + Dash",
     color:"#06d6a0", accent:"#a7f3d0",
     speedMod:1.02, jumpMod:1.0, scoreMod:1.05,
     startShield:false, magnetRange:0,
-    maxJumps:3, saltDash:true, unlockLevel:15 },
+    maxJumps:3, saltDash:true, unlockLevel:17 },
+
+  { id:"patel", name:"IRON PATEL", tag:"The Unifier",
+    desc:"Starts with a shield AND one free obstacle break.",
+    power:"Iron Will",
+    color:"#d4a574", accent:"#ffffff",
+    speedMod:0.95, jumpMod:1.0, scoreMod:1.0,
+    startShield:true, magnetRange:0,
+    maxJumps:2, ironBreak:true, unlockLevel:21 },
 
   { id:"phoenix", name:"FREEDOM PHOENIX", tag:"Reborn in Fire",
     desc:"Revives once per run — clears every obstacle on the screen.",
@@ -644,9 +619,32 @@ const CHARACTERS = [
     color:"#ff3366", accent:"#ffb3c6",
     speedMod:1.0, jumpMod:1.05, scoreMod:1.1,
     startShield:false, magnetRange:0,
-    maxJumps:2, phoenix:true, unlockLevel:21 }
-];
+    maxJumps:2, phoenix:true, unlockLevel:26 },
 
+  { id:"tagore", name:"GURUDEV TAGORE", tag:"The Poet",
+    desc:"Coins worth ×2. Constant 80px magnet.",
+    power:"Golden Verse",
+    color:"#f5e6c8", accent:"#8a5a2b",
+    speedMod:0.98, jumpMod:1.0, scoreMod:1.15,
+    startShield:false, magnetRange:80,
+    coinMult:2.0, maxJumps:2, unlockLevel:31 },
+
+  { id:"bhagat", name:"BHAGAT SINGH", tag:"The Revolutionary",
+    desc:"Ultimate lasts 3s longer and burns obstacles on contact.",
+    power:"Blazing Spirit",
+    color:"#ff5a3d", accent:"#ffe066",
+    speedMod:1.05, jumpMod:1.06, scoreMod:1.15,
+    startShield:false, magnetRange:0,
+    ultBonus:3, ultExplode:true, maxJumps:2, unlockLevel:36 },
+
+  { id:"nehru", name:"CHACHA NEHRU", tag:"The Architect",
+    desc:"Auto-triggers brief slow-motion just before obstacle impact.",
+    power:"Visionary Pause",
+    color:"#e0c090", accent:"#c8102e",
+    speedMod:0.92, jumpMod:1.0, scoreMod:1.0,
+    startShield:false, magnetRange:0,
+    maxJumps:2, autoSlow:true, unlockLevel:42 }
+];
 function getChar(){ return CHARACTERS[settings.character] || CHARACTERS[0]; }
 function isCharUnlocked(i){ return playerLevel() >= (CHARACTERS[i]?.unlockLevel || 1); }
 function firstUnlockedIndex(){
@@ -655,14 +653,18 @@ function firstUnlockedIndex(){
 }
 
 /* =========================================================
-   4. POWER-UPS
+   4. POWER-UPS  — 9 total
    ========================================================= */
 const POWERUPS = {
-  shield:   { name:"SHIELD",   color:"#4fc3f7", icon:"🛡", dur:8 },
-  magnet:   { name:"MAGNET",   color:"#ba68c8", icon:"🧲", dur:9 },
-  boost:    { name:"BOOST",    color:"#ff8a65", icon:"⚡", dur:5 },
-  slow:     { name:"SLOW-MO",  color:"#81c784", icon:"🐢", dur:6 },
-  double:   { name:"2× SCORE", color:"#ffd54f", icon:"✦", dur:10 }
+  shield:   { name:"SHIELD",      color:"#4fc3f7", icon:"🛡", dur:8 },
+  magnet:   { name:"MAGNET",      color:"#ba68c8", icon:"🧲", dur:9 },
+  boost:    { name:"BOOST",       color:"#ff8a65", icon:"⚡", dur:5 },
+  slow:     { name:"SLOW-MO",     color:"#81c784", icon:"🐢", dur:6 },
+  double:   { name:"2× SCORE",    color:"#ffd54f", icon:"✦", dur:10 },
+  ghost:    { name:"GHOST",       color:"#e0e0e0", icon:"👻", dur:5 },
+  mega:     { name:"MEGA MAGNET", color:"#9c27b0", icon:"🌐", dur:6 },
+  time:     { name:"TIME STOP",   color:"#00bcd4", icon:"⏱", dur:4 },
+  rainbow:  { name:"RAINBOW ×5",  color:"#ff4081", icon:"🌈", dur:12 }
 };
 const PU_KEYS = Object.keys(POWERUPS);
 
@@ -682,7 +684,11 @@ const state = {
   activePowerups: {}, slowFactor: 1,
   flashAlpha: 0, flashColor: "#fff", running: true,
   level: 0, levelBannerTimer: 0,
-  nextSaltDash: 1500, phoenixUsed: false
+  nextSaltDash: 1500, phoenixUsed: false,
+  /* NEW */
+  dashCooldown: 0, ironBreak: 0,
+  weather: "clear", weatherTimer: 0, weatherNext: 20,
+  neonMode: false, neonFlash: 0
 };
 
 const player = {
@@ -762,13 +768,13 @@ const menuEl=document.getElementById("menu"), charsEl=document.getElementById("c
       charHint=document.getElementById("charHint"), puBar=document.getElementById("puBar"),
       ultWrap=document.getElementById("ultWrap"), ultFill=document.getElementById("ultFill"),
       ultBtn=document.getElementById("ultBtn"), comboPop=document.getElementById("comboPop"),
-      levelUpEl=document.getElementById("levelUp"),
+      levelUpEl=document.getElementById("levelUp"), weatherBadge=document.getElementById("weatherBadge"),
       nameInput=document.getElementById("nameInput"), nameStatus=document.getElementById("nameStatus"),
       joyZone=document.getElementById("joyZone"), joyBase=document.getElementById("joyBase"),
       joyKnob=document.getElementById("joyKnob"), joyEditEl=document.getElementById("joyEdit");
 
 /* =========================================================
-   8b. JOYSTICK ENGINE
+   8b. JOYSTICK
    ========================================================= */
 const joy = {
   active:false, pid:null, dx:0, dy:0,
@@ -776,31 +782,23 @@ const joy = {
   editMode:false, dragging:false,
   grabDX:0, grabDY:0, maxR:60
 };
-
 function layoutJoystick(){
   if (!joyBase) return;
   const rw = wrap.clientWidth  || window.innerWidth;
   const rh = wrap.clientHeight || window.innerHeight;
   const R = settings.joySize * Math.min(rw, rh);
   const D = R * 2;
-  joyBase.style.width  = D + "px";
-  joyBase.style.height = D + "px";
+  joyBase.style.width  = D + "px"; joyBase.style.height = D + "px";
   joyBase.style.left   = (settings.joyX * 100) + "%";
   joyBase.style.top    = (settings.joyY * 100) + "%";
   joyBase.style.opacity = settings.joyOpacity;
   const kd = R * 1.02;
-  joyKnob.style.width  = kd + "px";
-  joyKnob.style.height = kd + "px";
+  joyKnob.style.width  = kd + "px"; joyKnob.style.height = kd + "px";
   joy.maxR = R * 0.60;
   applyKnob();
 }
-function applyKnob(){
-  joyKnob.style.transform = `translate(calc(-50% + ${joy.dx}px), calc(-50% + ${joy.dy}px))`;
-}
-function resetJoyInput(){
-  joy.dx = 0; joy.dy = 0; joy.armed = true; joy.fastFall = false;
-  applyKnob();
-}
+function applyKnob(){ joyKnob.style.transform = `translate(calc(-50% + ${joy.dx}px), calc(-50% + ${joy.dy}px))`; }
+function resetJoyInput(){ joy.dx = 0; joy.dy = 0; joy.armed = true; joy.fastFall = false; applyKnob(); }
 function updateJoyVisibility(){
   const show = (settings.control === "stick") && (state.mode === "play" || joy.editMode);
   joyZone.style.display = show ? "block" : "none";
@@ -815,8 +813,7 @@ function updateJoyFromEvent(e){
   const d = Math.hypot(dx, dy);
   const maxR = joy.maxR;
   if (d > maxR && d > 0){ dx = dx / d * maxR; dy = dy / d * maxR; }
-  joy.dx = dx; joy.dy = dy;
-  applyKnob();
+  joy.dx = dx; joy.dy = dy; applyKnob();
   const norm = maxR > 0 ? dy / maxR : 0;
   if (norm < -0.48 && joy.armed){ joy.armed = false; jump(); }
   if (norm > -0.15) joy.armed = true;
@@ -844,8 +841,7 @@ function onJoyMove(e){
     const r = wrap.getBoundingClientRect();
     settings.joyX = clamp((e.clientX - r.left) / r.width  + joy.grabDX, 0.08, 0.92);
     settings.joyY = clamp((e.clientY - r.top ) / r.height + joy.grabDY, 0.10, 0.92);
-    layoutJoystick();
-    return;
+    layoutJoystick(); return;
   }
   updateJoyFromEvent(e);
 }
@@ -872,25 +868,29 @@ function resetWorld(){
   state.speed = BASE_SPEED * ch.speedMod * DIFF_SPEED[d];
   state.obstacles.length = 0; state.coins.length = 0;
   state.particles.length = 0; state.pops.length = 0; state.powerupDrops.length = 0;
-  state.nextObstacle = 680 / DIFF_OBST[d];
+  state.nextObstacle = 640 / DIFF_OBST[d];   // ⚡ tighter initial spacing
   state.nextCoin = 420 * DIFF_COIN[d];
-  state.nextPowerup = (700 + Math.random()*500) * DIFF_PU[d];
+  state.nextPowerup = (720 + Math.random()*480) * DIFF_PU[d];
   state.shake = 0; state.overTimer = 0; state.nextMilestone = 250;
   state.combo = 0; state.comboTimer = 0; state.maxCombo = 0;
   state.totalCoins = 0; state.totalPowerups = 0;
   state.ultCharge = 0; state.ultActive = false; state.ultTimer = 0;
   state.activePowerups = {}; state.slowFactor = 1; state.flashAlpha = 0;
-  /* Character-specific lives */
   state.lives = ch.startLives || 1;
   state.level = 0; state.levelBannerTimer = 0;
   state.nextSaltDash = 1500;
   state.phoenixUsed = false;
+  state.dashCooldown = 0;
+  state.ironBreak = ch.ironBreak ? 1 : 0;
+  state.weather = "clear"; state.weatherTimer = 0; state.weatherNext = 14 + Math.random()*10;
+  state.neonMode = false; state.neonFlash = 0;
   player.y = GROUND_Y - player.h;
   player.vy = 0; player.jumps = 0;
   player.onGround = true; player.phase = 0;
   player.invuln = 0;
   player.shieldUp = !!ch.startShield;
   resetJoyInput();
+  weatherBadge.classList.remove("show");
 }
 
 function startGame(){
@@ -900,7 +900,6 @@ function startGame(){
     setTimeout(() => nameInput.focus(), 100);
     return;
   }
-  /* Safety: character must be unlocked */
   if (!isCharUnlocked(settings.character)){
     settings.character = firstUnlockedIndex();
     saveSettings();
@@ -920,12 +919,7 @@ function startGame(){
 }
 
 function showLevelUpBanner(newLevel, unlockedNames){
-  let subText = "";
-  if (unlockedNames.length > 0){
-    subText = "UNLOCKED: " + unlockedNames.join(" • ");
-  } else {
-    subText = "Keep marching!";
-  }
+  let subText = unlockedNames.length > 0 ? "UNLOCKED: " + unlockedNames.join(" • ") : "Keep marching!";
   levelUpEl.innerHTML = `⬆ LEVEL ${newLevel}!<div class="lv-sub">${subText}</div>`;
   levelUpEl.classList.remove("show");
   void levelUpEl.offsetWidth;
@@ -936,11 +930,8 @@ function gameOver(reason){
   state.mode = "over";
   state.overTimer = .55;
   state.shake = .45;
-  resetJoyInput();
-  updateJoyVisibility();
+  resetJoyInput(); updateJoyVisibility();
   const s = Math.floor(state.score);
-
-  /* ---- Award XP ---- */
   const xpGain = Math.max(0, s);
   const oldLevel = playerLevel();
   const oldUnlocked = CHARACTERS.map((_,i) => isCharUnlocked(i));
@@ -959,18 +950,17 @@ function gameOver(reason){
     overPlayerName.textContent = profile.name || "—";
     overTitle.textContent = reason === "fall" ? "The March Ends" : "Overcome!";
     const reachedBritish = s >= BRITISH_LEVEL_SCORE;
-    runStats.textContent = `Salt: ${state.totalCoins}  •  Power-ups: ${state.totalPowerups}  •  Best Combo: ×${state.maxCombo}` + (reachedBritish ? "  •  🇬🇧 British Era" : "");
+    const reachedNeon = s >= NEON_LEVEL_SCORE;
+    runStats.textContent = `Salt: ${state.totalCoins}  •  Power-ups: ${state.totalPowerups}  •  Best Combo: ×${state.maxCombo}` +
+      (reachedBritish ? "  •  🇬🇧 British Era" : "") + (reachedNeon ? "  •  💜 Neon" : "");
     if (rank === -2) rankInfo.textContent = "🌍 Score submitted to World Leaders!";
     else if (rank === -1) rankInfo.textContent = "Score saved locally.";
     else rankInfo.textContent = "Score recorded!";
-
     xpGainLine.innerHTML = `+${xpGain.toLocaleString()} XP  •  Level <b>${newLevel}</b>` +
       (leveledUp ? ` <span style="color:#ffd166">⬆</span>` : "");
-
     overEl.classList.remove("hidden");
     ultWrap.style.display = "none"; ultBtn.style.display = "none";
     puBar.innerHTML = "";
-
     if (leveledUp) {
       setTimeout(() => {
         showLevelUpBanner(newLevel, newlyUnlocked);
@@ -1029,7 +1019,7 @@ function activateUlt(){
   if (state.mode !== "play" || state.ultActive || state.ultCharge < 100) return;
   const ch = getChar();
   state.ultActive = true;
-  state.ultTimer = ch.ultimate ? 9 : 7;
+  state.ultTimer = 7 + (ch.ultBonus || 0);
   state.ultCharge = 0;
   ultWrap.classList.remove("ready"); ultBtn.classList.remove("ready");
   ultBtn.classList.add("active"); ultBtn.textContent = "ULT";
@@ -1076,9 +1066,9 @@ function updatePowerups(dt){
     if (state.activePowerups[key] <= 0){
       delete state.activePowerups[key];
       if (key === "shield") player.shieldUp = false;
-      if (key === "slow") slow = 1;
     } else {
-      if (key === "slow") slow = 0.55;
+      if (key === "slow") slow = Math.min(slow, 0.55);
+      if (key === "time") slow = Math.min(slow, 0.15);
       if (key === "magnet"){
         const range = (getChar().magnetRange || 0) + 100;
         for (const c of state.coins){
@@ -1086,6 +1076,17 @@ function updatePowerups(dt){
           const dy = player.y+player.h/2 - c.y;
           const d = Math.hypot(dx,dy);
           if (d < range && d > 1){ c.x += (dx/d) * 420 * dt; c.y += (dy/d) * 420 * dt; }
+        }
+      }
+      if (key === "mega"){
+        for (const c of state.coins){
+          const dx = player.x+player.w/2 - c.x;
+          const dy = player.y+player.h/2 - c.y;
+          const d = Math.hypot(dx,dy);
+          if (d > 1){
+            c.x += (dx/d) * 900 * dt;
+            c.y += (dy/d) * 900 * dt;
+          }
         }
       }
     }
@@ -1110,6 +1111,17 @@ function updatePuHUD(){
    ========================================================= */
 function spawnObstacle(){
   const r = Math.random();
+  const d = getDiff();
+  /* Birds unlocked on Normal+ and British Era — flying hazard */
+  const canBird = (state.level === 1 || d >= 2) && state.mode === "play";
+  if (canBird && Math.random() < 0.18){
+    const baseY = GROUND_Y - 130 - Math.random()*60;
+    state.obstacles.push({
+      type:"bird", w:32, h:22, x:W+50, y:baseY, baseY,
+      bobPhase: Math.random()*TAU, bobSpeed: 2.6 + Math.random()*1.6
+    });
+    return;
+  }
   if (state.level === 0){
     if (r < 0.55)      state.obstacles.push({type:"barricade", w:38, h:46, x:W+50, y:GROUND_Y-46});
     else if (r < 0.82) state.obstacles.push({type:"rock",      w:48, h:34, x:W+50, y:GROUND_Y-34});
@@ -1122,7 +1134,13 @@ function spawnObstacle(){
   }
 }
 function spawnCoin(){
-  const isCharkha = Math.random() < 0.10;
+  const roll = Math.random();
+  if (roll < 0.02) {  /* rare rainbow coin */
+    state.coins.push({ x: W+60, y: GROUND_Y - 46 - Math.random()*100,
+      r: 17, type: "rainbow", rot: Math.random()*TAU });
+    return;
+  }
+  const isCharkha = roll < 0.12;
   state.coins.push({ x: W+60, y: GROUND_Y - 46 - Math.random()*108,
     r: isCharkha ? 19 : 14, type: isCharkha ? "charkha" : "salt", rot: Math.random()*TAU });
 }
@@ -1151,6 +1169,7 @@ function showCombo(text){
    13. COLLISION
    ========================================================= */
 function aabbHit(p,o){
+  if (state.activePowerups.ghost) return false;   // 👻 GHOST
   const pad = 6;
   return p.x+pad < o.x+o.w && p.x+p.w-pad > o.x &&
          p.y+pad < o.y+o.h && p.y+p.h-pad > o.y;
@@ -1173,9 +1192,47 @@ function update(dt){
   if (state.overTimer > 0) state.overTimer -= dt;
   if (state.flashAlpha > 0) state.flashAlpha = Math.max(0, state.flashAlpha - dt*2.5);
   if (state.levelBannerTimer > 0) state.levelBannerTimer -= dt;
+  if (state.neonFlash > 0) state.neonFlash = Math.max(0, state.neonFlash - dt*1.4);
+  if (state.dashCooldown > 0) state.dashCooldown -= dt;
 
   updatePowerups(dt);
   updateJoyVisibility();
+
+  /* ---- Weather cycle ---- */
+  if (state.mode === "play" && settings.weatherFx){
+    state.weatherTimer += dt;
+    if (state.weatherTimer >= state.weatherNext){
+      state.weatherTimer = 0;
+      state.weatherNext = 15 + Math.random()*14;
+      const roll = Math.random();
+      let next;
+      if (roll < 0.40) next = "clear";
+      else if (roll < 0.65) next = "rain";
+      else if (roll < 0.85) next = "sandstorm";
+      else next = "fog";
+      if (next !== state.weather){
+        state.weather = next;
+        const labels = { clear:"☀ Clear Skies", rain:"🌧 Rain", sandstorm:"🌪 Sandstorm", fog:"🌫 Fog" };
+        weatherBadge.textContent = labels[next];
+        weatherBadge.classList.add("show");
+        setTimeout(() => weatherBadge.classList.remove("show"), 2600);
+        beep(next==="rain"?380:next==="sandstorm"?260:next==="fog"?520:660, .14, "sine", .045);
+      }
+    }
+  }
+
+  /* ---- Character auto-slow (Nehru) ---- */
+  if (state.mode === "play"){
+    const chPre = getChar();
+    if (chPre.autoSlow){
+      let nearest = Infinity;
+      for (const o of state.obstacles){
+        const dist = o.x - (player.x + player.w);
+        if (dist > 0 && dist < nearest) nearest = dist;
+      }
+      if (nearest < 150) state.slowFactor = Math.min(state.slowFactor, 0.45);
+    }
+  }
 
   if (state.comboTimer > 0){
     state.comboTimer -= dt;
@@ -1196,14 +1253,15 @@ function update(dt){
     const ch = getChar();
     const d = getDiff();
 
+    /* ⚡ Steeper speed ramp past 20k, additional at 40k */
     let speedBonus = 0;
-    if (state.score > 30000) speedBonus = Math.min((state.score - 30000) * 0.013, 520);
+    if (state.score > 20000) speedBonus += Math.min((state.score - 20000) * 0.012, 260);
+    if (state.score > 40000) speedBonus += Math.min((state.score - 40000) * 0.015, 380);
 
     state.speed = (BASE_SPEED + speedBonus) * ch.speedMod * state.slowFactor * DIFF_SPEED[d];
     state.score += state.speed * dt * 0.022 * ch.scoreMod
                   * (state.activePowerups.double ? 2 : 1);
 
-    /* Character: Salt Dash — every 1500 pts auto-boost */
     if (ch.saltDash && state.score >= state.nextSaltDash){
       state.nextSaltDash += 1500;
       state.activePowerups.boost = 2.0;
@@ -1228,8 +1286,7 @@ function update(dt){
     if (state.score >= BRITISH_LEVEL_SCORE && state.level === 0){
       state.level = 1;
       state.levelBannerTimer = 3.2;
-      state.flashAlpha = 0.85;
-      state.flashColor = "#ffcc00";
+      state.flashAlpha = 0.85; state.flashColor = "#ffcc00";
       state.shake = 0.8;
       showCombo("🇬🇧 BRITISH ERA UNLOCKED!");
       chord([392, 523, 659, 784, 1046], .25, "triangle", .09);
@@ -1240,6 +1297,24 @@ function update(dt){
             vx: Math.cos(a)*sp, vy: Math.sin(a)*sp,
             life:1, color: ["#c8102e","#012169","#ffffff","#ffd166"][i%4],
             r: 3+Math.random()*6 });
+        }
+      }
+    }
+
+    /* 💜 NEON MODE */
+    if (state.score >= NEON_LEVEL_SCORE && !state.neonMode){
+      state.neonMode = true;
+      state.neonFlash = 1;
+      state.shake = 0.9;
+      showCombo("💜 NEON MODE!");
+      chord([784, 988, 1175, 1568], .25, "triangle", .09);
+      if (settings.particles){
+        for (let i=0;i<90;i++){
+          const a = Math.random()*TAU, sp = 140+Math.random()*560;
+          state.particles.push({ x: W*0.5, y: H*0.5,
+            vx: Math.cos(a)*sp, vy: Math.sin(a)*sp,
+            life:1, color: ["#ff00ff","#00ffff","#ffd166","#06d6a0"][i%4],
+            r: 3+Math.random()*7 });
         }
       }
     }
@@ -1279,8 +1354,8 @@ function update(dt){
   const d = getDiff();
   const ch = getChar();
 
-  /* Character: Charkha Spinner — always-on magnet */
-  if (ch.magnetRange > 0 && !state.activePowerups.magnet){
+  /* Charkha Spinner / Tagore always-on magnet */
+  if (ch.magnetRange > 0 && !state.activePowerups.magnet && !state.activePowerups.mega){
     for (const c of state.coins){
       const dx = player.x+player.w/2 - c.x;
       const dy = player.y+player.h/2 - c.y;
@@ -1295,17 +1370,18 @@ function update(dt){
   state.nextObstacle -= state.speed*dt;
   if (state.nextObstacle <= 0){
     spawnObstacle();
-    state.nextObstacle = state.speed * rand(0.68, 1.36) / DIFF_OBST[d];
+    /* ⚡ Tighter spacing across the board */
+    state.nextObstacle = state.speed * rand(0.62, 1.28) / DIFF_OBST[d];
   }
   state.nextCoin -= state.speed*dt;
   if (state.nextCoin <= 0){
     spawnCoin();
-    state.nextCoin = state.speed * rand(0.5,1.25) * DIFF_COIN[d];
+    state.nextCoin = state.speed * rand(0.48,1.18) * DIFF_COIN[d];
   }
   state.nextPowerup -= state.speed*dt;
   if (state.nextPowerup <= 0){
     spawnPowerup();
-    state.nextPowerup = state.speed * rand(3.5,7) * DIFF_PU[d];
+    state.nextPowerup = state.speed * rand(3.4,6.8) * DIFF_PU[d];
   }
 
   /* --- Obstacles --- */
@@ -1313,6 +1389,10 @@ function update(dt){
   for (let i=state.obstacles.length-1;i>=0;i--){
     const o = state.obstacles[i];
     o.x -= state.speed*dt;
+    if (o.type === "bird"){
+      o.bobPhase += o.bobSpeed * dt;
+      o.y = o.baseY + Math.sin(o.bobPhase) * 22;
+    }
     if (o.x+o.w < -80){ state.obstacles.splice(i,1); continue; }
     if (aabbHit(player,o)){
       if (state.ultActive){
@@ -1324,6 +1404,33 @@ function update(dt){
         continue;
       }
       if (player.invuln > 0) continue;
+
+      /* Character: Netaji Bose — Freedom Dash */
+      if (ch.dashAttack && state.dashCooldown <= 0){
+        state.dashCooldown = 6;
+        spawnParticles(o.x+o.w/2, o.y+o.h/2, "#06d6a0", 26);
+        spawnPop(o.x, o.y-16, "FREEDOM DASH!", "#06d6a0");
+        state.obstacles.splice(i, 1);
+        player.invuln = 0.6;
+        state.shake = 0.35;
+        state.score += 30;
+        showCombo("💥 FREEDOM DASH!");
+        chord([300, 500, 800], .12, "sawtooth", .08);
+        continue;
+      }
+
+      /* Character: Iron Patel — one free break */
+      if (state.ironBreak > 0){
+        state.ironBreak--;
+        player.invuln = 2.0;
+        state.shake = 0.4;
+        spawnParticles(o.x+o.w/2, o.y+o.h/2, "#d4a574", 24);
+        spawnPop(player.x, player.y-20, "IRON WILL!", "#d4a574");
+        state.obstacles.splice(i, 1);
+        showCombo("🔨 IRON WILL!");
+        beep(280, .22, "sawtooth", .09);
+        continue;
+      }
 
       if (player.shieldUp){
         player.shieldUp = false;
@@ -1345,7 +1452,6 @@ function update(dt){
         beep(260,.25,"sawtooth",.09);
         continue;
       }
-      /* Character: Freedom Phoenix — revive once */
       if (ch.phoenix && !state.phoenixUsed){
         state.phoenixUsed = true;
         phoenixSaved = true;
@@ -1353,8 +1459,7 @@ function update(dt){
       }
 
       spawnParticles(player.x+player.w/2, player.y+player.h/2, "#ff4444", 30);
-      state.flashAlpha = 0.7;
-      state.flashColor = "#ff2222";
+      state.flashAlpha = 0.7; state.flashColor = "#ff2222";
       showCombo("💥 GAME OVER");
       gameOver("fall");
       return;
@@ -1368,12 +1473,10 @@ function update(dt){
     state.obstacles.length = 0;
     player.invuln = 2.6;
     state.shake = 0.85;
-    state.flashAlpha = 0.9;
-    state.flashColor = "#ff3366";
+    state.flashAlpha = 0.9; state.flashColor = "#ff3366";
     chargeUlt(35);
     showCombo("🔥 REBIRTH!");
     chord([523, 659, 784, 1046, 1318], .22, "triangle", .09);
-    setTimeout(() => showCombo("PHOENIX RISES"), 500);
   }
 
   /* --- Coins --- */
@@ -1382,26 +1485,29 @@ function update(dt){
     c.x -= state.speed*dt; c.rot += dt*3.2;
     if (c.x+c.r < -80){ state.coins.splice(i,1); continue; }
     if (circleHit(c)){
-      const isC = c.type === "charkha";
-      const base = isC ? 50 : 10;
+      const isCharkha = c.type === "charkha";
+      const isRainbow = c.type === "rainbow";
+      const base = isRainbow ? 100 : (isCharkha ? 50 : 10);
       const comboBonus = 1 + state.combo*0.1;
       const coinMult = ch.coinMult || 1;
-      const gained = Math.round(base * ch.scoreMod * coinMult * comboBonus *
+      const rainbowMult = state.activePowerups.rainbow ? 5 : 1;
+      const gained = Math.round(base * ch.scoreMod * coinMult * rainbowMult * comboBonus *
         (state.activePowerups.double?2:1) * (settings.difficulty+1));
       state.score += gained;
       state.totalCoins++;
       state.combo++;
       state.comboTimer = 2.2;
       state.maxCombo = Math.max(state.maxCombo, state.combo);
-      chargeUlt(isC ? 8 : 2);
+      chargeUlt(isRainbow ? 20 : (isCharkha ? 8 : 2));
       if (state.combo >= 5 && state.combo % 5 === 0){
         showCombo("COMBO ×"+state.combo+"!");
         chord([880,1100,1320],.1,"triangle",.05);
       }
-      beep(isC?940:680,.11,"triangle",.07);
-      if (isC) setTimeout(()=>beep(1240,.1,"triangle",.05),70);
-      spawnParticles(c.x,c.y,isC?"#4fb3f0":"#ffffff",isC?18:10);
-      spawnPop(c.x,c.y,"+"+gained,isC?"#7fd0ff":"#ffffff");
+      beep(isRainbow?1320:(isCharkha?940:680),.11,"triangle",.07);
+      spawnParticles(c.x,c.y,
+        isRainbow ? "#ff4081" : (isCharkha ? "#4fb3f0" : "#ffffff"),
+        isRainbow ? 26 : (isCharkha ? 18 : 10));
+      spawnPop(c.x,c.y,"+"+gained, isRainbow ? "#ff4081" : (isCharkha ? "#7fd0ff" : "#ffffff"));
       state.coins.splice(i,1);
     }
   }
@@ -1421,7 +1527,13 @@ function update(dt){
    ========================================================= */
 function drawSky(){
   const g = ctx.createLinearGradient(0,0,0,GROUND_Y+40);
-  if (state.level === 1){
+  if (state.neonMode){
+    g.addColorStop(0,   "#05000f");
+    g.addColorStop(0.30,"#160030");
+    g.addColorStop(0.60,"#3a0055");
+    g.addColorStop(0.85,"#ff00aa");
+    g.addColorStop(1,   "#00ffe0");
+  } else if (state.level === 1){
     g.addColorStop(0,   "#0a0618");
     g.addColorStop(0.28,"#2a0f1c");
     g.addColorStop(0.55,"#5a1822");
@@ -1438,7 +1550,11 @@ function drawSky(){
 
   const sx = W*0.76, sy = GROUND_Y*0.44;
   const sg = ctx.createRadialGradient(sx,sy,6,sx,sy,175);
-  if (state.level === 1){
+  if (state.neonMode){
+    sg.addColorStop(0,"rgba(255,0,255,0.9)");
+    sg.addColorStop(.3,"rgba(180,0,255,0.5)");
+    sg.addColorStop(1,"rgba(80,0,150,0)");
+  } else if (state.level === 1){
     sg.addColorStop(0,   "rgba(255,180,120,0.95)");
     sg.addColorStop(0.22,"rgba(220,90,60,0.75)");
     sg.addColorStop(0.55,"rgba(140,40,30,0.30)");
@@ -1452,22 +1568,10 @@ function drawSky(){
   }
   ctx.fillStyle = sg;
   ctx.beginPath(); ctx.arc(sx,sy,175,0,TAU); ctx.fill();
-  ctx.fillStyle = state.level === 1
-    ? "rgba(255,210,160,0.85)"
-    : (state.ultActive ? "rgba(255,255,220,.98)" : "rgba(255,252,235,.95)");
-  ctx.beginPath(); ctx.arc(sx,sy,state.level===1 ? 42 : (state.ultActive?56:46), 0, TAU); ctx.fill();
-
-  if (state.level === 1){
-    for (let i=0;i<5;i++){
-      const cx = ((i*230) - (state.scroll*0.15) % 1150 + 1150*10) % (W+400) - 200;
-      const cy = 60 + (i%3)*40;
-      const grd = ctx.createRadialGradient(cx,cy,4,cx,cy,90);
-      grd.addColorStop(0,"rgba(60,30,40,0.25)");
-      grd.addColorStop(1,"rgba(60,30,40,0)");
-      ctx.fillStyle = grd;
-      ctx.beginPath(); ctx.arc(cx,cy,90,0,TAU); ctx.fill();
-    }
-  }
+  ctx.fillStyle = state.neonMode ? "rgba(255,220,255,.98)"
+    : (state.level === 1 ? "rgba(255,210,160,0.85)"
+    : (state.ultActive ? "rgba(255,255,220,.98)" : "rgba(255,252,235,.95)"));
+  ctx.beginPath(); ctx.arc(sx,sy,state.neonMode ? 60 : (state.level===1 ? 42 : (state.ultActive?56:46)), 0, TAU); ctx.fill();
 }
 
 function drawHillLayer(color,sf,peakH,step,baseY){
@@ -1482,7 +1586,11 @@ function drawHillLayer(color,sf,peakH,step,baseY){
   ctx.closePath(); ctx.fill();
 }
 function drawHills(){
-  if (state.level === 1){
+  if (state.neonMode){
+    drawHillLayer("rgba(80,0,120,.55)",   .08, 66, 340, GROUND_Y-2);
+    drawHillLayer("rgba(50,0,90,.70)",    .15, 46, 240, GROUND_Y+2);
+    drawHillLayer("rgba(30,0,60,.85)",    .26, 28, 160, GROUND_Y+6);
+  } else if (state.level === 1){
     drawHillLayer("rgba(50,35,45,.55)",   .08, 66, 340, GROUND_Y-2);
     drawHillLayer("rgba(38,25,35,.70)",   .15, 46, 240, GROUND_Y+2);
     drawHillLayer("rgba(25,15,22,.85)",   .26, 28, 160, GROUND_Y+6);
@@ -1496,10 +1604,11 @@ function drawHills(){
     drawHillLayer("rgba(105,60,50,.65)",.26,26,160,GROUND_Y+6);
   }
 }
-
 function drawGround(){
   const g = ctx.createLinearGradient(0,GROUND_Y,0,H);
-  if (state.level === 1){
+  if (state.neonMode){
+    g.addColorStop(0,"#2a0055"); g.addColorStop(.3,"#1a0030"); g.addColorStop(1,"#05000f");
+  } else if (state.level === 1){
     g.addColorStop(0,"#6a5a4a"); g.addColorStop(.30,"#4a3a30"); g.addColorStop(1,"#241816");
   } else if (state.ultActive){
     g.addColorStop(0,"#5a3040"); g.addColorStop(.3,"#3a2030"); g.addColorStop(1,"#1a0a15");
@@ -1507,26 +1616,56 @@ function drawGround(){
     g.addColorStop(0,"#d9a463"); g.addColorStop(.25,"#c28f52"); g.addColorStop(1,"#9c6c3a");
   }
   ctx.fillStyle = g; ctx.fillRect(0,GROUND_Y,W,H-GROUND_Y);
-  ctx.fillStyle = state.level === 1 ? "#c8102e" : (state.ultActive ? "#ff6b3d" : "#f0c98a");
+  ctx.fillStyle = state.neonMode ? "#ff00ff"
+    : (state.level === 1 ? "#c8102e" : (state.ultActive ? "#ff6b3d" : "#f0c98a"));
   ctx.fillRect(0,GROUND_Y,W,5);
   ctx.fillStyle = "rgba(255,255,255,.45)"; ctx.fillRect(0,GROUND_Y,W,2);
 
   const step=130, off=state.scroll%step;
   for (let i=-1;i<W/step+2;i++){
     const x = i*step-off;
-    ctx.fillStyle = state.level === 1
-      ? "rgba(20,15,15,.30)"
-      : (state.ultActive ? "rgba(255,100,60,.12)" : "rgba(90,55,20,.14)");
+    ctx.fillStyle = state.neonMode ? "rgba(255,0,255,.18)"
+      : (state.level === 1 ? "rgba(20,15,15,.30)"
+      : (state.ultActive ? "rgba(255,100,60,.12)" : "rgba(90,55,20,.14)"));
     ctx.beginPath(); ctx.ellipse(x+34,GROUND_Y+42,16,6,0,0,TAU); ctx.fill();
     ctx.beginPath(); ctx.ellipse(x+96,GROUND_Y+66,10,4,0,0,TAU); ctx.fill();
-    ctx.strokeStyle = state.level === 1
-      ? "rgba(120,80,60,.55)"
-      : (state.ultActive ? "rgba(255,140,80,.5)" : "rgba(120,140,60,.55)");
-    ctx.lineWidth=2; ctx.lineCap="round";
-    ctx.beginPath();
-    ctx.moveTo(x+66,GROUND_Y+4); ctx.lineTo(x+62,GROUND_Y-7);
-    ctx.moveTo(x+66,GROUND_Y+4); ctx.lineTo(x+71,GROUND_Y-6);
-    ctx.stroke();
+  }
+}
+
+/* =========================================================
+   15b. WEATHER FX
+   ========================================================= */
+function drawWeather(){
+  if (!settings.weatherFx) return;
+  const t = performance.now()/1000;
+
+  if (state.weather === "rain"){
+    ctx.strokeStyle = "rgba(180,210,255,0.45)";
+    ctx.lineWidth = 1.6; ctx.lineCap = "round";
+    for (let i=0;i<90;i++){
+      const x = ((i*47 + t*420) % (W+60)) - 30;
+      const y = ((i*83 + t*820) % (H+60)) - 30;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x - 5, y + 16);
+      ctx.stroke();
+    }
+  } else if (state.weather === "sandstorm"){
+    ctx.fillStyle = "rgba(210,170,110,0.14)";
+    ctx.fillRect(0,0,W,H);
+    for (let i=0;i<48;i++){
+      const x = ((i*61 + t*440) % (W+80)) - 40;
+      const y = ((i*97 + t*70)  % (H+50)) - 25;
+      ctx.fillStyle = `rgba(230,195,130,${0.28 + (i%3)*0.12})`;
+      ctx.fillRect(x, y, 22, 1.6);
+    }
+  } else if (state.weather === "fog"){
+    const g = ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,  "rgba(190,195,215,0.08)");
+    g.addColorStop(0.5,"rgba(190,195,215,0.20)");
+    g.addColorStop(1,  "rgba(190,195,215,0.32)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0,0,W,H);
   }
 }
 
@@ -1537,10 +1676,9 @@ function drawShadow(cx,w){
   ctx.fillStyle="rgba(60,30,0,.18)";
   ctx.beginPath(); ctx.ellipse(cx,GROUND_Y+4,w,6,0,0,TAU); ctx.fill();
 }
-
 function drawObstacle(o){
   const {x,y,w,h,type} = o;
-  drawShadow(x+w/2, w*0.62);
+  if (type !== "bird") drawShadow(x+w/2, w*0.62);
 
   if (type==="barricade"){
     ctx.fillStyle="#8a5a2b";
@@ -1593,13 +1731,6 @@ function drawObstacle(o){
     ctx.fillRect(cx+1,  y+h-8, 9, 8);
     ctx.fillStyle = "#c8102e";
     rrect(x+2, y+26, w-4, h-48, 4); ctx.fill();
-    ctx.fillStyle = "#a00d24";
-    ctx.beginPath();
-    ctx.moveTo(x+2, y+h-26); ctx.lineTo(x+7, y+h-14); ctx.lineTo(x+14, y+h-26);
-    ctx.closePath(); ctx.fill();
-    ctx.beginPath();
-    ctx.moveTo(x+w-2, y+h-26); ctx.lineTo(x+w-7, y+h-14); ctx.lineTo(x+w-14, y+h-26);
-    ctx.closePath(); ctx.fill();
     ctx.strokeStyle = "#f0ead6"; ctx.lineWidth = 2.6;
     ctx.beginPath();
     ctx.moveTo(x+3, y+30); ctx.lineTo(x+w-3, y+46);
@@ -1611,48 +1742,21 @@ function drawObstacle(o){
     }
     ctx.fillStyle = "#e8c49a";
     ctx.beginPath(); ctx.arc(cx, y+20, 10, 0, TAU); ctx.fill();
-    ctx.fillStyle = "#5a3a1a";
-    ctx.beginPath(); ctx.arc(cx-8, y+20, 3, 0, TAU); ctx.fill();
-    ctx.beginPath(); ctx.arc(cx+8, y+20, 3, 0, TAU); ctx.fill();
     ctx.fillStyle = "#141414";
     ctx.fillRect(cx-11, y-2, 22, 20);
     ctx.fillStyle = "#c8102e";
     ctx.fillRect(cx-11, y+12, 22, 4);
     ctx.fillStyle = "#ffd166";
     ctx.beginPath(); ctx.arc(cx, y+7, 3, 0, TAU); ctx.fill();
-    ctx.fillStyle = "#ffffff";
-    ctx.beginPath(); ctx.arc(cx+6, y-4, 3.5, 0, TAU); ctx.fill();
-    ctx.fillStyle = "#1a1a1a";
-    ctx.fillRect(cx-5, y+19, 3, 2);
-    ctx.fillRect(cx+2, y+19, 3, 2);
-    ctx.strokeStyle = "#5a2a1a"; ctx.lineWidth = 1.4;
-    ctx.beginPath();
-    ctx.arc(cx, y+27, 3, Math.PI*0.15, Math.PI*0.85);
-    ctx.stroke();
   }
   else if (type==="cannon"){
     ctx.fillStyle="#6a4020";
     ctx.beginPath(); ctx.arc(x+16, y+h-5, 14, 0, TAU); ctx.fill();
     ctx.beginPath(); ctx.arc(x+w-16, y+h-5, 14, 0, TAU); ctx.fill();
-    ctx.strokeStyle="#3a2010"; ctx.lineWidth=2;
-    for (const wx of [x+16, x+w-16]){
-      for (let i=0;i<4;i++){
-        const a = i*Math.PI/4;
-        ctx.beginPath();
-        ctx.moveTo(wx - Math.cos(a)*12, y+h-5 - Math.sin(a)*12);
-        ctx.lineTo(wx + Math.cos(a)*12, y+h-5 + Math.sin(a)*12);
-        ctx.stroke();
-      }
-      ctx.fillStyle="#3a2010";
-      ctx.beginPath(); ctx.arc(wx, y+h-5, 4, 0, TAU); ctx.fill();
-      ctx.fillStyle="#6a4020";
-    }
     ctx.fillStyle="#7a4a20";
     rrect(x+6, y+22, w-12, 10, 3); ctx.fill();
     ctx.fillStyle="#1a1a1a";
     rrect(x+8, y+8, w-20, 18, 6); ctx.fill();
-    ctx.strokeStyle="rgba(255,255,255,.22)"; ctx.lineWidth=1.5;
-    ctx.beginPath(); ctx.moveTo(x+12, y+13); ctx.lineTo(x+w-16, y+13); ctx.stroke();
     ctx.fillStyle="#0a0a0a";
     ctx.beginPath(); ctx.ellipse(x+8, y+17, 5, 9, 0, 0, TAU); ctx.fill();
     ctx.strokeStyle="#ffd166"; ctx.lineWidth=1.6;
@@ -1660,10 +1764,8 @@ function drawObstacle(o){
   }
   else if (type==="ukflag"){
     const cx = x + w/2;
-    ctx.fillStyle="#5a3a1a";
-    ctx.fillRect(cx-2, y-6, 4, h+6);
-    ctx.fillStyle="#3a2010";
-    ctx.fillRect(cx-10, y+h-4, 20, 6);
+    ctx.fillStyle="#5a3a1a"; ctx.fillRect(cx-2, y-6, 4, h+6);
+    ctx.fillStyle="#3a2010"; ctx.fillRect(cx-10, y+h-4, 20, 6);
     const fw = 34, fh = 22;
     const fx = cx+2, fy = y-2;
     ctx.fillStyle = "#012169"; ctx.fillRect(fx, fy, fw, fh);
@@ -1692,6 +1794,43 @@ function drawObstacle(o){
     ctx.restore();
     ctx.strokeStyle="rgba(0,0,0,.6)"; ctx.lineWidth=1;
     ctx.strokeRect(fx, fy, fw, fh);
+  }
+  else if (type==="bird"){
+    const cx = x + w/2;
+    const cy = y + h/2;
+    const wing = Math.sin(o.bobPhase * 3) * 8;
+    ctx.fillStyle = "#2a1a10";
+    ctx.beginPath();
+    ctx.moveTo(cx - w*0.48, cy);
+    ctx.quadraticCurveTo(cx - w*0.15, cy - 4, cx, cy);
+    ctx.quadraticCurveTo(cx + w*0.15, cy - 4, cx + w*0.48, cy);
+    ctx.lineTo(cx + w*0.15, cy + 6);
+    ctx.lineTo(cx - w*0.15, cy + 6);
+    ctx.closePath(); ctx.fill();
+    /* Wings */
+    ctx.fillStyle = "#4a2e1a";
+    ctx.beginPath();
+    ctx.moveTo(cx - w*0.15, cy - 1);
+    ctx.lineTo(cx - w*0.55, cy - 4 - wing);
+    ctx.lineTo(cx - w*0.02, cy + 2);
+    ctx.closePath(); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(cx + w*0.15, cy - 1);
+    ctx.lineTo(cx + w*0.55, cy - 4 + wing);
+    ctx.lineTo(cx + w*0.02, cy + 2);
+    ctx.closePath(); ctx.fill();
+    /* Eye */
+    ctx.fillStyle = "#ffd166";
+    ctx.beginPath(); ctx.arc(cx + w*0.30, cy - 2, 2.2, 0, TAU); ctx.fill();
+    ctx.fillStyle = "#000";
+    ctx.beginPath(); ctx.arc(cx + w*0.32, cy - 2, 1.1, 0, TAU); ctx.fill();
+    /* Beak */
+    ctx.fillStyle = "#e88a00";
+    ctx.beginPath();
+    ctx.moveTo(cx + w*0.42, cy);
+    ctx.lineTo(cx + w*0.56, cy + 1);
+    ctx.lineTo(cx + w*0.42, cy + 3);
+    ctx.closePath(); ctx.fill();
   }
 }
 
@@ -1729,6 +1868,31 @@ function drawCharkha(x,y,r,rot){
     ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r); ctx.stroke();
   }
   ctx.fillStyle="#1d6ba3"; ctx.beginPath(); ctx.arc(0,0,3.4,0,TAU); ctx.fill();
+  ctx.restore();
+}
+function drawRainbowCoin(x,y,r,rot){
+  const t = performance.now()/300;
+  ctx.save(); ctx.translate(x,y);
+  const glow = ctx.createRadialGradient(0,0,2,0,0,r*3);
+  glow.addColorStop(0,"rgba(255,100,200,.75)"); glow.addColorStop(1,"rgba(255,100,200,0)");
+  ctx.fillStyle=glow; ctx.beginPath(); ctx.arc(0,0,r*3,0,TAU); ctx.fill();
+  ctx.rotate(rot);
+  const colors = ["#ff0044","#ff8800","#ffee00","#22ff88","#00aaff","#aa00ff"];
+  for (let i=0;i<6;i++){
+    const a1 = (i/6)*TAU + t;
+    const a2 = ((i+1)/6)*TAU + t;
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.arc(0,0,r,a1,a2);
+    ctx.closePath();
+    ctx.fillStyle = colors[i];
+    ctx.fill();
+  }
+  ctx.beginPath();
+  ctx.arc(0,0,r,0,TAU);
+  ctx.strokeStyle = "#fff"; ctx.lineWidth = 2.2; ctx.stroke();
+  ctx.fillStyle = "#fff";
+  ctx.beginPath(); ctx.arc(0,0,r*0.4,0,TAU); ctx.fill();
   ctx.restore();
 }
 function drawPowerupDrop(p){
@@ -1814,11 +1978,6 @@ function drawVishuGandhi(x,y,w,h,phase,onGround,opts){
   ctx.lineTo(cx - w*0.16, hipY + legLen*0.55);
   ctx.lineTo(cx - w*0.24, hipY + legLen*0.60);
   ctx.closePath(); ctx.fill();
-  ctx.strokeStyle = clothSh; ctx.lineWidth = 1.2;
-  ctx.beginPath();
-  ctx.moveTo(cx - w*0.06, hipY - torsoH*0.05); ctx.lineTo(cx - w*0.10, hipY + legLen*0.50);
-  ctx.moveTo(cx + w*0.10, hipY - torsoH*0.05); ctx.lineTo(cx + w*0.06, hipY + legLen*0.50);
-  ctx.stroke();
   const torsoW = w * 0.62;
   const tX = cx - torsoW/2, tY = torsoTop + torsoH*0.06, tH = torsoH * 0.94;
   const chestGrad = ctx.createLinearGradient(tX, tY, tX, tY+tH);
@@ -1830,11 +1989,6 @@ function drawVishuGandhi(x,y,w,h,phase,onGround,opts){
   ctx.lineTo(tX + torsoW - 2, tY + tH);
   ctx.lineTo(tX + 2, tY + tH);
   ctx.closePath(); ctx.fill();
-  ctx.strokeStyle = "rgba(80,40,20,0.35)"; ctx.lineWidth = 1.2;
-  ctx.beginPath(); ctx.arc(cx - torsoW*0.16, tY + tH*0.32, torsoW*0.18, Math.PI*0.15, Math.PI*0.85); ctx.stroke();
-  ctx.beginPath(); ctx.arc(cx + torsoW*0.16, tY + tH*0.32, torsoW*0.18, Math.PI*0.15, Math.PI*0.85); ctx.stroke();
-  ctx.strokeStyle = "rgba(80,40,20,0.28)";
-  ctx.beginPath(); ctx.moveTo(cx, tY + tH*0.50); ctx.lineTo(cx, tY + tH*0.92); ctx.stroke();
   ctx.fillStyle = cloth;
   ctx.beginPath();
   ctx.moveTo(cx + torsoW*0.55, tY + 2);
@@ -1843,19 +1997,6 @@ function drawVishuGandhi(x,y,w,h,phase,onGround,opts){
   ctx.lineTo(cx - torsoW*0.30, tY + tH*0.55);
   ctx.quadraticCurveTo(cx + torsoW*0.15, tY + tH*0.30, cx + torsoW*0.40, tY + tH*0.22);
   ctx.closePath(); ctx.fill();
-  ctx.strokeStyle = "rgba(180,170,150,0.9)"; ctx.lineWidth = 1.4;
-  ctx.beginPath();
-  ctx.moveTo(cx - torsoW*0.55, tY + tH*0.30); ctx.lineTo(cx - torsoW*0.30, tY + tH*0.55);
-  ctx.stroke();
-  ctx.strokeStyle = clothSh; ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(cx + torsoW*0.30, tY + 4);
-  ctx.quadraticCurveTo(cx + torsoW*0.05, tY + tH*0.20, cx - torsoW*0.20, tY + tH*0.45);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(cx - torsoW*0.42, tY + tH*0.18);
-  ctx.quadraticCurveTo(cx - torsoW*0.38, tY + tH*0.40, cx - torsoW*0.34, tY + tH*0.58);
-  ctx.stroke();
   ctx.strokeStyle = skin; ctx.lineWidth = w*0.13; ctx.lineCap = "round";
   ctx.beginPath();
   ctx.moveTo(cx - torsoW*0.44, tY + tH*0.20);
@@ -1877,59 +2018,26 @@ function drawVishuGandhi(x,y,w,h,phase,onGround,opts){
   ctx.moveTo(staffHandX - w*0.55, feetY + h*0.14);
   ctx.lineTo(staffHandX + w*0.30, torsoTop - h*0.20);
   ctx.stroke();
-  ctx.strokeStyle = "rgba(220,180,120,0.55)"; ctx.lineWidth = w*0.018;
-  ctx.beginPath();
-  ctx.moveTo(staffHandX - w*0.52, feetY + h*0.12);
-  ctx.lineTo(staffHandX + w*0.27, torsoTop - h*0.18);
-  ctx.stroke();
-  ctx.fillStyle = skinSh;
-  ctx.beginPath(); ctx.ellipse(cx, torsoTop + 2, w*0.10, w*0.07, 0, 0, TAU); ctx.fill();
   const headGrad = ctx.createRadialGradient(cx - headR*0.35, headCY - headR*0.35, headR*0.15, cx, headCY, headR*1.05);
   headGrad.addColorStop(0, skinHi); headGrad.addColorStop(.55, skin); headGrad.addColorStop(1, skinSh);
   ctx.fillStyle = headGrad;
   ctx.beginPath(); ctx.ellipse(cx, headCY, headR, headR*1.02, 0, 0, TAU); ctx.fill();
-  ctx.fillStyle = "rgba(255,235,210,0.35)";
-  ctx.beginPath();
-  ctx.ellipse(cx - headR*0.25, headCY - headR*0.45, headR*0.42, headR*0.22, -0.35, 0, TAU); ctx.fill();
   ctx.fillStyle = skin;
   ctx.beginPath(); ctx.ellipse(cx - headR*0.95, headCY + headR*0.08, headR*0.22, headR*0.28, 0, 0, TAU); ctx.fill();
   ctx.beginPath(); ctx.ellipse(cx + headR*0.95, headCY + headR*0.08, headR*0.22, headR*0.28, 0, 0, TAU); ctx.fill();
-  ctx.fillStyle = "rgba(80,40,20,0.25)";
-  ctx.beginPath(); ctx.ellipse(cx - headR*0.95, headCY + headR*0.10, headR*0.10, headR*0.15, 0, 0, TAU); ctx.fill();
-  ctx.beginPath(); ctx.ellipse(cx + headR*0.95, headCY + headR*0.10, headR*0.10, headR*0.15, 0, 0, TAU); ctx.fill();
-  ctx.strokeStyle = "rgba(50,30,18,0.85)"; ctx.lineWidth = headR*0.12; ctx.lineCap = "round";
-  ctx.beginPath();
-  ctx.moveTo(cx - headR*0.62, headCY - headR*0.30); ctx.lineTo(cx - headR*0.20, headCY - headR*0.34);
-  ctx.moveTo(cx + headR*0.20, headCY - headR*0.34); ctx.lineTo(cx + headR*0.62, headCY - headR*0.30);
-  ctx.stroke();
-  ctx.strokeStyle = "rgba(70,40,25,0.7)"; ctx.lineWidth = headR*0.10;
-  ctx.beginPath();
-  ctx.moveTo(cx, headCY - headR*0.08); ctx.lineTo(cx - headR*0.10, headCY + headR*0.28);
-  ctx.stroke();
   const lensR = headR * 0.34;
   const eyeY = headCY - headR*0.02;
   const eyeSep = headR * 0.42;
   ctx.fillStyle = glass;
   ctx.beginPath(); ctx.arc(cx - eyeSep, eyeY, lensR, 0, TAU); ctx.fill();
   ctx.beginPath(); ctx.arc(cx + eyeSep, eyeY, lensR, 0, TAU); ctx.fill();
-  ctx.fillStyle = "rgba(255,255,255,0.45)";
-  ctx.beginPath(); ctx.arc(cx - eyeSep - lensR*0.35, eyeY - lensR*0.35, lensR*0.30, 0, TAU); ctx.fill();
-  ctx.beginPath(); ctx.arc(cx + eyeSep - lensR*0.35, eyeY - lensR*0.35, lensR*0.30, 0, TAU); ctx.fill();
   ctx.strokeStyle = frame; ctx.lineWidth = headR*0.10;
   ctx.beginPath(); ctx.arc(cx - eyeSep, eyeY, lensR, 0, TAU); ctx.stroke();
   ctx.beginPath(); ctx.arc(cx + eyeSep, eyeY, lensR, 0, TAU); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(cx - eyeSep + lensR, eyeY); ctx.lineTo(cx + eyeSep - lensR, eyeY); ctx.stroke();
-  ctx.lineWidth = headR*0.08;
-  ctx.beginPath();
-  ctx.moveTo(cx - eyeSep - lensR, eyeY); ctx.lineTo(cx - headR*0.92, eyeY - headR*0.05);
-  ctx.moveTo(cx + eyeSep + lensR, eyeY); ctx.lineTo(cx + headR*0.92, eyeY - headR*0.05);
-  ctx.stroke();
   ctx.fillStyle = ink;
   ctx.beginPath(); ctx.arc(cx - eyeSep, eyeY + headR*0.02, headR*0.11, 0, TAU); ctx.fill();
   ctx.beginPath(); ctx.arc(cx + eyeSep, eyeY + headR*0.02, headR*0.11, 0, TAU); ctx.fill();
-  ctx.fillStyle = "rgba(255,255,255,0.8)";
-  ctx.beginPath(); ctx.arc(cx - eyeSep + headR*0.03, eyeY - headR*0.02, headR*0.035, 0, TAU); ctx.fill();
-  ctx.beginPath(); ctx.arc(cx + eyeSep + headR*0.03, eyeY - headR*0.02, headR*0.035, 0, TAU); ctx.fill();
   ctx.fillStyle = mustacheCol;
   ctx.beginPath();
   ctx.moveTo(cx - headR*0.45, headCY + headR*0.42);
@@ -1938,10 +2046,6 @@ function drawVishuGandhi(x,y,w,h,phase,onGround,opts){
   ctx.quadraticCurveTo(cx, headCY + headR*0.60, cx - headR*0.10, headCY + headR*0.52);
   ctx.quadraticCurveTo(cx - headR*0.30, headCY + headR*0.58, cx - headR*0.45, headCY + headR*0.42);
   ctx.closePath(); ctx.fill();
-  ctx.strokeStyle = "rgba(90,45,25,0.75)"; ctx.lineWidth = headR*0.09; ctx.lineCap = "round";
-  ctx.beginPath();
-  ctx.arc(cx, headCY + headR*0.52, headR*0.28, Math.PI*0.20, Math.PI*0.80);
-  ctx.stroke();
   ctx.fillStyle = "rgba(80,40,20,0.15)";
   ctx.beginPath(); ctx.ellipse(cx, headCY + headR*0.88, headR*0.35, headR*0.10, 0, 0, TAU); ctx.fill();
   if (onGround){
@@ -1959,24 +2063,6 @@ function drawVishuGandhi(x,y,w,h,phase,onGround,opts){
     auraG.addColorStop(.7, "rgba(255,60,20,.10)"); auraG.addColorStop(1, "rgba(255,30,10,0)");
     ctx.fillStyle = auraG;
     ctx.beginPath(); ctx.arc(cx, y+h/2, w*2.4*pulse, 0, TAU); ctx.fill();
-    for (let i=0;i<6;i++){
-      const a = (performance.now()/300 + i*1.05) % TAU;
-      const px = cx + Math.cos(a)*w*0.9;
-      const py = y + h*0.5 + Math.sin(a*1.5)*h*0.5;
-      const fr = 3 + Math.sin(performance.now()/120 + i)*2;
-      ctx.fillStyle = `rgba(255,${150+i*15},60,${0.35+Math.sin(performance.now()/200+i)*0.15})`;
-      ctx.beginPath(); ctx.arc(px, py, fr, 0, TAU); ctx.fill();
-    }
-    ctx.strokeStyle = "rgba(255,240,150,.5)"; ctx.lineWidth = 1.5;
-    for (let i=0;i<3;i++){
-      const a1 = performance.now()/400 + i*2.1;
-      const a2 = a1 + 1.2;
-      ctx.beginPath();
-      ctx.moveTo(cx + Math.cos(a1)*w*1.1, y+h/2 + Math.sin(a1)*h*0.7);
-      ctx.lineTo(cx + Math.cos(a1)*w*0.6 + rand(-5,5), y+h/2 + Math.sin(a1)*h*0.35);
-      ctx.lineTo(cx + Math.cos(a2)*w*1.1, y+h/2 + Math.sin(a2)*h*0.7);
-      ctx.stroke();
-    }
   }
   ctx.restore();
 }
@@ -2035,6 +2121,51 @@ function drawPhoenix(x,y,w,h,phase,onGround){
     mustache:"#7a0010", ink:"#4a0008"
   });
 }
+function drawBose(x,y,w,h,phase,onGround){
+  drawVishuGandhi(x, y, w, h, phase, onGround, {
+    skin:"#d4a574", skinHi:"#e8c090", skinSh:"#a07850",
+    cloth:"#1a4a2a", clothSh:"#0a2a1a",
+    glass:"rgba(200,255,100,0.5)", frame:"#0a3a1a",
+    mustache:"#1a1a1a", ink:"#0a0a0a",
+    staff:"#2a5a2a"
+  });
+}
+function drawPatel(x,y,w,h,phase,onGround){
+  drawVishuGandhi(x, y, w, h, phase, onGround, {
+    skin:"#c9926a", skinHi:"#e0ab80", skinSh:"#9a6a40",
+    cloth:"#f8f4e8", clothSh:"#d8c8a0",
+    glass:"rgba(220,220,220,0.6)", frame:"#4a4a4a",
+    mustache:"#1a1a1a", ink:"#0a0a0a",
+    staff:"#a08040"
+  });
+}
+function drawTagore(x,y,w,h,phase,onGround){
+  drawVishuGandhi(x, y, w, h, phase, onGround, {
+    skin:"#d4b090", skinHi:"#e8c8a8", skinSh:"#a08060",
+    cloth:"#f5e6c8", clothSh:"#c8b890",
+    glass:"rgba(220,200,140,0.55)", frame:"#6a5030",
+    mustache:"#c0a070", ink:"#3a2a18",
+    staff:"#6a4a20"
+  });
+}
+function drawBhagat(x,y,w,h,phase,onGround){
+  drawVishuGandhi(x, y, w, h, phase, onGround, {
+    skin:"#c97a58", skinHi:"#e89668", skinSh:"#9a5a38",
+    cloth:"#ffffff", clothSh:"#e8e0d0",
+    glass:"rgba(255,200,80,0.55)", frame:"#a04010",
+    mustache:"#2a1a10", ink:"#0a0a0a",
+    staff:"#3a2010"
+  });
+}
+function drawNehru(x,y,w,h,phase,onGround){
+  drawVishuGandhi(x, y, w, h, phase, onGround, {
+    skin:"#d4a878", skinHi:"#e8c090", skinSh:"#a87850",
+    cloth:"#f0e6d0", clothSh:"#c8b890",
+    glass:"rgba(200,200,220,0.55)", frame:"#4a4a4a",
+    mustache:"#3a2a1c", ink:"#221a14",
+    staff:"#8a5a2b"
+  });
+}
 
 /* =========================================================
    19. DRAW — PARTICLES, POPS, HUD
@@ -2066,16 +2197,16 @@ function drawHUD(){
   ctx.font = "900 34px 'Trebuchet MS',system-ui,sans-serif";
   ctx.textAlign = "left"; ctx.lineWidth = 6;
   ctx.strokeStyle = "rgba(70,35,0,.55)";
-  ctx.fillStyle = state.level === 1 ? "#ffd0d0" : "#fff";
+  ctx.fillStyle = state.neonMode ? "#ffb0ff" : (state.level === 1 ? "#ffd0d0" : "#fff");
   const txt = String(Math.floor(state.score)).padStart(5,"0");
   ctx.strokeText(txt, 28, 24); ctx.fillText(txt, 28, 24);
 
-  if (state.level === 1){
+  if (state.level === 1 || state.neonMode){
     ctx.font = "900 13px 'Trebuchet MS',system-ui,sans-serif";
-    ctx.fillStyle = "#ff6b6b";
+    ctx.fillStyle = state.neonMode ? "#ff5fd6" : "#ff6b6b";
     ctx.strokeStyle = "rgba(70,0,0,.7)";
     ctx.lineWidth = 3;
-    const lv = "🇬🇧 BRITISH ERA";
+    const lv = state.neonMode ? "💜 NEON MODE" : "🇬🇧 BRITISH ERA";
     ctx.strokeText(lv, 28, 62);
     ctx.fillText(lv, 28, 62);
   }
@@ -2083,8 +2214,8 @@ function drawHUD(){
   if (state.combo > 1){
     ctx.font = "900 20px 'Trebuchet MS',system-ui,sans-serif";
     ctx.fillStyle = "#ffd166"; ctx.strokeStyle = "rgba(70,35,0,.6)"; ctx.lineWidth = 4;
-    ctx.strokeText("×"+state.combo, 28, state.level === 1 ? 82 : 64);
-    ctx.fillText("×"+state.combo, 28, state.level === 1 ? 82 : 64);
+    ctx.strokeText("×"+state.combo, 28, 84);
+    ctx.fillText("×"+state.combo, 28, 84);
   }
 
   ctx.font = "700 17px 'Trebuchet MS',system-ui,sans-serif";
@@ -2109,14 +2240,14 @@ function drawHUD(){
     ctx.strokeText(lv, W-78, ly); ctx.fillText(lv, W-78, ly);
   }
 
-  const pct = Math.min(1, (state.speed - BASE_SPEED) / 520);
+  const pct = Math.min(1, (state.speed - BASE_SPEED) / 620);
   const bw = 190, bh = 9, bx = W-78-bw;
   const by = state.lives > 1 ? (profile.name ? 100 : 78) : (profile.name ? 78 : 60);
   ctx.fillStyle = "rgba(0,0,0,.22)";
   rrect(bx,by,bw,bh,5); ctx.fill();
   const grd = ctx.createLinearGradient(bx,0,bx+bw,0);
   grd.addColorStop(0,"#ffd166");
-  grd.addColorStop(1, state.level === 1 ? "#c8102e" : "#ef476f");
+  grd.addColorStop(1, state.neonMode ? "#ff00ff" : (state.level === 1 ? "#c8102e" : "#ef476f"));
   ctx.fillStyle = grd;
   rrect(bx,by,Math.max(6,bw*pct),bh,5); ctx.fill();
 
@@ -2136,12 +2267,6 @@ function drawHUD(){
     const msg = "🇬🇧 BRITISH ERA";
     ctx.strokeText(msg, W/2, H*0.30);
     ctx.fillText(msg, W/2, H*0.30);
-    ctx.font = "900 20px 'Trebuchet MS',system-ui,sans-serif";
-    ctx.fillStyle = "#fff";
-    ctx.strokeStyle = "rgba(90,10,10,.9)"; ctx.lineWidth = 5;
-    const sub = "British military obstacles now march!";
-    ctx.strokeText(sub, W/2, H*0.30 + 52);
-    ctx.fillText(sub, W/2, H*0.30 + 52);
     ctx.globalAlpha = 1;
   }
   ctx.restore();
@@ -2166,10 +2291,12 @@ function render(){
   for (const o of state.obstacles) drawObstacle(o);
   for (const c of state.coins){
     if (c.type === "charkha") drawCharkha(c.x,c.y,c.r,c.rot);
+    else if (c.type === "rainbow") drawRainbowCoin(c.x,c.y,c.r,c.rot);
     else drawSalt(c.x,c.y,c.r,c.rot);
   }
   for (const p of state.powerupDrops) drawPowerupDrop(p);
   drawParticles();
+  drawWeather();
 
   const airHeight = Math.max(0,(GROUND_Y-player.h)-player.y);
   const k = Math.max(.35, 1-airHeight/240);
@@ -2186,6 +2313,11 @@ function render(){
   else if (ch.id === "sage") drawSage(player.x, py, player.w, player.h, player.phase, player.onGround);
   else if (ch.id === "dandi") drawDandi(player.x, py, player.w, player.h, player.phase, player.onGround);
   else if (ch.id === "phoenix") drawPhoenix(player.x, py, player.w, player.h, player.phase, player.onGround);
+  else if (ch.id === "bose") drawBose(player.x, py, player.w, player.h, player.phase, player.onGround);
+  else if (ch.id === "patel") drawPatel(player.x, py, player.w, player.h, player.phase, player.onGround);
+  else if (ch.id === "tagore") drawTagore(player.x, py, player.w, player.h, player.phase, player.onGround);
+  else if (ch.id === "bhagat") drawBhagat(player.x, py, player.w, player.h, player.phase, player.onGround);
+  else if (ch.id === "nehru") drawNehru(player.x, py, player.w, player.h, player.phase, player.onGround);
   else drawVishu(player.x, py, player.w, player.h, player.phase, player.onGround);
 
   if (player.shieldUp || state.ultActive){
@@ -2222,9 +2354,23 @@ function render(){
     ctx.globalAlpha = .08; ctx.fillStyle = "#ff6b3d";
     ctx.fillRect(0,0,W,H); ctx.globalAlpha = 1;
   }
-  if (state.level === 1 && !state.ultActive){
+  if (state.level === 1 && !state.ultActive && !state.neonMode){
     ctx.globalAlpha = .06; ctx.fillStyle = "#c8102e";
     ctx.fillRect(0,0,W,H); ctx.globalAlpha = 1;
+  }
+  /* 💜 Neon Mode overlay */
+  if (state.neonMode){
+    ctx.globalAlpha = .10 + state.neonFlash * 0.35;
+    ctx.fillStyle = "#ff00ff";
+    ctx.fillRect(0,0,W,H);
+    ctx.globalAlpha = 1;
+    /* scan lines */
+    ctx.globalAlpha = 0.08;
+    ctx.fillStyle = "#00ffe0";
+    for (let y = 0; y < H; y += 4){
+      ctx.fillRect(0, y, W, 1);
+    }
+    ctx.globalAlpha = 1;
   }
   const vg = ctx.createRadialGradient(W/2,H/2,H*0.42,W/2,H/2,H*0.95);
   vg.addColorStop(0,"rgba(0,0,0,0)"); vg.addColorStop(1,"rgba(40,15,0,.35)");
@@ -2261,7 +2407,13 @@ function drawMiniCharToCtx(g, char, x, y, w, h, phase, onGround){
   else if (char.id === "sage"){ skin="#c9a96e"; skinHi="#e8c890"; skinSh="#9a7a48"; cloth="#f5e6c8"; clothSh="#d8c49a"; glass="rgba(220,200,140,0.55)"; frame="#6a5030"; must="#8a7048"; ink="#3a2a18"; }
   else if (char.id === "dandi"){ skin="#06d6a0"; skinHi="#a7f3d0"; skinSh="#028a63"; cloth="#ffffff"; clothSh="#d0e8dc"; glass="rgba(6,214,160,0.55)"; frame="#027a5a"; must="#0a5a40"; ink="#042a1e"; }
   else if (char.id === "phoenix"){ skin="#ff6680"; skinHi="#ff99aa"; skinSh="#c02040"; cloth="#ffe066"; clothSh="#e0a020"; glass="rgba(255,100,80,0.6)"; frame="#a01020"; must="#7a0010"; ink="#4a0008"; }
+  else if (char.id === "bose"){ skin="#d4a574"; skinHi="#e8c090"; skinSh="#a07850"; cloth="#1a4a2a"; clothSh="#0a2a1a"; glass="rgba(200,255,100,0.5)"; frame="#0a3a1a"; must="#1a1a1a"; ink="#0a0a0a"; }
+  else if (char.id === "patel"){ skin="#c9926a"; skinHi="#e0ab80"; skinSh="#9a6a40"; cloth="#f8f4e8"; clothSh="#d8c8a0"; glass="rgba(220,220,220,0.6)"; frame="#4a4a4a"; must="#1a1a1a"; ink="#0a0a0a"; }
+  else if (char.id === "tagore"){ skin="#d4b090"; skinHi="#e8c8a8"; skinSh="#a08060"; cloth="#f5e6c8"; clothSh="#c8b890"; glass="rgba(220,200,140,0.55)"; frame="#6a5030"; must="#c0a070"; ink="#3a2a18"; }
+  else if (char.id === "bhagat"){ skin="#c97a58"; skinHi="#e89668"; skinSh="#9a5a38"; cloth="#ffffff"; clothSh="#e8e0d0"; glass="rgba(255,200,80,0.55)"; frame="#a04010"; must="#2a1a10"; ink="#0a0a0a"; }
+  else if (char.id === "nehru"){ skin="#d4a878"; skinHi="#e8c090"; skinSh="#a87850"; cloth="#f0e6d0"; clothSh="#c8b890"; glass="rgba(200,200,220,0.55)"; frame="#4a4a4a"; must="#3a2a1c"; ink="#221a14"; }
   else { skin="#b97b52"; skinHi="#d99a6e"; skinSh="#8f5a39"; cloth="#fcfaf4"; clothSh="#e3ddd0"; glass="rgba(140,180,230,0.55)"; frame="#4a4a4a"; must="#3a2a1c"; ink="#221a14"; }
+
   const torsoW = w*0.62;
   const tX = cx - torsoW/2, tY = torsoTop + torsoH*0.06, tH = torsoH*0.94;
   g.strokeStyle = skin; g.lineWidth = w*0.13; g.lineCap = "round";
@@ -2300,12 +2452,6 @@ function drawMiniCharToCtx(g, char, x, y, w, h, phase, onGround){
   g.moveTo(cx + torsoW*0.40, tY + tH*0.18);
   g.lineTo(cx + torsoW*0.62 + armSwing*0.15, tY + tH*0.62 + armSwing*0.30);
   g.stroke();
-  const staffHandX = cx + torsoW*0.62 + armSwing*0.15;
-  g.strokeStyle = "#8a5a2b"; g.lineWidth = w*0.055;
-  g.beginPath();
-  g.moveTo(staffHandX - w*0.55, feetY + h*0.14);
-  g.lineTo(staffHandX + w*0.30, torsoTop - h*0.20);
-  g.stroke();
   g.fillStyle = skin;
   g.beginPath(); g.ellipse(cx, headCY, headR, headR*1.02, 0, 0, TAU); g.fill();
   g.fillStyle = skinSh;
@@ -2330,10 +2476,6 @@ function drawMiniCharToCtx(g, char, x, y, w, h, phase, onGround){
   g.quadraticCurveTo(cx, headCY + headR*0.60, cx - headR*0.10, headCY + headR*0.52);
   g.quadraticCurveTo(cx - headR*0.30, headCY + headR*0.58, cx - headR*0.45, headCY + headR*0.42);
   g.closePath(); g.fill();
-  g.strokeStyle = "rgba(90,45,25,0.75)"; g.lineWidth = headR*0.09;
-  g.beginPath();
-  g.arc(cx, headCY + headR*0.52, headR*0.28, Math.PI*0.20, Math.PI*0.80);
-  g.stroke();
 }
 
 function buildCharGrid(){
@@ -2343,7 +2485,6 @@ function buildCharGrid(){
     const unlocked = isCharUnlocked(i);
     const card = document.createElement("div");
     card.className = "char-card" + (i === settings.character ? " sel" : "") + (unlocked ? "" : " locked");
-
     let lockHtml = "";
     if (!unlocked){
       lockHtml = `<div class="char-lock">
@@ -2352,7 +2493,6 @@ function buildCharGrid(){
         <span class="lk-prog">You: Lv ${lv}</span>
       </div>`;
     }
-
     card.innerHTML = `
       <canvas width="120" height="120"></canvas>
       <div class="char-name">${c.name}</div>
@@ -2368,7 +2508,6 @@ function buildCharGrid(){
     cctx.translate(4, 4);
     drawMiniCharToCtx(cctx, c, 4, 4, 42, 68, performance.now()/400, true);
     cctx.restore();
-
     if (unlocked){
       card.addEventListener("click", () => {
         settings.character = i;
@@ -2396,12 +2535,9 @@ document.getElementById("resumeBtn").addEventListener("click", e => { e.stopProp
 document.getElementById("quitBtn").addEventListener("click", e => {
   e.stopPropagation();
   state.mode = "menu";
-  pauseEl.classList.add("hidden");
-  menuEl.classList.remove("hidden");
-  ultWrap.style.display = "none";
-  ultBtn.style.display = "none";
-  updateJoyVisibility();
-  updateMenuProfile();
+  pauseEl.classList.add("hidden"); menuEl.classList.remove("hidden");
+  ultWrap.style.display = "none"; ultBtn.style.display = "none";
+  updateJoyVisibility(); updateMenuProfile();
 });
 document.getElementById("charsBtn").addEventListener("click", e => { e.stopPropagation(); menuEl.classList.add("hidden"); charsEl.classList.remove("hidden"); buildCharGrid(); });
 document.getElementById("charsBack").addEventListener("click", e => { e.stopPropagation(); charsEl.classList.add("hidden"); menuEl.classList.remove("hidden"); updateMenuProfile(); });
@@ -2410,7 +2546,6 @@ document.getElementById("settingsBack").addEventListener("click", e => { e.stopP
 document.getElementById("pauseSettingsBtn").addEventListener("click", e => { e.stopPropagation(); pauseEl.classList.add("hidden"); settingsEl.classList.remove("hidden"); state.mode = "pause-settings"; syncJoystickUI(); });
 document.getElementById("overCharsBtn").addEventListener("click", e => { e.stopPropagation(); overEl.classList.add("hidden"); charsEl.classList.remove("hidden"); buildCharGrid(); });
 
-/* --- leaderboard --- */
 document.getElementById("leadersBtn").addEventListener("click", e => { e.stopPropagation(); menuEl.classList.add("hidden"); leadersEl.classList.remove("hidden"); renderLeaderboard(); beep(720,.1,"triangle",.05); });
 document.getElementById("overLeadersBtn").addEventListener("click", e => { e.stopPropagation(); overEl.classList.add("hidden"); leadersEl.classList.remove("hidden"); renderLeaderboard(); beep(720,.1,"triangle",.05); });
 document.getElementById("leadersBack").addEventListener("click", e => {
@@ -2421,7 +2556,6 @@ document.getElementById("leadersBack").addEventListener("click", e => {
 });
 document.getElementById("refreshLb").addEventListener("click", e => { e.stopPropagation(); renderLeaderboard(); beep(440,.08,"sine",.05); });
 
-/* --- name entry --- */
 document.getElementById("nameSubmit").addEventListener("click", submitName);
 nameInput.addEventListener("keydown", e => { if (e.key === "Enter"){ e.preventDefault(); submitName(); } });
 function submitName(){
@@ -2435,8 +2569,7 @@ function submitName(){
   }
   profile.name = raw;
   saveProfile();
-  nameEntryEl.classList.add("hidden");
-  menuEl.classList.remove("hidden");
+  nameEntryEl.classList.add("hidden"); menuEl.classList.remove("hidden");
   updateMenuProfile();
   state.best = profile.best;
   beep(700,.12,"triangle",.06);
@@ -2451,7 +2584,6 @@ document.getElementById("changeNameBtn").addEventListener("click", e => {
   setTimeout(() => nameInput.focus(), 100);
 });
 
-/* --- toggles --- */
 function bindToggle(id, key){
   const el = document.getElementById(id);
   el.classList.toggle("on", settings[key]);
@@ -2465,6 +2597,7 @@ function bindToggle(id, key){
 bindToggle("tglSound","sound");
 bindToggle("tglShake","shake");
 bindToggle("tglParticles","particles");
+bindToggle("tglWeather","weatherFx");
 bindToggle("tglFps","showFps");
 
 document.querySelectorAll(".diff-btn[data-diff]").forEach(btn => {
@@ -2494,19 +2627,15 @@ function syncJoystickUI(){
   editOp.value       = Math.round(settings.joyOpacity * 100);
   ctrlRow.querySelectorAll(".diff-btn").forEach(b =>
     b.classList.toggle("sel", b.dataset.ctrl === settings.control));
-  layoutJoystick();
-  updateJoyVisibility();
+  layoutJoystick(); updateJoyVisibility();
 }
-
 ctrlRow.querySelectorAll(".diff-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     settings.control = btn.dataset.ctrl;
-    saveSettings();
-    syncJoystickUI();
+    saveSettings(); syncJoystickUI();
     beep(660,.06,"triangle",.045);
   });
 });
-
 joySizeRange.addEventListener("input", () => {
   settings.joySize = parseInt(joySizeRange.value,10) / 100;
   editSize.value = joySizeRange.value;
@@ -2527,28 +2656,19 @@ editOp.addEventListener("input", () => {
   joyOpRange.value = editOp.value;
   layoutJoystick(); saveSettings();
 });
-
 document.getElementById("editJoyBtn").addEventListener("click", e => {
   e.stopPropagation();
-  settings.control = "stick";
-  saveSettings();
-  syncJoystickUI();
+  settings.control = "stick"; saveSettings(); syncJoystickUI();
   settingsEl.classList.add("hidden");
   joyEditEl.classList.remove("hidden");
-  joy.editMode = true;
-  joyZone.classList.add("edit");
-  updateJoyVisibility();
-  layoutJoystick();
+  joy.editMode = true; joyZone.classList.add("edit");
+  updateJoyVisibility(); layoutJoystick();
   beep(700,.09,"triangle",.05);
 });
 function closeJoyEditor(){
-  joy.editMode = false;
-  joyZone.classList.remove("edit");
-  joyEditEl.classList.add("hidden");
-  settingsEl.classList.remove("hidden");
-  resetJoyInput();
-  saveSettings();
-  syncJoystickUI();
+  joy.editMode = false; joyZone.classList.remove("edit");
+  joyEditEl.classList.add("hidden"); settingsEl.classList.remove("hidden");
+  resetJoyInput(); saveSettings(); syncJoystickUI();
   beep(520,.08,"triangle",.045);
 }
 document.getElementById("joyDone").addEventListener("click", e => { e.stopPropagation(); closeJoyEditor(); });
@@ -2595,7 +2715,6 @@ resize();
 player.y = GROUND_Y - player.h;
 state.best = profile.best;
 bestEl.textContent = profile.best.toLocaleString();
-/* Ensure selected character is unlocked */
 if (!isCharUnlocked(settings.character)){
   settings.character = firstUnlockedIndex();
   saveSettings();
@@ -2639,4 +2758,4 @@ requestAnimationFrame(loop);
 })();
 </script>
 </body>
- </html>
+        </html>
