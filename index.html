@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
 <meta name="theme-color" content="#120b06" />
-<title>Gandhi Bhai — Salt March Ultimate</title>
+<title>Gandhi Run — Ultimate Edition</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -116,7 +116,7 @@
   #ultBtn.active{opacity:1;pointer-events:none;border-color:#ff6b6b;box-shadow:0 0 40px rgba(255,100,60,.7)}
   @keyframes ultGlow{from{box-shadow:0 0 18px rgba(255,200,80,.35)}to{box-shadow:0 0 40px rgba(255,200,80,.75)}}
 
-  /* 💎 Jackie Chan stone tray */
+  /* 💎 Martial Arts stone tray */
   .stone-tray{position:absolute;top:calc(env(safe-area-inset-top,0px) + 12px);left:50%;transform:translateX(-50%);z-index:18;display:flex;gap:4px;padding:6px 10px;border-radius:99px;background:rgba(10,6,3,.62);border:1px solid rgba(255,200,120,.28);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 4px 14px rgba(0,0,0,.4);pointer-events:none;opacity:0;transition:opacity .3s;}
   .stone-tray.show{opacity:1}
   .stone-slot{width:clamp(18px,2.4vmin,26px);height:clamp(18px,2.4vmin,26px);border-radius:6px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:clamp(11px,1.5vmin,16px);opacity:.28;transition:all .3s;line-height:1;filter:grayscale(1);}
@@ -159,6 +159,21 @@
   #joyZone.edit #joyBase{border-style:dashed;border-color:#ffd166;}
   .joy-hint{position:absolute;left:50%;top:calc(50% + 3.2em);transform:translateX(-50%);font-size:.68em;letter-spacing:.14em;color:#ffd166;font-weight:900;text-transform:uppercase;white-space:nowrap;pointer-events:none;text-shadow:0 2px 8px rgba(0,0,0,.8);opacity:0;transition:opacity .2s;}
   #joyZone.edit .joy-hint{opacity:1}
+
+  .char-grid{display:flex;flex-wrap:wrap;gap:.7em;justify-content:center;padding:.4em 0;max-width:min(60em,94vw);max-height:56vh;overflow-y:auto;}
+  .char-card{width:min(9em,28vw);padding:.6em .4em;border-radius:14px;background:rgba(255,255,255,.06);border:2px solid rgba(255,200,120,.2);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:.25em;transition:transform .12s,border-color .18s,box-shadow .18s;position:relative;}
+  .char-card:hover{transform:translateY(-2px)}
+  .char-card.sel{border-color:#ffc247;box-shadow:0 0 20px rgba(255,180,60,.5)}
+  .char-card.locked{opacity:.75}
+  .char-card canvas{width:100%;height:auto;max-height:5.4em;}
+  .char-name{font-size:.62em;font-weight:900;letter-spacing:.04em;color:#ffe9c7;text-align:center;line-height:1.1}
+  .char-tag{font-size:.55em;color:#cbb79c;letter-spacing:.05em;text-align:center;line-height:1.15}
+  .char-power{font-size:.5em;color:#ffd166;font-weight:900;letter-spacing:.05em;text-transform:uppercase;padding:.15em .5em;border-radius:99px;background:rgba(255,200,80,.15);border:1px solid rgba(255,200,80,.3);margin-top:.1em;text-align:center;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .char-lock{position:absolute;inset:0;background:rgba(10,5,2,.72);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.1em;font-size:.55em;color:#ffd9a0;letter-spacing:.04em;}
+  .char-lock .lk-ico{font-size:1.6em;line-height:1}
+  .char-lock .lk-lvl{font-weight:900;color:#ffb347}
+  .char-lock .lk-prog{opacity:.75}
+  .sel-hint{font-size:.78em;color:#ffd9a0;opacity:.9;margin-top:.3em;max-width:min(30em,90vw);letter-spacing:.03em;line-height:1.35;}
 </style>
 </head>
 <body>
@@ -177,7 +192,7 @@
     <div class="ult-bar"><div class="ult-fill" id="ultFill"></div></div>
   </div>
 
-  <!-- Stone tray (Jackie mode) -->
+  <!-- Stone tray (Martial Arts mode) -->
   <div class="stone-tray" id="stoneTray"></div>
   <!-- Miracle meter (Sai mode) -->
   <div class="miracle-wrap" id="miracleWrap">
@@ -197,7 +212,7 @@
   <!-- NAME ENTRY -->
   <div class="overlay hidden" id="nameEntry">
     <div class="flagbar"><i></i><i></i><i></i></div>
-    <h2>Who's Marching?</h2>
+    <h2>Who's Running?</h2>
     <p class="how">Enter your name so your score is recorded</p>
     <input id="nameInput" class="name-input" type="text" maxlength="16" placeholder="Your name" autocomplete="off" spellcheck="false" />
     <button id="nameSubmit">Begin</button>
@@ -207,7 +222,7 @@
   <!-- MAIN MENU -->
   <div class="overlay" id="menu">
     <div class="flagbar"><i></i><i></i><i></i></div>
-    <h1>GANDHI BHAI</h1>
+    <h1>GANDHI RUN</h1>
     <p class="sub">Ultimate Edition</p>
     <div class="player-bar hidden" id="playerBar">
       <div class="avatar" id="pAvatar">?</div>
@@ -223,13 +238,13 @@
       <div class="xp-bar"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
     </div>
     <p class="how" style="margin-top:.4em">
-      🕉️ <b>3 Game Modes</b> — each a unique adventure<br>
-      🕹️ 13 heroes • ⚡ 9 power-ups • 🌦️ weather • 🐦 birds
+      🎮 <b>3 Games · One App</b><br>
+      🕉️ Gandhi Run &nbsp;·&nbsp; 🥋 Martial Arts Adventure &nbsp;·&nbsp; 🙏 Sai Baba Divine Run
     </p>
     <div class="btn-row" style="margin-top:.5em">
       <button id="startBtn">Play</button>
       <button id="charsBtn" class="btn-sm">Heroes</button>
-      <button id="leadersBtn" class="btn-sm">🌍 World</button>
+      <button id="leadersBtn" class="btn-sm">🌍 Leaderboard</button>
       <button id="settingsBtn" class="btn-sm">⚙</button>
     </div>
     <p class="keys">SPACE / ↑ / TAP jump • double/triple jump • P pause • F fullscreen • U ultimate</p>
@@ -237,8 +252,8 @@
 
   <!-- MODE SELECT -->
   <div class="overlay hidden" id="modeSelect">
-    <h2>Choose Your Adventure</h2>
-    <p class="how" style="margin-bottom:.2em">Each mode is a complete game with its own world, obstacles & powers</p>
+    <h2>Choose Your Game</h2>
+    <p class="how" style="margin-bottom:.2em">Each is a full game with its own world, hero, power-ups & sound</p>
     <div class="mode-grid" id="modeGrid"></div>
     <button id="modeBack" class="btn-sm">Back</button>
   </div>
@@ -246,8 +261,8 @@
   <!-- LEADERS -->
   <div class="overlay hidden" id="leaders">
     <div class="flagbar"><i></i><i></i><i></i></div>
-    <h2>🌍 World Leaders</h2>
-    <p class="how" style="margin-bottom:.2em">Top marchers of all time</p>
+    <h2>🌍 Global Leaderboard</h2>
+    <p class="how" style="margin-bottom:.2em">Top runners from every mode</p>
     <div class="lb-wrap" id="lbList"></div>
     <div class="btn-row">
       <button id="leadersBack" class="btn-sm">Back</button>
@@ -324,7 +339,7 @@
   <div class="overlay hidden" id="over">
     <h2 id="overTitle">The Journey Ends</h2>
     <p class="stat">Player: <b id="overPlayerName">—</b></p>
-    <p class="stat">Mode: <b id="overModeName">—</b></p>
+    <p class="stat">Game: <b id="overModeName">—</b></p>
     <p class="stat">Score: <b id="finalScore">0</b></p>
     <p class="stat">Your Best: <b id="bestScore">0</b></p>
     <p class="stat" id="xpGainLine" style="font-size:.95em;color:#06d6a0"></p>
@@ -346,7 +361,7 @@
 "use strict";
 
 /* =========================================================
-   SUPABASE
+   SUPABASE (kept as-is, leaderboard preserved)
    ========================================================= */
 const SUPABASE_URL = "https://anptxhijfjugfjteimex.supabase.co";
 const SUPABASE_KEY = "sb_publishable_VJMQOEHCmOHJbCgjZQMHXw_2DUmKRKw";
@@ -438,8 +453,8 @@ const settings = {
   difficulty:1, character:0, gameMode:"classic",
   control:"tap", joyX:0.80, joyY:0.74, joySize:0.15, joyOpacity:0.60
 };
-try { Object.assign(settings, JSON.parse(localStorage.getItem("gandhi_bhai_settings") || "{}")); } catch(e){}
-function saveSettings(){ try { localStorage.setItem("gandhi_bhai_settings", JSON.stringify(settings)); } catch(e){} }
+try { Object.assign(settings, JSON.parse(localStorage.getItem("gandhi_run_settings") || localStorage.getItem("gandhi_bhai_settings") || "{}")); } catch(e){}
+function saveSettings(){ try { localStorage.setItem("gandhi_run_settings", JSON.stringify(settings)); } catch(e){} }
 
 function beep(freq, dur, type="sine", vol=.07){
   if (!settings.sound) return;
@@ -460,7 +475,7 @@ function chord(freqs, dur, type="triangle", vol=.05){
 }
 
 /* =========================================================
-   PROFILE
+   PROFILE (keys preserved for backward compatibility)
    ========================================================= */
 const PROFILE_KEY = "gandhi_bhai_profile";
 let profile = { name:"", best:0 };
@@ -563,7 +578,7 @@ function renderLeaderboard(){
 }
 
 /* =========================================================
-   THEMES
+   THEMES  (each game gets its own environment palette)
    ========================================================= */
 const THEMES = {
   salt: {
@@ -589,7 +604,7 @@ const THEMES = {
     grassColor:"rgba(255,180,80,.6)"
   },
   kowloon: {
-    label: "Kowloon Nights",
+    label: "Neon Nights",
     sky:["#05000f","#12002a","#33086a","#7a0a60","#ff2a70"],
     sun:"rgba(255,180,220,1)",
     sunGlow:["rgba(255,220,240,1)","rgba(255,120,180,.8)","rgba(220,40,120,.4)","rgba(100,0,80,0)"],
@@ -608,28 +623,37 @@ function getTheme(){
 }
 
 /* =========================================================
-   GAME MODES
+   GAME MODES  →  3 distinct games
    ========================================================= */
 const MODES = {
   classic: {
-    id:"classic", name:"The Salt March", icon:"🕉️", tag:"Gandhi's historic journey of non-violent resistance",
-    power:"Classic Runner"
-  },
-  sai: {
-    id:"sai", name:"Divine Journey", icon:"🙏", tag:"Walk with Sai Baba — miracles, blessings & holy ash",
-    power:"Divine Miracles"
+    id:"classic",
+    name:"Gandhi Run",
+    icon:"🕉️",
+    tag:"Run with Gandhiji through Indian villages — collect salt, spin the charkha, spread freedom.",
+    power:"Endless Runner"
   },
   jackie: {
-    id:"jackie", name:"Zodiac Quest", icon:"🐉", tag:"Collect 12 magic stones — each grants a unique power",
-    power:"Magic Stones"
+    id:"jackie",
+    name:"Martial Arts Adventure",
+    icon:"🥋",
+    tag:"Original kung-fu hero Kai Dragonfist — collect zodiac stones, summon the magic car.",
+    power:"Kung-Fu Action"
+  },
+  sai: {
+    id:"sai",
+    name:"Sai Baba Divine Run",
+    icon:"🙏",
+    tag:"A peaceful spiritual walk with Sai Baba — blessings, lamps, flowers & divine miracles.",
+    power:"Divine Blessings"
   }
 };
 
 /* =========================================================
-   CHARACTERS
+   CHARACTERS (all original designs)
    ========================================================= */
 const CHARACTERS = [
-  { id:"vishu", name:"GANDHI BHAI", tag:"Salt Warrior", desc:"Balanced hero with double jump.",
+  { id:"vishu", name:"GANDHI JI", tag:"Salt Warrior", desc:"Balanced hero with double jump.",
     power:"Double Jump", theme:"salt",
     color:"#fdfdfd", accent:"#ffb347",
     speedMod:1.0, jumpMod:1.0, scoreMod:1.0, startShield:false, magnetRange:0,
@@ -684,8 +708,9 @@ const CHARACTERS = [
     color:"#e8a040", accent:"#ffd166",
     speedMod:0.94, jumpMod:1.10, scoreMod:1.05, magnetRange:60,
     startLives:2, divineGrace:true, maxJumps:2, unlockLevel:46 },
-  { id:"jackie", name:"JACKIE CHAN", tag:"Drunken Master", desc:"Triple jump. Dodge. Magic stones.",
-    power:"Drunken Dodge", theme:"kowloon",
+  /* 👇 Original cartoon kung-fu hero (not Jackie Chan) */
+  { id:"jackie", name:"KAI DRAGONFIST", tag:"Dragon Master", desc:"Triple jump. Dragon Dodge. Magic car.",
+    power:"Dragon Dodge + Magic Car", theme:"kowloon",
     color:"#c8102e", accent:"#ffd166",
     speedMod:1.08, jumpMod:1.14, scoreMod:1.12,
     maxJumps:3, drunkenDodge:true, unlockLevel:50 }
@@ -694,7 +719,7 @@ function getChar(){ return CHARACTERS[settings.character] || CHARACTERS[0]; }
 function isCharUnlocked(i){ return playerLevel() >= (CHARACTERS[i]?.unlockLevel || 1); }
 function firstUnlockedIndex(){ for (let i=0;i<CHARACTERS.length;i++) if (isCharUnlocked(i)) return i; return 0; }
 
-/* Force specific character in mode-specific games */
+/* Force the mode's hero in mode-specific games */
 function getActiveChar(){
   if (settings.gameMode === "sai") return CHARACTERS.find(c => c.id === "sai");
   if (settings.gameMode === "jackie") return CHARACTERS.find(c => c.id === "jackie");
@@ -702,7 +727,7 @@ function getActiveChar(){
 }
 
 /* =========================================================
-   POWER-UPS
+   POWER-UPS  (each mode has its own flavour)
    ========================================================= */
 const POWERUPS = {
   shield:{name:"SHIELD",color:"#4fc3f7",icon:"🛡",dur:8},
@@ -713,12 +738,16 @@ const POWERUPS = {
   ghost:{name:"GHOST",color:"#e0e0e0",icon:"👻",dur:5},
   mega:{name:"MEGA MAGNET",color:"#9c27b0",icon:"🌐",dur:6},
   time:{name:"TIME STOP",color:"#00bcd4",icon:"⏱",dur:4},
-  rainbow:{name:"RAINBOW ×5",color:"#ff4081",icon:"🌈",dur:12}
+  rainbow:{name:"RAINBOW ×5",color:"#ff4081",icon:"🌈",dur:12},
+  /* Special: only spawns in Martial Arts Adventure */
+  car:{name:"MAGIC CAR",color:"#ff00aa",icon:"🚗",dur:7,special:"martial"}
 };
-const PU_KEYS = Object.keys(POWERUPS);
+const ALL_PU_KEYS = Object.keys(POWERUPS);
+/* The car is special — hidden from other modes */
+const PU_KEYS = ALL_PU_KEYS.filter(k => k !== "car");
 
 /* =========================================================
-   MAGIC STONES (Jackie Chan mode)
+   MAGIC STONES (Martial Arts mode)
    ========================================================= */
 const STONES = [
   { id:"rooster", icon:"🐓", name:"Rooster", color:"#ff8a00", desc:"Levitation", dur:7, effect:"levitate" },
@@ -756,12 +785,10 @@ const state = {
   neonMode:false, neonFlash:0,
   nextDivineHeal:3000,
   dodgeReady:true, dodgeCooldown:0, dodgeActive:0,
-  /* Jackies */
-  stones: [],              /* collected this run */
-  stoneActive: null,       /* currently active stone */
+  stones: [],
+  stoneActive: null,
   stoneTimer: 0,
-  /* Sai */
-  miracleCharge: 0,        /* 0-100 */
+  miracleCharge: 0,
   miracleReady: false
 };
 const player = { x:155, y:0, w:42, h:68, vy:0, jumps:0, onGround:true, phase:0, invuln:0, shieldUp:false };
@@ -922,11 +949,14 @@ joyBase.addEventListener("pointercancel", onJoyUp, {passive:false});
 joyBase.addEventListener("lostpointercapture", onJoyUp);
 
 /* =========================================================
-   MODE UI
+   MODE UI  (order: Gandhi Run first, then Martial Arts, then Sai)
    ========================================================= */
 function buildModeGrid(){
   modeGrid.innerHTML = "";
-  Object.values(MODES).forEach(m => {
+  const order = ["classic","jackie","sai"];
+  order.forEach(id => {
+    const m = MODES[id];
+    if (!m) return;
     const card = document.createElement("div");
     card.className = "mode-card " + m.id + (settings.gameMode === m.id ? " sel" : "");
     const badge = m.id === "sai" ? `<div class="mode-badge" style="background:linear-gradient(180deg,#ffd166,#ff8a00)">NEW</div>`
@@ -987,7 +1017,6 @@ function resetWorld(){
   player.shieldUp = !!ch.startShield;
   resetJoyInput();
   weatherBadge.classList.remove("show");
-  /* UI */
   if (settings.gameMode === "jackie"){
     stoneTray.classList.add("show");
     updateStoneTray();
@@ -1066,11 +1095,11 @@ function gameOver(reason){
     const reachedBritish = s >= BRITISH_LEVEL_SCORE;
     const reachedNeon = s >= NEON_LEVEL_SCORE;
     let extra = "";
-    if (settings.gameMode === "jackie") extra = `  •  💎 Stones: ${state.stones.length}/12`;
+    if (settings.gameMode === "jackie") extra = `  •  🥋 Stones: ${state.stones.length}/12`;
     if (settings.gameMode === "sai") extra = `  •  🙏 Miracles: ${state.totalPowerups}`;
-    runStats.textContent = `Salt: ${state.totalCoins}  •  Power-ups: ${state.totalPowerups}  •  Best Combo: ×${state.maxCombo}` +
+    runStats.textContent = `Collectibles: ${state.totalCoins}  •  Power-ups: ${state.totalPowerups}  •  Best Combo: ×${state.maxCombo}` +
       (reachedBritish ? "  •  🇬🇧 British Era" : "") + (reachedNeon ? "  •  💜 Neon" : "") + extra;
-    if (rank === -2) rankInfo.textContent = "🌍 Score submitted to World Leaders!";
+    if (rank === -2) rankInfo.textContent = "🌍 Score submitted to Global Leaderboard!";
     else if (rank === -1) rankInfo.textContent = "Score saved locally.";
     else rankInfo.textContent = "Score recorded!";
     xpGainLine.innerHTML = `+${xpGain.toLocaleString()} XP  •  Level <b>${newLevel}</b>` +
@@ -1101,7 +1130,6 @@ function jump(){
   if (state.mode !== "play") return;
   const ch = getActiveChar();
   const maxJ = ch.maxJumps || 2;
-  /* Levitation stone: unlimited-ish jumps */
   const bonusJumps = (state.stoneActive === "rooster") ? 3 : 0;
   if (player.jumps < maxJ + bonusJumps){
     const falloff = Math.pow(0.86, player.jumps);
@@ -1157,10 +1185,11 @@ function activateUlt(){
 }
 
 /* =========================================================
-   POWER-UP LOGIC
+   POWER-UP LOGIC  (incl. magical car for martial arts mode)
    ========================================================= */
 function applyPowerup(key){
   const pu = POWERUPS[key];
+  if (!pu) return;
   state.activePowerups[key] = pu.dur;
   state.totalPowerups++;
   chargeUlt(18);
@@ -1175,6 +1204,13 @@ function applyPowerup(key){
     }
   }
   if (key === "shield") player.shieldUp = true;
+  if (key === "car"){
+    /* Magical car: temporary invincibility + speed protection */
+    player.invuln = Math.max(player.invuln, pu.dur + 0.4);
+    state.flashAlpha = 0.45; state.flashColor = pu.color;
+    chord([900, 1200, 1500, 1800], .14, "triangle", .07);
+    showCombo("🚗 MAGIC CAR!");
+  }
   updatePuHUD();
 }
 function updatePowerups(dt){
@@ -1187,6 +1223,10 @@ function updatePowerups(dt){
     } else {
       if (key === "slow") slow = Math.min(slow, 0.55);
       if (key === "time") slow = Math.min(slow, 0.15);
+      if (key === "car"){
+        /* Car keeps you invulnerable while active */
+        player.invuln = Math.max(player.invuln, state.activePowerups[key] + 0.05);
+      }
       if (key === "magnet"){
         const range = (getActiveChar().magnetRange || 0) + 100;
         for (const c of state.coins){
@@ -1212,6 +1252,7 @@ function updatePuHUD(){
   if (keys.length === 0){ puBar.innerHTML = ""; return; }
   puBar.innerHTML = keys.map(k => {
     const pu = POWERUPS[k], t = state.activePowerups[k];
+    if (!pu) return "";
     return `<div class="pu-chip" style="border-color:${pu.color}66">
       <span class="dot" style="background:${pu.color}"></span>
       ${pu.name} <span class="tmr">${t.toFixed(1)}s</span>
@@ -1220,7 +1261,7 @@ function updatePuHUD(){
 }
 
 /* =========================================================
-   MAGIC STONES (Jackie mode)
+   MAGIC STONES (Martial Arts mode)
    ========================================================= */
 function activateStone(id){
   const stone = STONES.find(s => s.id === id);
@@ -1241,7 +1282,6 @@ function activateStone(id){
         life:1, color: stone.color, r: 2+Math.random()*5 });
     }
   }
-  /* Instant effect stones */
   if (stone.effect === "revive"){
     state.lives += 1;
     spawnPop(cx, cy-40, "+1 LIFE", "#ff4488");
@@ -1253,11 +1293,7 @@ function activateStone(id){
   if (stone.effect === "ghost") state.activePowerups.ghost = 5;
   if (stone.effect === "boost") state.activePowerups.boost = 5;
   if (stone.effect === "invuln"){ player.invuln = 8; state.activePowerups.shield = 8; player.shieldUp = true; }
-  if (stone.effect === "laser" || stone.effect === "combust" || stone.effect === "break"){
-    /* Handled in update */
-  }
   if (stone.effect === "balance"){
-    /* All mini-powers */
     state.activePowerups.ghost = 6;
     state.activePowerups.boost = 6;
     state.activePowerups.double = 6;
@@ -1276,7 +1312,6 @@ function updateStones(dt){
       state.stoneTimer = 0;
       updateStoneTray();
     } else {
-      /* Dragon — combustion kills obstacles ahead */
       if (state.stoneActive === "dragon"){
         for (let i=state.obstacles.length-1;i>=0;i--){
           const o = state.obstacles[i];
@@ -1287,7 +1322,6 @@ function updateStones(dt){
           }
         }
       }
-      /* Pig — laser eyes */
       if (state.stoneActive === "pig"){
         if (Math.floor(state.time * 4) !== Math.floor((state.time - dt) * 4)){
           for (let i=state.obstacles.length-1;i>=0;i--){
@@ -1299,7 +1333,6 @@ function updateStones(dt){
           }
         }
       }
-      /* Ox — breaks any obstacle you touch (also passive via aabbHit) */
     }
   }
 }
@@ -1387,7 +1420,6 @@ function spawnObstacle(){
     return;
   }
 
-  /* —— SAI MODE —— */
   if (mode === "sai"){
     if (r < 0.35) state.obstacles.push({ type:"demon", w:46, h:52, x:W+50, y:GROUND_Y-52 });
     else if (r < 0.60) state.obstacles.push({ type:"cloud", w:60, h:40, x:W+50, y:GROUND_Y-40 });
@@ -1395,7 +1427,6 @@ function spawnObstacle(){
     else state.obstacles.push({ type:"bones", w:44, h:32, x:W+50, y:GROUND_Y-32 });
     return;
   }
-  /* —— JACKIE MODE —— */
   if (mode === "jackie"){
     if (r < 0.32) state.obstacles.push({ type:"thug", w:38, h:74, x:W+50, y:GROUND_Y-74 });
     else if (r < 0.58) state.obstacles.push({ type:"jade", w:44, h:62, x:W+50, y:GROUND_Y-62 });
@@ -1404,7 +1435,7 @@ function spawnObstacle(){
     return;
   }
 
-  /* —— CLASSIC —— */
+  /* Classic — Gandhi Run */
   if (state.level === 0){
     if (r < 0.55) state.obstacles.push({ type:"barricade", w:38, h:46, x:W+50, y:GROUND_Y-46 });
     else if (r < 0.82) state.obstacles.push({ type:"rock", w:48, h:34, x:W+50, y:GROUND_Y-34 });
@@ -1421,14 +1452,12 @@ function spawnCoin(){
   const mode = settings.gameMode;
   const roll = Math.random();
 
-  /* Sai: vibhuti, flowers, lamps */
   if (mode === "sai"){
     if (roll < 0.02) state.coins.push({ x:W+60, y:GROUND_Y-46-Math.random()*100, r:17, type:"lamp", rot:0 });
     else if (roll < 0.18) state.coins.push({ x:W+60, y:GROUND_Y-46-Math.random()*108, r:16, type:"flower", rot:0 });
     else state.coins.push({ x:W+60, y:GROUND_Y-46-Math.random()*108, r:14, type:"vibhuti", rot:0 });
     return;
   }
-  /* Jackie: coins and urns */
   if (mode === "jackie"){
     if (roll < 0.04) state.coins.push({ x:W+60, y:GROUND_Y-46-Math.random()*100, r:17, type:"rainbow", rot:0 });
     else if (roll < 0.18) state.coins.push({ x:W+60, y:GROUND_Y-46-Math.random()*108, r:16, type:"jadecoin", rot:0 });
@@ -1436,7 +1465,6 @@ function spawnCoin(){
     return;
   }
 
-  /* Classic */
   if (roll < 0.02) state.coins.push({ x:W+60, y:GROUND_Y-46-Math.random()*100, r:17, type:"rainbow", rot:0 });
   else {
     const isCharkha = roll < 0.12;
@@ -1446,12 +1474,13 @@ function spawnCoin(){
 }
 
 function spawnPowerup(){
-  const key = PU_KEYS[Math.floor(Math.random()*PU_KEYS.length)];
+  /* Martial Arts mode: magical car can appear as an extra special */
+  const pool = settings.gameMode === "jackie" ? [...PU_KEYS, "car", "car"] : PU_KEYS;
+  const key = pool[Math.floor(Math.random()*pool.length)];
   state.powerupDrops.push({ x:W+70, y:GROUND_Y-50-Math.random()*120, r:17, key, rot:0, bob:Math.random()*TAU });
 }
 
 function spawnStone(){
-  /* Pick a stone not yet collected (if possible) */
   const remaining = STONES.filter(s => !state.stones.includes(s.id));
   const pool = remaining.length > 0 ? remaining : STONES;
   const stone = pool[Math.floor(Math.random()*pool.length)];
@@ -1480,6 +1509,7 @@ function showCombo(text){
 function aabbHit(p,o){
   if (state.activePowerups.ghost) return false;
   if (state.dodgeActive > 0) return false;
+  if (state.activePowerups.car) return false;
   const pad = 6;
   return p.x+pad < o.x+o.w && p.x+p.w-pad > o.x &&
          p.y+pad < o.y+o.h && p.y+p.h-pad > o.y;
@@ -1568,11 +1598,12 @@ function update(dt){
     let speedBonus = 0;
     if (state.score > 20000) speedBonus += Math.min((state.score - 20000) * 0.012, 260);
     if (state.score > 40000) speedBonus += Math.min((state.score - 40000) * 0.015, 380);
+    /* Magical car also gives a speed boost */
+    if (state.activePowerups.car) speedBonus += 260;
 
     state.speed = (BASE_SPEED + speedBonus) * ch.speedMod * state.slowFactor * DIFF_SPEED[d];
     state.score += state.speed * dt * 0.022 * ch.scoreMod * (state.activePowerups.double ? 2 : 1);
 
-    /* Sai divine grace */
     if (ch.divineGrace && state.score >= state.nextDivineHeal){
       state.nextDivineHeal += 3000;
       if (state.obstacles.length > 0){
@@ -1697,11 +1728,11 @@ function update(dt){
     }
     if (o.x+o.w < -80){ state.obstacles.splice(i,1); continue; }
     if (aabbHit(player,o)){
-      if (state.ultActive || state.stoneActive === "ox"){
+      if (state.ultActive || state.stoneActive === "ox" || state.activePowerups.car){
         spawnParticles(o.x+o.w/2,o.y+o.h/2,"#ff8a65",18);
         state.obstacles.splice(i,1);
         state.score += 25;
-        showCombo(state.ultActive ? "OBLITERATED!" : "💪 OX SMASH!");
+        showCombo(state.activePowerups.car ? "🚗 CAR SMASH!" : (state.ultActive ? "OBLITERATED!" : "💪 OX SMASH!"));
         beep(200,.08,"sawtooth",.06);
         continue;
       }
@@ -1714,7 +1745,7 @@ function update(dt){
         player.invuln = 1.2;
         spawnParticles(player.x+player.w/2, player.y+player.h/2, "#ffd166", 22);
         spawnPop(player.x, player.y-20, "DODGE!", "#ffd166");
-        showCombo("🥋 DRUNKEN DODGE!");
+        showCombo("🥋 DRAGON DODGE!");
         chord([600, 800, 1100], .12, "triangle", .07);
         continue;
       }
@@ -1844,12 +1875,7 @@ function update(dt){
     }
   }
 
-  /* Sai miracle auto-trigger when ready (player pulls trigger automatically after short delay) */
-  if (settings.gameMode === "sai" && state.miracleReady){
-    /* Optional: auto-trigger after 1s of being ready if not pressed */
-    /* Actually let the player enjoy it visually and not auto-trigger to keep control */
-  }
-  /* Actually let it auto trigger after 2s */
+  /* Sai miracle auto-trigger 2s after it becomes ready */
   if (settings.gameMode === "sai" && state.miracleReady){
     if (!state._miracleDelay) state._miracleDelay = 2.0;
     state._miracleDelay -= dt;
@@ -1865,7 +1891,7 @@ function update(dt){
 }
 
 /* =========================================================
-   DRAW SKY / HILLS / GROUND (mode-aware)
+   DRAW SKY / HILLS / GROUND
    ========================================================= */
 function drawSky(){
   const theme = getTheme();
@@ -1906,9 +1932,7 @@ function drawSky(){
   ctx.fillStyle = state.neonMode ? "rgba(255,220,255,.98)" : theme.sun;
   ctx.beginPath(); ctx.arc(sx,sy,state.neonMode ? 60 : 46, 0, TAU); ctx.fill();
 
-  /* Mode-specific atmospheric extras */
   if (settings.gameMode === "sai"){
-    /* Pink spiritual glows */
     for (let i=0;i<4;i++){
       const cx = ((i*280) - (state.scroll*0.12) % 1120 + 1120*10) % (W+400) - 200;
       const cy = 90 + (i%3)*50;
@@ -1920,7 +1944,6 @@ function drawSky(){
     }
   }
   if (settings.gameMode === "jackie"){
-    /* Neon lantern glows */
     for (let i=0;i<8;i++){
       const cx = ((i*180) - (state.scroll*0.10) % 1440 + 1440*10) % (W+300) - 150;
       const cy = 60 + (i%2)*70;
@@ -2018,7 +2041,7 @@ function drawWeather(){
 }
 
 /* =========================================================
-   DRAW OBSTACLES (mode-aware)
+   DRAW OBSTACLES
    ========================================================= */
 function drawShadow(cx,w){
   ctx.fillStyle="rgba(60,30,0,.18)";
@@ -2135,9 +2158,8 @@ function drawObstacle(o){
     ctx.lineTo(cx + w*0.42, cy + 3);
     ctx.closePath(); ctx.fill();
   }
-  /* —— SAI obstacles —— */
+  /* Sai obstacles */
   else if (type==="demon"){
-    /* Dark demon silhouette */
     ctx.fillStyle = "#2a0a3a";
     ctx.beginPath();
     ctx.moveTo(x+w*0.5, y);
@@ -2152,18 +2174,13 @@ function drawObstacle(o){
     ctx.fillStyle = "#ff0033";
     ctx.beginPath(); ctx.arc(x+w*0.35, y+h*0.32, 3.2, 0, TAU); ctx.fill();
     ctx.beginPath(); ctx.arc(x+w*0.65, y+h*0.32, 3.2, 0, TAU); ctx.fill();
-    ctx.fillStyle = "#ffffff";
-    ctx.beginPath(); ctx.moveTo(x+w*0.35, y+h*0.55); ctx.lineTo(x+w*0.42, y+h*0.62); ctx.lineTo(x+w*0.28, y+h*0.62); ctx.closePath(); ctx.fill();
-    ctx.beginPath(); ctx.moveTo(x+w*0.65, y+h*0.55); ctx.lineTo(x+w*0.72, y+h*0.62); ctx.lineTo(x+w*0.58, y+h*0.62); ctx.closePath(); ctx.fill();
   }
   else if (type==="cloud"){
-    /* Dark doubt cloud */
     ctx.fillStyle = "rgba(60,20,70,.85)";
     ctx.beginPath(); ctx.arc(x+w*0.25, y+h*0.55, w*0.25, 0, TAU); ctx.fill();
     ctx.beginPath(); ctx.arc(x+w*0.5, y+h*0.42, w*0.32, 0, TAU); ctx.fill();
     ctx.beginPath(); ctx.arc(x+w*0.75, y+h*0.55, w*0.27, 0, TAU); ctx.fill();
     ctx.fillRect(x, y+h*0.55, w, h*0.45);
-    /* Lightning */
     ctx.strokeStyle = "#ffd166"; ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(x+w*0.5, y+h*0.55);
@@ -2173,7 +2190,6 @@ function drawObstacle(o){
     ctx.stroke();
   }
   else if (type==="thorn"){
-    /* Thorny bush */
     ctx.fillStyle = "#3a2010";
     ctx.beginPath(); ctx.ellipse(x+w/2, y+h*0.85, w*0.5, h*0.15, 0, 0, TAU); ctx.fill();
     ctx.strokeStyle = "#5a3020"; ctx.lineWidth = 3; ctx.lineCap = "round";
@@ -2183,7 +2199,6 @@ function drawObstacle(o){
       ctx.moveTo(bx, y+h*0.85); ctx.lineTo(bx+rand(-4,4), y+h*0.2);
       ctx.stroke();
     }
-    /* Thorns */
     ctx.strokeStyle = "#8a5a30"; ctx.lineWidth = 1.5;
     for (let i=0;i<10;i++){
       const tx = x + w*(i+0.5)/10;
@@ -2191,7 +2206,6 @@ function drawObstacle(o){
     }
   }
   else if (type==="bones"){
-    /* Bones */
     ctx.fillStyle = "#e8e0d0";
     ctx.beginPath(); ctx.ellipse(x+w*0.2, y+h*0.5, 6, 10, 0, 0, TAU); ctx.fill();
     ctx.beginPath(); ctx.ellipse(x+w*0.4, y+h*0.5, 6, 10, 0, 0, TAU); ctx.fill();
@@ -2201,9 +2215,8 @@ function drawObstacle(o){
     ctx.beginPath(); ctx.ellipse(x+w*0.8, y+h*0.5, 6, 10, 0, 0, TAU); ctx.fill();
     ctx.beginPath(); ctx.ellipse(x+w*0.95, y+h*0.5, 6, 10, 0, 0, TAU); ctx.fill();
   }
-  /* —— JACKIE obstacles —— */
+  /* Martial Arts obstacles */
   else if (type==="thug"){
-    /* Dark Hand thug */
     ctx.fillStyle = "#1a1a2a";
     ctx.fillRect(x+w*0.1, y+h*0.35, w*0.8, h*0.65);
     ctx.fillStyle = "#2a2a3a";
@@ -2217,7 +2230,6 @@ function drawObstacle(o){
     ctx.beginPath(); ctx.arc(x+w*0.64, y+h*0.22, 2.2, 0, TAU); ctx.fill();
   }
   else if (type==="jade"){
-    /* Jade warrior statue */
     ctx.fillStyle = "#1a6a3a";
     ctx.beginPath();
     ctx.moveTo(x+w/2, y);
@@ -2231,7 +2243,6 @@ function drawObstacle(o){
     ctx.fillStyle = "#ffd166";
     ctx.beginPath(); ctx.arc(x+w*0.42, y+h*0.22, 2.5, 0, TAU); ctx.fill();
     ctx.beginPath(); ctx.arc(x+w*0.58, y+h*0.22, 2.5, 0, TAU); ctx.fill();
-    /* Jade glow */
     const gg = ctx.createRadialGradient(x+w/2, y+h/2, 4, x+w/2, y+h/2, w*1.2);
     gg.addColorStop(0,"rgba(34,255,120,.28)");
     gg.addColorStop(1,"rgba(34,255,120,0)");
@@ -2239,7 +2250,6 @@ function drawObstacle(o){
     ctx.beginPath(); ctx.arc(x+w/2, y+h/2, w*1.2, 0, TAU); ctx.fill();
   }
   else if (type==="crate"){
-    /* Wooden crate */
     ctx.fillStyle = "#8a5a2b";
     ctx.fillRect(x, y, w, h);
     ctx.strokeStyle = "#5a3a1a"; ctx.lineWidth = 2;
@@ -2252,7 +2262,6 @@ function drawObstacle(o){
     ctx.fillRect(x, y+h*0.4, w, 3);
   }
   else if (type==="sword"){
-    /* Vertical sword */
     ctx.fillStyle = "#b0b0c0";
     ctx.fillRect(x+w/2-2, y, 4, h*0.75);
     ctx.fillStyle = "#ffd166";
@@ -2265,7 +2274,7 @@ function drawObstacle(o){
 }
 
 /* =========================================================
-   DRAW COLLECTIBLES (mode-aware)
+   DRAW COLLECTIBLES
    ========================================================= */
 function drawSalt(x,y,r,rot){
   ctx.save(); ctx.translate(x,y);
@@ -2321,7 +2330,6 @@ function drawVibhuti(x,y,r,rot){
   glow.addColorStop(0,"rgba(255,250,220,.7)"); glow.addColorStop(1,"rgba(255,250,220,0)");
   ctx.fillStyle=glow; ctx.beginPath(); ctx.arc(0,0,r*2.6,0,TAU); ctx.fill();
   ctx.rotate(rot);
-  /* White oval pile of ash */
   ctx.fillStyle="#f8f0dc";
   ctx.beginPath(); ctx.ellipse(0, 0, r*0.85, r*0.55, 0, 0, TAU); ctx.fill();
   ctx.fillStyle="#e8d8b8";
@@ -2354,7 +2362,6 @@ function drawLamp(x,y,r,rot){
   glow.addColorStop(0,`rgba(255,200,80,${0.9+Math.sin(t*3)*0.1})`);
   glow.addColorStop(1,"rgba(255,200,80,0)");
   ctx.fillStyle=glow; ctx.beginPath(); ctx.arc(0,0,r*3.2,0,TAU); ctx.fill();
-  /* Diya base */
   ctx.fillStyle="#8a5a2b";
   ctx.beginPath();
   ctx.ellipse(0, r*0.4, r*0.9, r*0.35, 0, 0, TAU);
@@ -2363,7 +2370,6 @@ function drawLamp(x,y,r,rot){
   ctx.beginPath();
   ctx.ellipse(0, r*0.35, r*0.85, r*0.28, 0, 0, TAU);
   ctx.fill();
-  /* Flame */
   const fl = 0.6 + Math.sin(t*8)*0.15;
   ctx.fillStyle = "#ffd166";
   ctx.beginPath();
@@ -2381,7 +2387,6 @@ function drawJadeCoin(x,y,r,rot){
   glow.addColorStop(0,"rgba(34,255,120,.7)"); glow.addColorStop(1,"rgba(34,255,120,0)");
   ctx.fillStyle=glow; ctx.beginPath(); ctx.arc(0,0,r*2.8,0,TAU); ctx.fill();
   ctx.rotate(rot);
-  /* Jade coin with square hole */
   ctx.fillStyle="#1a6a3a";
   ctx.beginPath(); ctx.arc(0,0,r,0,TAU); ctx.fill();
   ctx.fillStyle="#2acc66";
@@ -2398,13 +2403,11 @@ function drawStonePickup(x,y,r,stoneId,rot,bob){
   if (!stone) return;
   const bobY = Math.sin(bob) * 5;
   ctx.save(); ctx.translate(x, y + bobY);
-  /* Big glow */
   const glow = ctx.createRadialGradient(0,0,4,0,0,r*3.4);
   glow.addColorStop(0, stone.color+"cc");
   glow.addColorStop(0.45, stone.color+"55");
   glow.addColorStop(1, stone.color+"00");
   ctx.fillStyle=glow; ctx.beginPath(); ctx.arc(0,0,r*3.4,0,TAU); ctx.fill();
-  /* Rotating halo */
   ctx.rotate(rot);
   for (let i=0;i<3;i++){
     ctx.rotate(TAU/3);
@@ -2415,7 +2418,6 @@ function drawStonePickup(x,y,r,stoneId,rot,bob){
     ctx.stroke();
   }
   ctx.rotate(-rot);
-  /* Stone body */
   ctx.fillStyle = "rgba(10,6,3,.85)";
   ctx.beginPath();
   for (let i=0;i<8;i++){
@@ -2425,10 +2427,8 @@ function drawStonePickup(x,y,r,stoneId,rot,bob){
   }
   ctx.closePath(); ctx.fill();
   ctx.strokeStyle = stone.color; ctx.lineWidth = 2.6; ctx.stroke();
-  /* Inner ring */
   ctx.strokeStyle = "rgba(255,255,255,.4)"; ctx.lineWidth = 1;
   ctx.beginPath(); ctx.arc(0,0,r*0.7, 0, TAU); ctx.stroke();
-  /* Icon */
   ctx.font = `bold ${Math.round(r*1.1)}px system-ui,sans-serif`;
   ctx.textAlign = "center"; ctx.textBaseline = "middle";
   ctx.fillStyle = stone.color;
@@ -2441,6 +2441,7 @@ function drawPowerupDrop(p){
     return;
   }
   const pu = POWERUPS[p.key];
+  if (!pu) return;
   const bobY = p.y + Math.sin(p.bob)*4;
   ctx.save(); ctx.translate(p.x,bobY);
   const glow = ctx.createRadialGradient(0,0,2,0,0,p.r*3);
@@ -2461,6 +2462,88 @@ function drawPowerupDrop(p){
   ctx.textAlign="center"; ctx.textBaseline="middle";
   ctx.fillStyle=pu.color; ctx.fillText(pu.icon,0,1);
   ctx.restore();
+}
+
+/* =========================================================
+   MAGICAL CAR (Martial Arts only)
+   ========================================================= */
+function drawMagicalCar(x, y, w, h){
+  const t = performance.now()/1000;
+  const cx = x + w/2;
+  const cy = y + h*0.62;
+  /* Ground glow */
+  const gg = ctx.createRadialGradient(cx, cy + h*0.35, 4, cx, cy + h*0.35, w*1.1);
+  gg.addColorStop(0,"rgba(255,0,170,0.55)");
+  gg.addColorStop(1,"rgba(255,0,170,0)");
+  ctx.fillStyle = gg;
+  ctx.beginPath(); ctx.ellipse(cx, cy + h*0.35, w*1.1, h*0.28, 0, 0, TAU); ctx.fill();
+
+  /* Motion streaks */
+  for (let i=0;i<5;i++){
+    const sx = x - 20 - i*22;
+    const sy = cy - h*0.15 + (i-2)*6;
+    ctx.strokeStyle = `rgba(255,120,220,${0.35 - i*0.05})`;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(sx, sy);
+    ctx.lineTo(sx + 18, sy);
+    ctx.stroke();
+  }
+
+  /* Body */
+  const bodyGrad = ctx.createLinearGradient(x, y, x + w, y + h);
+  bodyGrad.addColorStop(0,"#4a0040");
+  bodyGrad.addColorStop(0.5,"#a00070");
+  bodyGrad.addColorStop(1,"#ff2aa0");
+  ctx.fillStyle = bodyGrad;
+  ctx.beginPath();
+  ctx.moveTo(x + w*0.08, cy + h*0.18);
+  ctx.quadraticCurveTo(x + w*0.15, cy - h*0.15, x + w*0.42, cy - h*0.25);
+  ctx.quadraticCurveTo(x + w*0.72, cy - h*0.28, x + w*0.88, cy - h*0.05);
+  ctx.quadraticCurveTo(x + w*0.98, cy + h*0.10, x + w*0.92, cy + h*0.22);
+  ctx.lineTo(x + w*0.10, cy + h*0.24);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = "#ffd166";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  /* Cockpit */
+  const cg = ctx.createLinearGradient(x, cy - h*0.25, x + w, cy - h*0.05);
+  cg.addColorStop(0,"rgba(180,240,255,.85)");
+  cg.addColorStop(1,"rgba(120,200,255,.55)");
+  ctx.fillStyle = cg;
+  ctx.beginPath();
+  ctx.ellipse(x + w*0.52, cy - h*0.10, w*0.20, h*0.13, 0, 0, TAU);
+  ctx.fill();
+  ctx.strokeStyle = "#ffd166"; ctx.lineWidth = 1.4;
+  ctx.stroke();
+
+  /* Hover emitters */
+  const pulse = 1 + Math.sin(t*9)*0.18;
+  ctx.fillStyle = "#ffd166";
+  for (const wx of [x + w*0.22, x + w*0.80]){
+    ctx.beginPath();
+    ctx.arc(wx, cy + h*0.24, 6*pulse, 0, TAU); ctx.fill();
+  }
+  /* Trailing flames */
+  for (let i=0;i<3;i++){
+    const fx = x - 6 - i*10;
+    const fy = cy + h*0.02 + Math.sin(t*12 + i)*2;
+    ctx.fillStyle = `rgba(255,${120 + i*40},${220 - i*30},${0.7 - i*0.15})`;
+    ctx.beginPath();
+    ctx.ellipse(fx, fy, 10 - i*2, 6 - i*1, 0, 0, TAU);
+    ctx.fill();
+  }
+  /* Star sparkles */
+  for (let i=0;i<4;i++){
+    const a = t*2 + i*1.57;
+    const sx = cx + Math.cos(a)*w*0.6;
+    const sy = cy - h*0.3 + Math.sin(a*1.3)*h*0.2;
+    ctx.fillStyle = `rgba(255,220,120,${0.5 + Math.sin(t*5+i)*0.35})`;
+    ctx.beginPath();
+    ctx.arc(sx, sy, 2.5, 0, TAU); ctx.fill();
+  }
 }
 
 /* =========================================================
@@ -2694,7 +2777,6 @@ function drawNehru(x,y,w,h,phase,onGround){
 }
 function drawSai(x,y,w,h,phase,onGround){
   const cx = x + w/2;
-  /* Golden halo */
   const haloPulse = 0.9 + Math.sin(performance.now()/420)*0.1;
   const hg = ctx.createRadialGradient(cx, y - 4, 4, cx, y - 4, w*1.4*haloPulse);
   hg.addColorStop(0,"rgba(255,220,120,0.7)");
@@ -2710,7 +2792,6 @@ function drawSai(x,y,w,h,phase,onGround){
     mustache:"#2a1a10", ink:"#2a1a0a", staff:"#c89030"
   });
 
-  /* Vibhuti mark */
   const headR = w*0.26;
   const headCY = y + h*0.18;
   ctx.fillStyle = "rgba(220,220,220,.85)";
@@ -2718,7 +2799,6 @@ function drawSai(x,y,w,h,phase,onGround){
   ctx.ellipse(cx, headCY - headR*0.55, headR*0.16, headR*0.35, 0, 0, TAU);
   ctx.fill();
 
-  /* Sparkles */
   const t = performance.now()/380;
   for (let i=0;i<5;i++){
     const a = t + i * 1.257;
@@ -2731,6 +2811,7 @@ function drawSai(x,y,w,h,phase,onGround){
     ctx.fill();
   }
 }
+/* 🌟 Original cartoon kung-fu hero (NOT Jackie Chan) */
 function drawJackie(x,y,w,h,phase,onGround){
   drawVishuGandhi(x, y, w, h, phase, onGround, {
     skin:"#e0b088", skinHi:"#ffcfa8", skinSh:"#a87850",
@@ -2742,6 +2823,7 @@ function drawJackie(x,y,w,h,phase,onGround){
   const headR = w*0.26;
   const headCY = y + h*0.20;
   const flutter = Math.sin(performance.now()/110)*3.5;
+  /* Dragon-crest headband (original design) */
   ctx.save();
   ctx.fillStyle = "#c8102e";
   ctx.beginPath();
@@ -2757,6 +2839,11 @@ function drawJackie(x,y,w,h,phase,onGround){
   ctx.fillStyle = "#ffd166";
   ctx.beginPath();
   ctx.arc(cx, headCY - headR*0.20, headR*0.14, 0, TAU);
+  ctx.fill();
+  /* Small dragon glyph */
+  ctx.fillStyle = "#2a0a0a";
+  ctx.beginPath();
+  ctx.arc(cx, headCY - headR*0.20, headR*0.05, 0, TAU);
   ctx.fill();
   ctx.restore();
 }
@@ -2795,7 +2882,6 @@ function drawHUD(){
   const txt = String(Math.floor(state.score)).padStart(5,"0");
   ctx.strokeText(txt, 28, 24); ctx.fillText(txt, 28, 24);
 
-  /* Mode badge under score */
   ctx.font = "900 12px 'Trebuchet MS',system-ui,sans-serif";
   ctx.fillStyle = settings.gameMode === "sai" ? "#ffb347"
     : settings.gameMode === "jackie" ? "#ff5599" : "#88cc88";
@@ -2884,7 +2970,6 @@ function render(){
   drawParticles();
   drawWeather();
 
-  /* Shadow */
   const airHeight = Math.max(0,(GROUND_Y-player.h)-player.y);
   const k = Math.max(.35, 1-airHeight/240);
   ctx.fillStyle = "rgba(60,30,0,"+(0.22*k)+")";
@@ -2892,7 +2977,6 @@ function render(){
   ctx.ellipse(player.x+player.w/2, GROUND_Y+4, 22*k, 6.5*k, 0, 0, TAU);
   ctx.fill();
 
-  /* Character */
   const bob = player.onGround ? Math.sin(player.phase*2)*1.4 : 0;
   const ch = getActiveChar();
   const py = player.y + bob;
@@ -2912,7 +2996,11 @@ function render(){
     default: drawVishu(player.x, py, player.w, player.h, player.phase, player.onGround);
   }
 
-  /* Active stone aura (Jackie) */
+  /* 🚗 Magical car wraps the hero while active (Martial Arts only) */
+  if (state.activePowerups.car > 0){
+    drawMagicalCar(player.x - 16, player.y - 8, player.w + 32, player.h + 10);
+  }
+
   if (state.stoneActive){
     const stone = STONES.find(s => s.id === state.stoneActive);
     if (stone){
@@ -2953,7 +3041,7 @@ function render(){
     ctx.lineWidth = 2;
     ctx.beginPath(); ctx.arc(cx,cy,r*1.1,0,TAU); ctx.stroke();
   }
-  if (player.invuln > 0 && !state.ultActive && Math.floor(performance.now()/80)%2 === 0){
+  if (player.invuln > 0 && !state.ultActive && !state.activePowerups.car && Math.floor(performance.now()/80)%2 === 0){
     ctx.globalAlpha = .45; ctx.fillStyle = "#fff";
     ctx.beginPath();
     ctx.arc(player.x+player.w/2, player.y+player.h/2, player.w*0.8, 0, TAU);
@@ -3159,7 +3247,6 @@ function buildCharGrid(){
   charHint.textContent = `${sel.name} — ${sel.power} • ${sel.desc}`;
 }
 
-/* Buttons */
 document.getElementById("startBtn").addEventListener("click", e => {
   e.stopPropagation();
   if (!profile.name){ menuEl.classList.add("hidden"); nameEntryEl.classList.remove("hidden"); setTimeout(() => nameInput.focus(), 100); return; }
